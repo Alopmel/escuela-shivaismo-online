@@ -1,1 +1,54 @@
-{}
+{
+  "api": {},
+  "auth": {
+    "escuelashivaismo": {
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "managed"
+    }
+  },
+  "function": {
+    "escuelashivaismoApi": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_escuelashivaismoApi_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "escuelashivaismoApi"
+        }
+      ]
+    },
+    "AMPLIFY_function_escuelashivaismoApi_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "escuelashivaismoApi"
+        }
+      ]
+    }
+  }
+}

@@ -97,15 +97,12 @@ const CircleMenu: React.FC = () => {
       } else if (empiezaNavItems.includes(breadcrumbItem)) {
         handleItemClick(breadcrumbItem);
       } else if (ensenanzaNavItems.includes(breadcrumbItem)) {
-        handleClick();
-        handleItemClick(breadcrumbItem);
         handleSubItemClick(breadcrumbItem);
       } else if (aplicacionNavItems.includes(breadcrumbItem)) {
         handleSubItemClick(breadcrumbItem);
       } else if (prácticaNavItems.includes(breadcrumbItem)) {
         handleSubItemClick(breadcrumbItem);
       } else if (comentarioNavItems.includes(breadcrumbItem)) {
-        handleClick();
         handledDoubleSubItemClick(breadcrumbItem);
       } else if (shivasutrasNavItems.includes(breadcrumbItem)) {
         handledDoubleSubItemClick(breadcrumbItem);
