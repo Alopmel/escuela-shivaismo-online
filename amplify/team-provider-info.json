@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-escuelashivaismo-dev-5a18d-authRole",
+      "UnauthRoleArn": "arn:aws:iam::471112985974:role/amplify-escuelashivaismo-dev-5a18d-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::471112985974:role/amplify-escuelashivaismo-dev-5a18d-authRole",
+      "Region": "eu-west-3",
+      "DeploymentBucketName": "amplify-escuelashivaismo-dev-5a18d-deployment",
+      "UnauthRoleName": "amplify-escuelashivaismo-dev-5a18d-unauthRole",
+      "StackName": "amplify-escuelashivaismo-dev-5a18d",
+      "StackId": "arn:aws:cloudformation:eu-west-3:471112985974:stack/amplify-escuelashivaismo-dev-5a18d/900b02e0-3d30-11ef-ad0c-06f295a39217",
+      "AmplifyAppId": "daud4ul19iz2w"
+    }
+  }
+}
