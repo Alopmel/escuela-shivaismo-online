@@ -205,7 +205,8 @@ const CircleMenu: React.FC = () => {
         const transformStyle: string = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
 
         return (
-          <motion.div className={styles.navbar}
+          <motion.div 
+            // className={sltyles.navbar}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -233,7 +234,8 @@ const CircleMenu: React.FC = () => {
           const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
           return (
-            <motion.div className={styles.navbar}
+            <motion.div 
+            // className={styles.navbar}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -257,7 +259,8 @@ const CircleMenu: React.FC = () => {
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
             return (
-              <motion.div className={styles.navbar}
+              <motion.div 
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -298,7 +301,7 @@ const CircleMenu: React.FC = () => {
             return (
               <motion.div 
                 data-value={item} 
-                className={styles.navbar}
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -338,7 +341,8 @@ const CircleMenu: React.FC = () => {
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
     
             return (
-              <motion.div className={styles.navbar}
+              <motion.div 
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -346,7 +350,8 @@ const CircleMenu: React.FC = () => {
                   enter: { duration: 1 },
                   exit: { duration: 0.5 }
                 }} 
-                key={index} className={styles['nav-item']} 
+                key={index} 
+                className={styles['nav-item']} 
                 style={{ transform: transformStyle, width: '80px', height: '80px' }} 
                 onClick={() => handleGoTo(item)}>
                   <a href="#" className={styles['nav-link']}>
@@ -363,7 +368,7 @@ const CircleMenu: React.FC = () => {
   
           return (
             <motion.div 
-              className={styles.navbar}
+              // className={styles.navbar}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -405,7 +410,8 @@ const CircleMenu: React.FC = () => {
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
     
             return (
-              <motion.div className={styles.navbar}
+              <motion.div 
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -430,7 +436,8 @@ const CircleMenu: React.FC = () => {
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
             return (
-              <motion.div className={styles.navbar}
+              <motion.div 
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -476,7 +483,8 @@ const CircleMenu: React.FC = () => {
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
             return (
-              <motion.div className={styles.navbar}
+              <motion.div 
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -505,7 +513,8 @@ const CircleMenu: React.FC = () => {
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
             return (
-              <motion.div className={styles.navbar}
+              <motion.div 
+                // className={styles.navbar}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

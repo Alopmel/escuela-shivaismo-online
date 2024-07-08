@@ -1,11 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SIDENAV_ITEMS } from './constants';
 import { SideNavItem } from './types';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { handleSignOut } from "@/lib/cognitoActions";
+
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -26,14 +27,14 @@ const SideNav = () => {
     }
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (dragging) {
       setPosition({
         x: e.clientX - initialPosition.x,
         y: e.clientY - initialPosition.y
       });
     }
-  };
+  }, [dragging, initialPosition]);
 
   const handleMouseUp = () => {
     setDragging(false);
@@ -51,7 +52,7 @@ const SideNav = () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragging]);
+  }, [dragging, handleMouseMove]);
 
   const sidebarWidth = isOpen ? 'w-60' : 'w-16';
 
@@ -74,9 +75,9 @@ const SideNav = () => {
               <MenuItem key={idx} item={item} isOpen={isOpen} />
             ))}
             <form action={handleSignOut}>
-                <button type='submit'>
-                    Salir
-                </button>
+              <button type='submit'>
+                Salir
+              </button>
             </form>
           </div>
         </div>
@@ -101,8 +102,6 @@ const MenuItem = ({ item, isOpen }: { item: SideNavItem, isOpen: boolean }) => {
         </span>
         {isOpen && <span className="text-xl ml-2">{item.title}</span>}
       </div>
-      
-
     </Link>
   );
 };
