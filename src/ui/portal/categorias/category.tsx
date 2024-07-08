@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Link from 'next/link'; // Importa Link de next para crear enlaces
-import { useSearchParams } from 'next/navigation'; // Asegúrate de que la importación sea correcta
+import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import CardComponent from './card-component';
 
@@ -24,42 +24,24 @@ const pageTransition = {
 };
 
 const Category: React.FC = () => {
-  const [hovered, setHovered] = useState(false);
+  const [hoveredItems, setHoveredItems] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  
+  const router = useRouter()
+  const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
 
-  // Obtener los parámetros de búsqueda usando useSearchParams
-  const searchParams = useSearchParams();
-
-  // Convertir los parámetros de búsqueda en un objeto URLSearchParams
   const params = new URLSearchParams(searchParams.toString());
 
+  // Obtener los valores de los parámetros y eliminar los que están vacíos
   const item = params.get('item') || '';
-  const firstClickedContent = params.get('firstClickedContent') || '';
-  const secondClickedContent = params.get('secondClickedContent') || '';
-  const thirdClickedContent = params.get('thirdClickedContent') || '';
-  const fourthClickedContent = params.get('fourthClickedContent') || '';
-
-  // Construir el breadcrumb con enlaces
-  const breadcrumb = (
-    <>
-      <Link href={`/?item=${firstClickedContent}`}>
-        {firstClickedContent}
-      </Link>
-      {' / '}
-      <Link href={`/?item=${secondClickedContent}`}>
-        {secondClickedContent}
-      </Link>
-      {' / '}
-      <Link href={`/?item=${thirdClickedContent}`}>
-        {thirdClickedContent}
-      </Link>
-      {' / '}
-      <Link href={`/?item=${fourthClickedContent}`}>
-        {fourthClickedContent}
-      </Link>
-    </>
-  );
-
+  console.log(item)
+  const items = [
+    params.get('firstClickedContent'),
+    params.get('secondClickedContent'),
+    params.get('thirdClickedContent'),
+    params.get('fourthClickedContent'),
+  ].filter(Boolean) as string[];
+  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -73,10 +55,20 @@ const Category: React.FC = () => {
     };
   }, []);
 
-  const handleBreadcrumbClick = () => {
-    // Implementa la lógica para el breadcrumb si es necesario
+  const handleMouseEnter = (item: string) => {
+    setHoveredItems(prevItems => [...prevItems, item]);
   };
 
+  const handleMouseLeave = (item: string) => {
+    setHoveredItems(prevItems => prevItems.filter(i => i !== item));
+  };
+  const handleGoTo = (item: string) => {
+    const params = new URLSearchParams({
+      item: item,
+    });
+
+    router.push(`/portal?${params.toString()}`);
+  };
   return (
     <motion.div
       initial="hidden"
@@ -94,22 +86,32 @@ const Category: React.FC = () => {
       >
         {item}
       </h1>
-      <p
-        style={{
-          marginTop: '-29px',
-          marginLeft: isMobile ? '12px' : '97px',
-          marginBottom: '50px',
-          color: hovered ? 'rgb(150, 150, 150)' : 'rgb(198, 198, 198)',
-          fontSize: 16,
-          cursor: 'pointer',
-        }}
-        onClick={handleBreadcrumbClick}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        {breadcrumb}
-      </p>
-      <CardComponent item={item} search={`?item=${item}`} />
+      
+      {/* Aquí puedes crear el breadcrumb dinámico */}
+      <nav style={{ marginBottom: '20px', marginLeft: '94px', whiteSpace: 'nowrap', display: 'flex'}}>
+        {items.map((item, index) => (
+          <span key={item}>
+            <span 
+      
+              style={{
+                color: hoveredItems.includes(item) ? 'white' : '#c6c6c6',
+                textDecoration: 'none',
+                transition: 'color 0.3s ease',
+                marginRight: '5px',
+              }}
+              onMouseEnter={() => handleMouseEnter(item)}
+              onMouseLeave={() => handleMouseLeave(item)}  
+              onClick={() => handleGoTo(item)}
+            >
+              {item}
+              {index < items.length - 1 && <span style={{ color: '#c6c6c6' }}> / </span>}
+            </span>
+            
+          </span>
+        ))}
+      </nav>
+
+      <CardComponent item={item} search={`?item=${items[0]}`} /> {/* Ejemplo para usar un componente CardComponent */}
     </motion.div>
   );
 };

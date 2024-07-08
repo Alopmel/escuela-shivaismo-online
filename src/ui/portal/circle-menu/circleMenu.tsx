@@ -1,12 +1,11 @@
 'use client'
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import styles from './circleMenu.module.css';
 // import { useRouter } from 'next/router';
-import { useRouter } from 'next/navigation'
+import { useRouter , useSearchParams } from 'next/navigation'
 
 import { motion, AnimatePresence } from 'framer-motion';
-
-
+  
     const pageTransition = {
       hidden: {
         opacity: 0,
@@ -74,18 +73,62 @@ const CircleMenu: React.FC = () => {
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
   const [size, setSize] = useState('400px');
   const [fontSize, setFontSize] = useState('36px');
-
-//   const router = useRouter();
+  
   const router = useRouter()
+  const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
+  const params = new URLSearchParams(searchParams.toString());
+  const breadcrumbItem = params.get('item') || '';
+
+  const navItems = ['Enseñanza de la vía', 'Aplicación en tu vida', 'Prácticas en diferido', 'Chamanismo', 'Último material subido', 'Empieza por aquí'];
+  const empiezaNavItems = ['Fechas conferencias y recursos', 'Conceptos importantes y practicas basicas'];
+  const ensenanzaNavItems = ['Comentarios de sutras', 'Conceptos de apoyo'];
+  const aplicacionNavItems = ['Preguntas y respuestas', 'Conferencias Temáticas'];
+  const prácticaNavItems = ['Tandava y práctica con Mar y Juanjo', 'Yutkis', 'Otras prácticas', 'Visualizaciones'];
+  const comentarioNavItems = ['Shiva Sutras: La Cosmovisión', 'Vijñana Bhairava: La Práctica', 'Los 36 Tattvas'];
+  const shivasutrasNavItems = ['1 Despertar', '2 Despertar', '3 Despertar'];
+  const tattvasNavItems = ['Spandakarika', 'Pratiabhidjaridayam'];
+  const conceptoNavItems = ['Sat Sang', 'Textos en PDF', ' Libros Recomendados', 'Pruebas'];
+  const visualizacionNavItems = ['Kali', 'Masyendra'];
+
+  useEffect(() => {
+    if (breadcrumbItem) {
+      if (navItems.includes(breadcrumbItem)) {
+        handleClick();
+      } else if (empiezaNavItems.includes(breadcrumbItem)) {
+        handleItemClick(breadcrumbItem);
+      } else if (ensenanzaNavItems.includes(breadcrumbItem)) {
+        handleClick();
+        handleItemClick(breadcrumbItem);
+        handleSubItemClick(breadcrumbItem);
+      } else if (aplicacionNavItems.includes(breadcrumbItem)) {
+        handleSubItemClick(breadcrumbItem);
+      } else if (prácticaNavItems.includes(breadcrumbItem)) {
+        handleSubItemClick(breadcrumbItem);
+      } else if (comentarioNavItems.includes(breadcrumbItem)) {
+        handleClick();
+        handledDoubleSubItemClick(breadcrumbItem);
+      } else if (shivasutrasNavItems.includes(breadcrumbItem)) {
+        handledDoubleSubItemClick(breadcrumbItem);
+      } else if (tattvasNavItems.includes(breadcrumbItem)) {
+        handledDoubleSubItemClick(breadcrumbItem);
+      } else if (conceptoNavItems.includes(breadcrumbItem)) {
+        handledDoubleSubItemClick(breadcrumbItem);
+      } else if (visualizacionNavItems.includes(breadcrumbItem)) {
+        handledDoubleSubItemClick(breadcrumbItem);
+      }
+    }
+  }, [breadcrumbItem]);
+  
   const handleClick = () => {
+    console.log()
     setIsVisible(!isVisible);
     setExtraItemsVisible(false);
     setClickedContent('');
     setIsAnimating(!isAnimating);
     setFontSize(isAnimating ? '17px' : '36px');
     setSize(isAnimating ? '200px' : '400px');
-    let newSecondClickedContent = 'Escuela de Shivaismo';
-    setFirstClickedContent(newSecondClickedContent)
+     let newSecondClickedContent = 'Escuela de Shivaismo';
+     setFirstClickedContent(newSecondClickedContent)
     console.log('firstClickedContent ' + firstClickedContent)
   };
 
@@ -115,6 +158,7 @@ const CircleMenu: React.FC = () => {
     console.log('setClickedContent' + clickedContent)
 
   };
+
   const handleGoTo = (item: string) => {
     const finishItem = item;
     const params = new URLSearchParams({
@@ -127,18 +171,6 @@ const CircleMenu: React.FC = () => {
 
     router.push(`/portal/categorias?${params.toString()}`);
   };
-
-
-  const navItems = ['Enseñanza de la vía', 'Aplicación en tu vida', 'Prácticas en diferido', 'Chamanismo', 'Último material subido', 'Empieza por aquí'];
-  const empiezaNavItems = ['Fechas conferencias y recursos', 'Conceptos importantes y practicas basicas'];
-  const ensenanzaNavItems = ['Comentarios de sutras', 'Conceptos de apoyo'];
-  const aplicacionNavItems = ['Preguntas y respuestas', 'Conferencias Temáticas'];
-  const prácticaNavItems = ['Tandava y práctica con Mar y Juanjo', 'Yutkis', 'Otras prácticas', 'Visualizaciones'];
-  const comentarioNavItems = ['Shiva Sutras: La Cosmovisión', 'Vijñana Bhairava: La Práctica', 'Los 36 Tattvas'];
-  const shivasutrasNavItems = ['1 Despertar', '2 Despertar', '3 Despertar'];
-  const tattvasNavItems = ['Spandakarika', 'Pratiabhidjaridayam'];
-  const conceptoNavItems = ['Sat Sang', 'Textos en PDF', ' Libros Recomendados', 'Pruebas'];
-  const visualizacionNavItems = ['Kali', 'Masyendra'];
 
   return (
   <motion.div style={{ 
@@ -217,12 +249,9 @@ const CircleMenu: React.FC = () => {
             key={index} 
             className={`${styles['nav-item']} ${styles['transformed-item']}`}
             style={{ transform: transformStyle , width: '150px', height: '150px'}} 
-            onClick={() =>( item === 'Chamanismo' ||  item === 'Último material subido' ) ? handleGoTo(item) : handledDoubleSubItemClick(item)}
+            onClick={() =>( item === 'Chamanismo' ||  item === 'Último material subido' ) ? handleGoTo(item) : handleItemClick(item)}
             >
-
-              <a href="#" className={styles['nav-link']}>
-               {item}
-              </a>
+              {item}
           </motion.div>
         );
         })}
@@ -246,9 +275,9 @@ const CircleMenu: React.FC = () => {
             key={index} className={styles['nav-item']} 
             style={{ transform: transformStyle, width: '100px', height: '100px' }} 
             onClick={() => handleGoTo(item)}>
-              <a href="#" className={styles['nav-link']}>
+              
                 {item}
-              </a>
+              
             </motion.div>
           );
         })}        
@@ -272,9 +301,9 @@ const CircleMenu: React.FC = () => {
                 className={styles['nav-item']} 
                 style={{ background: '#9b51e094', transform: transformStyle, width: '100px', height: '100px' }} 
                 onClick={() => handleSubItemClick(item)}>
-                <a href="#" className={styles['nav-link']}>
+                
                 {item}
-                </a>
+                
               </motion.div>
             );
           })}
@@ -314,9 +343,9 @@ const CircleMenu: React.FC = () => {
                 style={{ background: '#a161dd77' ,transform: transformStyle, width: '100px', height: '100px' }} 
                 onClick={() => item === 'Vijñana Bhairava: La Práctica' ? handleGoTo(item) : handledDoubleSubItemClick(item)}
                 >       
-                <a href="#" className={styles['nav-link']}>
+                
                   {item}
-                  </a>
+                  
               </motion.div>
             );
           })}
@@ -354,9 +383,9 @@ const CircleMenu: React.FC = () => {
                 className={styles['nav-item']} 
                 style={{ transform: transformStyle, width: '80px', height: '80px' }} 
                 onClick={() => handleGoTo(item)}>
-                  <a href="#" className={styles['nav-link']}>
+                  
                    {item}
-                  </a>
+                  
               </motion.div>
             );
           })}
@@ -380,9 +409,9 @@ const CircleMenu: React.FC = () => {
               className={styles['nav-item']} 
               style={{ transform: transformStyle, width: '80px', height: '80px' }} 
               onClick={() => handleGoTo(item)}>
-                <a href="#" className={styles['nav-link']}>
+                
                 {item}
-                </a>
+                
             </motion.div>
           );
         })}
@@ -422,9 +451,9 @@ const CircleMenu: React.FC = () => {
                 key={index} className={styles['nav-item']} 
                 style={{ transform: transformStyle, width: '100px', height: '100px' }} 
                 onClick={() => handleGoTo(item)}>
-                  <a href="#" className={styles['nav-link']}>
+                  
                   {item}
-                  </a>
+                  
               </motion.div>
             );
           })}
@@ -453,9 +482,9 @@ const CircleMenu: React.FC = () => {
                   width: '100px', 
                   height: '100px' }} 
                   onClick={() => handleGoTo(item)}>
-                  <a href="#" className={styles['nav-link']}>
+                  
                     {item}
-                  </a>
+                  
               </motion.div>
             );
           })}
@@ -500,9 +529,9 @@ const CircleMenu: React.FC = () => {
                   height: '100px' }} 
                   onClick={() => item === 'Visualizaciones' ? handledDoubleSubItemClick(item) : handleGoTo(item)}
                   >
-                  <a href="#" className={styles['nav-link']}>
+                  
                     {item}
-                  </a>
+                  
               </motion.div>
             );
           })}
@@ -524,9 +553,9 @@ const CircleMenu: React.FC = () => {
                 }} key={index} 
                 className={styles['nav-item']} style={{ background: '#a161dd77' , transform: transformStyle, width: '100px', height: '100px' }} 
                 onClick={() => handleGoTo(item)}>
-                <a href="#" className={styles['nav-link']}>
+                
                 {item}
-                </a>
+                
               </motion.div>
             );
           })}        

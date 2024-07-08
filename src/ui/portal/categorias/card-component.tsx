@@ -10,6 +10,7 @@ import styles from './cardComponente.module.css';
 
 interface CardComponentProps {
   item: string;
+  search: string;
 }
 
 type KeyItem = {
@@ -35,7 +36,7 @@ const pageTransition = {
   }
 };
 
-const CardComponent: React.FC<CardComponentProps> = ({ item }) => {
+const CardComponent: React.FC<CardComponentProps> = ({ item, search }) => {
   const { keys } = useBucket();
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
   const [videoTitles, setVideoTitles] = useState<string[]>([]);
@@ -49,10 +50,13 @@ const CardComponent: React.FC<CardComponentProps> = ({ item }) => {
 
     const fetchVideoData = () => {
       try {
-        const upperCaseItem = item.toUpperCase();
+        const upperCaseItem = item.toUpperCase(); 
+        console.log(item)
+        console.log('item upperCaseItem' + upperCaseItem)      
         const filteredKey = keys.filter((keyItem: KeyItem) => keyItem.Key.includes(upperCaseItem));
         const filteredKeys = filteredKey.filter((keyItem: KeyItem) => keyItem.Key.includes('.mp4'));
         const urls = filteredKeys.map((keyItem: KeyItem) => `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`);
+        console.log()
         const titles = filteredKeys.map((keyItem: KeyItem) => {
           const parts = keyItem.Key.split('/');
           return parts[parts.length - 1].replace('.mp4', '');
