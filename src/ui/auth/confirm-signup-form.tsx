@@ -18,7 +18,7 @@ export default function ConfirmSignUpForm() {
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please confirm your account.
+          Por favor, confirma tu email.
         </h1>
         <div className="w-full">
           <div>
@@ -34,7 +34,7 @@ export default function ConfirmSignUpForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="Inserta tu email"
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -45,7 +45,7 @@ export default function ConfirmSignUpForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="code"
             >
-              Code
+              Código
             </label>
             <div className="relative">
               <input
@@ -53,7 +53,7 @@ export default function ConfirmSignUpForm() {
                 id="code"
                 type="text"
                 name="code"
-                placeholder="Enter code"
+                placeholder="Inserta el código"
                 required
                 minLength={6}
               />
@@ -87,7 +87,7 @@ function ConfirmButton() {
 
   return (
     <Button className="mt-4 w-full" aria-disabled={pending}>
-      Confirm <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Confirma <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }

@@ -1,0 +1,74 @@
+.navbar {
+  position: absolute;
+  cursor: pointer;
+}
+
+.nav-item {
+  position: absolute;
+  width: 150px; 
+  height: 150px; 
+  border-radius: 50%;
+  background: #9b51e0bc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  transform: translate(50%, 50%);
+}
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 500
+}
+
+.linkCentral{
+  text-decoration: none;
+  color: white;
+  text-align: center;
+  font-weight: 600;
+}
+
+.pTittle{
+  font-size: 16px;
+  color: white;
+} 
+
+/* Navbar.module.css */
+.circleDiv {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  background: #9b51e0bc;
+  color: white;
+}
+
+.menuItem {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #9b51e0bc;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.3s;  
+}

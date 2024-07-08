@@ -22,7 +22,7 @@ export default function SendVerificationCode() {
         aria-disabled={pending}
         formAction={dispatch}
       >
-        Resend Verification Code{" "}
+        Reenviar código de verificación{" "}
         <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
       </Button>
       <div className="flex h-8 items-end space-x-1">

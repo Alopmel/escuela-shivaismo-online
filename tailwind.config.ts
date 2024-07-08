@@ -29,5 +29,8 @@ const config: Config = {
     },
   },
   plugins: [require("@tailwindcss/forms")],
+  corePlugins: {
+    preflight:false,  // Desactivar para permitir clases de configuración global
+  }
 };
 export default config;

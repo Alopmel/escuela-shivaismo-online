@@ -17,13 +17,12 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-image: url(/fondo_1.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 @layer utilities {
@@ -31,3 +30,211 @@ body {
     text-wrap: balance;
   }
 }
+
+/*
+ul{
+  list-style: none;
+  line-height: 1.8;
+  font-weight: 400;
+}
+
+.linkTo{
+  text-decoration: none;
+  vertical-align: middle;
+  color: #8E3C6D;
+}
+
+.site{
+  display: flex;
+  align-items: center;
+  justify-content: center ;
+  height: 100vh;
+}
+
+.container{
+  max-width: 480px;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.nav{
+  position: relative;
+  display:flex;
+  justify-content: flex-end;
+  max-width: 480px;
+  width: 100%;
+  height: 500px;
+}
+
+nav .link{
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  margin-right: -20px;  
+  right: 0;
+  cursor: pointer;
+  z-index: 99;
+}
+
+nav .link::before{
+  content: '';
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  /* background-image: linear-gradient(to right, #8E3C6D, transparent); */
+ /* background-image: linear-gradient(to left, transparent 25%, #8E3C6D);
+  border-radius: 50%;
+  transform: scale(2);
+  z-index: -2;
+
+}
+
+nav .link::after{
+  content: '';
+  position: absolute;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  /* background: linear-gradient(to right, #8E3C6D, transparent); */
+ /* background-color: #AD8BBE;
+  border-radius: 50%;
+  transform: scale(2);
+  z-index: -1;
+  opacity: .3;
+  transition: background-color .3s;
+}
+
+.link:hover::after{
+  opacity: .9;
+}
+
+
+nav ul.submenu{
+  position: absolute;
+  top: 0;
+  right: 4em;
+  width: 350px;
+  height: 500px;
+  transform: rotate(90deg);
+  visibility: hidden;
+  transition: visibility .1s;
+}
+
+nav > input:checked ~ ul {
+  visibility: inherit;
+}
+nav > input:checked ~ ul li{
+  transform: rotate(calc((-180deg / 6) * var(--item))) translateX(0);
+  opacity: 1;
+}
+
+nav ul.submenu li{
+  --item: 1;
+  position: absolute;
+  width: 175px;
+  height: 60px;
+  transform: rotate(calc((-180deg / 6) * var(--item))) translateX(157px);
+  transform-origin: right center;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: transform .7s, opacity .2s;
+}
+
+.linkTo{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+nav ul li:nth-child(2){
+  --item: 2;
+}
+nav ul li:nth-child(3){
+  --item: 3;
+}
+nav ul li:nth-child(4){
+  --item: 4;
+}
+nav ul li:nth-child(5){
+  --item: 5;
+}
+
+.menuIcon{
+  font-size:  20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  background-color: #8E3C6D;
+  color: white;
+  border: 2px solid transparent;
+  transition: border .3s, background-color .3s;
+}
+
+.menuIcon:hover{
+  background-color: transparent;
+  border-color: #8E3C6D;
+}
+
+nav ul li span{
+  position: absolute;
+  right: calc(100% + 1rem);
+  width: 150px;
+  text-align:  right;
+  font-size: 13px;
+  padding: 0 10px;
+  border-radius: 25px;
+  background-image: linear-gradient(to right, transparent 25%, #8E3C6D);
+  z-index: -1;
+  transform: translateX(50px);
+  opacity: 0;
+  transition: color .3s, transform .3s .4s, opacity .2s 4.s;
+}
+
+nav > input:checked ~ul li .linkTo span{
+  transform: translateX(0);
+  opacity: 1;
+}
+nav ul li span::before{
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  border-radius: 25px;
+  background-color: #AD8BBE;
+  z-index: -1;
+  transform: background-color .3s;
+}
+
+.linkTo:hover span::before{
+  background-color: transparent;
+}
+
+.linkTo:hover span{
+  color: white;
+} */
+/* Rotación de los iconos del menu */
+
+/* 
+li:nth-child(1) .linkTo .menuIcon{
+  transform: rotate(292deg);
+}
+
+li:nth-child(2) .linkTo .menuIcon{
+  transform: rotate(315deg);
+}
+
+li:nth-child(4) .linkTo .menuIcon{
+  transform: rotate(22deg);
+}
+
+li:nth-child(5) .linkTo .menuIcon{
+  transform: rotate(45deg);
+} */
