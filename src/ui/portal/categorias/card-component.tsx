@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext'; 
 import ReactPlayer from 'react-player';
@@ -15,6 +16,7 @@ type KeyItem = {
   Key: string;
   // Incluye aquí otras propiedades si las hay
 };
+
 const pageTransition = {
   hidden: {
     opacity: 0,
@@ -41,16 +43,17 @@ const CardComponent: React.FC<CardComponentProps> = ({ item }) => {
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
   const [filteredKeys, setFilteredKeys] = useState<KeyItem[]>([]);
+
   useEffect(() => {
     if (!item) return;
 
     const fetchVideoData = () => {
       try {
         const upperCaseItem = item.toUpperCase();
-        const filteredKey = keys.Contents.filter(keyItem => keyItem.Key.includes(upperCaseItem));
-        const filteredKeys = filteredKey.filter(keyItem => keyItem.Key.includes('.mp4'));
-        const urls = filteredKeys.map(keyItem => `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`);
-        const titles = filteredKeys.map(keyItem => {
+        const filteredKey = keys.filter((keyItem: KeyItem) => keyItem.Key.includes(upperCaseItem));
+        const filteredKeys = filteredKey.filter((keyItem: KeyItem) => keyItem.Key.includes('.mp4'));
+        const urls = filteredKeys.map((keyItem: KeyItem) => `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`);
+        const titles = filteredKeys.map((keyItem: KeyItem) => {
           const parts = keyItem.Key.split('/');
           return parts[parts.length - 1].replace('.mp4', '');
         });

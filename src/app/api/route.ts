@@ -8,7 +8,7 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3();
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+// const dynamoDB = new AWS.DynamoDB.DocumentClient();
 export async function GET() {
   const bucketName = process.env.BUCKET_NAME;
 

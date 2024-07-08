@@ -108,6 +108,6 @@ const CardProfile: React.FC = () => {
   );
 };
 
-const getUrls = (keys: KeyItem[]) => keys.Contents.map(item => ({ url: `https://dz9uj6zxn56ls.cloudfront.net/${item.Key}`, key: item.Key }));
+const getUrls = (keys: KeyItem[]) => keys.map(item => ({ url: `https://dz9uj6zxn56ls.cloudfront.net/${item.Key}`, key: item.Key }));
 
 export default CardProfile;
