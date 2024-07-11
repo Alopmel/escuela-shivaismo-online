@@ -1,5 +1,4 @@
-"use client";
-
+'use client'
 import { useState, useEffect } from "react";
 import {
   AtSymbolIcon,
@@ -9,51 +8,52 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleResetPassword } from "@/lib/cognitoActions";
-import { motion } from 'framer-motion';
+import { motion} from 'framer-motion'; // Importa motion y CSSProperties desde framer-motion
+import { CSSProperties } from "react";
 import Image from 'next/image';
 
-  // Animation for change the page
-  const pageTransition = {
-    hidden: {
-      opacity: 0,
-    },
-    show: {
-      opacity: 1,
-      transition: {
-        duration: 0.5
-      }
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        duration: 0.5
-      }
+// Animation for change the page
+const pageTransition = {
+  hidden: {
+    opacity: 0,
+  },
+  show: {
+    opacity: 1,
+    transition: {
+      duration: 0.5
     }
-  };
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.5
+    }
+  }
+};
 
-  // Animation for the levitating effect
-  const levitateAnimation = {
-    animate: {
-      y: ["0%", "3%", "0%"],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+// Animation for the levitating effect
+const levitateAnimation = {
+  animate: {
+    y: ["0%", "3%", "0%"],
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      ease: "easeInOut"
     }
-  };
+  }
+};
 
-  // Animation for the shadow effect
-  const shadowAnimation = {
-    animate: {
-      scale: [1, 1.1, 1], // The shadow gets bigger and smaller
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+// Animation for the shadow effect
+const shadowAnimation = {
+  animate: {
+    scale: [1, 1.1, 1], // The shadow gets bigger and smaller
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
     }
-  };  
+  }
+};
 
 export default function SubmitResetPasswordFrom() {
   const [errorMessage, dispatch] = useFormState(handleResetPassword, undefined);
@@ -77,7 +77,7 @@ export default function SubmitResetPasswordFrom() {
     return () => window.removeEventListener('resize', checkWindowSize);
   }, []);
 
-  const containerStyle = {
+  const containerStyle: CSSProperties = {
     borderRadius: '50%',
     background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
     display: 'flex',
@@ -90,7 +90,7 @@ export default function SubmitResetPasswordFrom() {
     height: isDesktop ? '400px' : '345px'
   };
 
-  const imageStyle = {
+  const imageStyle: CSSProperties = {
     marginBottom: isDesktop ? '30px' : '15px',
     marginTop: isDesktop ? '50px' : '25px'
   };

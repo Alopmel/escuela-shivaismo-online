@@ -12,6 +12,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { handleConfirmResetPassword } from "@/lib/cognitoActions";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { CSSProperties } from "react";
 
   // Animation for change the page
   const pageTransition = {
@@ -55,6 +56,7 @@ import Image from 'next/image';
       }
     }
   };  
+
 export default function ConfirmResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(
     handleConfirmResetPassword,
@@ -81,7 +83,7 @@ export default function ConfirmResetPasswordForm() {
     return () => window.removeEventListener('resize', checkWindowSize);
   }, []);
 
-  const containerStyle = {
+  const containerStyle: CSSProperties = {
     borderRadius: '50%',
     background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
     display: 'flex',
@@ -94,7 +96,7 @@ export default function ConfirmResetPasswordForm() {
     height: isDesktop ? '400px' : '345px'
   };
 
-  const imageStyle = {
+  const imageStyle: CSSProperties = {
     marginBottom: isDesktop ? '30px' : '15px',
     marginTop: isDesktop ? '50px' : '25px'
   };

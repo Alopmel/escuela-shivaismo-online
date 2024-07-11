@@ -151,7 +151,7 @@ const CircleMenuMobile = () => {
   };
 
   const circleDivStyle = isOpen
-    ? { transform: 'translate(-128%, -53%)', textAlign: 'center' as 'center'}
+    ? { transform: 'translate(-110%, -53%)', textAlign: 'center' as 'center'}
     : {};
 
   return (

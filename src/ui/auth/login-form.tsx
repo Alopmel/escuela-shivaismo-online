@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // Importa CSSProperties desde framer-motion
+import { CSSProperties } from "react";
 import Image from 'next/image';
 import Link from 'next/link';
 import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
@@ -68,7 +69,7 @@ export default function LoginForm() {
     }
   };
 
-  const containerStyle = {
+  const containerStyle: CSSProperties = {
     borderRadius: '50%',
     background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
     display: 'flex',
@@ -81,7 +82,7 @@ export default function LoginForm() {
     height: isDesktop ? '400px' : '345px'
   };
 
-  const imageStyle = {
+  const imageStyle: CSSProperties = {
     marginBottom: isDesktop ? '30px' : '15px',
     marginTop: isDesktop ? '50px' : '25px'
   };
