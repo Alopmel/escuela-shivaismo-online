@@ -26,7 +26,11 @@ const Dashboard = () => {
     useEffect(() => {
       checkWindowSize();
     }, [isDesktop])
-
+  
+  //when user resize the window
+  if (typeof window !== 'undefined'){
+    window.addEventListener('resize', checkWindowSize)
+  }
   // useEffect(() => {
   //   const checkMobile = () => {
   //     const mobile = window.innerWidth <= 768;
