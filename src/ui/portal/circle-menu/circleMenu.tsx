@@ -1,10 +1,11 @@
 'use client'
-import { useState , useEffect } from 'react';
-import styles from './circleMenu.module.css';
+import { useState , useEffect } from 'react'
+import styles from './circleMenu.module.css'
 // import { useRouter } from 'next/router';
 import { useRouter , useSearchParams } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
+import useAuthUser from '@/app/hooks/use-auth-user'; // Importar el hook
 
-import { motion, AnimatePresence } from 'framer-motion';
   
     const pageTransition = {
       hidden: {
@@ -78,6 +79,8 @@ const CircleMenu: React.FC = () => {
   const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
   const params = new URLSearchParams(searchParams.toString());
   const breadcrumbItem = params.get('item') || '';
+  const user = useAuthUser(); // Obtener el nombre del usuario logeado
+
 
   const navItems = ['Enseñanza de la vía', 'Aplicación en tu vida', 'Prácticas en diferido', 'Chamanismo', 'Último material subido', 'Empieza por aquí'];
   const empiezaNavItems = ['Fechas conferencias y recursos', 'Conceptos importantes y practicas basicas'];
@@ -117,7 +120,8 @@ const CircleMenu: React.FC = () => {
   }, [breadcrumbItem]);
   
   const handleClick = () => {
-    console.log()
+
+    console.log(user)
     setIsVisible(!isVisible);
     setExtraItemsVisible(false);
     setClickedContent('');

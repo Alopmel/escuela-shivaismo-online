@@ -5,19 +5,10 @@ export default function Notificaion() {
 
 
   return (
-    <>
-        <Link  href="/portal">
-            <Image src="/logo_login.png" alt="Logo" width={100} height={100} priority className="mt-1" />
-        </Link>        
-        <h1
-            style={{
-            textAlign: 'center',
-            color: 'rgb(251, 251, 251)',
-            fontSize: '41px', // Cambiado el fontSize a formato string
-            }}
-        >
+    <>     
+      <h1 className="mt-28 md:mt-32 text-[31px] md:text-[41px] ml-12 md:ml-20 text-white">
             Notificaciones
         </h1>
-        </>
+    </>
   );
 }

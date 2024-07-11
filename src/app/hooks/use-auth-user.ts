@@ -23,7 +23,6 @@ export default function useAuthUser() {
       // @ts-ignore
       user.isAdmin = Boolean(groups && groups.includes("Admins"));
       setUser(user);
-      console.log(user)
     }
 
     getUser();

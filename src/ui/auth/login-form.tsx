@@ -64,6 +64,7 @@ export default function LoginForm() {
   const handleInputFocus = () => {
     setIsAnimating(false);
   };
+  
   return (
     <motion.div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
       initial="hidden"
