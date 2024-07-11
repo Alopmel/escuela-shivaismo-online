@@ -4,31 +4,52 @@ import CircleMenu from '@/ui/portal/circle-menu/circleMenu';
 import CircleMenuMobile from '@/ui/portal/circle-menu/circleMenuMobile';
 
 const Dashboard = () => {
+  const [ isDesktop, setIsDesktop ] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth <= 768;
-      console.log(`Ancho de pantalla: ${window.innerWidth}, es móvil: ${mobile}`);
-      setIsMobile(mobile);
-    };
+  const checkWindowSize = () => {
+    let windowWidth = 0;
+    if (typeof window !== 'undefined') {
+      windowWidth = window.innerWidth;
+    }
+    if (windowWidth >= 1024) { 
+      setIsDesktop(true)
+      console.log('Destop es true ' + isDesktop)
+      console.log('windowWidth ' + windowWidth)
+    } else {
+      setIsDesktop(false)
+      console.log('Destop es false ' + isDesktop)
+      console.log('windowWidth ' + windowWidth)
+    }
+  }
+  // logic when user first load the page
+    useEffect(() => {
+      checkWindowSize();
+    }, [isDesktop])
 
-    checkMobile(); // Chequea el tamaño de la pantalla al cargar el componente
+  // useEffect(() => {
+  //   const checkMobile = () => {
+  //     const mobile = window.innerWidth <= 768;
+  //     console.log(`Ancho de pantalla: ${window.innerWidth}, es móvil: ${mobile}`);
+  //     setIsMobile(mobile);
+  //   };
 
-    const handleResize = () => {
-      checkMobile(); // Actualiza el estado al redimensionar la ventana
-    };
+  //   checkMobile(); // Chequea el tamaño de la pantalla al cargar el componente
 
-    window.addEventListener('resize', handleResize);
+  //   const handleResize = () => {
+  //     checkMobile(); // Actualiza el estado al redimensionar la ventana
+  //   };
 
-    return () => {
-      window.removeEventListener('resize', handleResize); // Limpia el event listener al desmontar el componente
-    };
-  }, []);
+  //   window.addEventListener('resize', handleResize);
+
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize); // Limpia el event listener al desmontar el componente
+  //   };
+  // }, []);
 
   return (
     <>
-      {isMobile ? <CircleMenuMobile /> : <CircleMenu />}
+      {isDesktop ? (<CircleMenu />): (<CircleMenuMobile />)}
     </>
   );
 };

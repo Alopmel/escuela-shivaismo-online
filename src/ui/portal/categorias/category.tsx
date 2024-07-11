@@ -34,14 +34,20 @@ const Category: React.FC = () => {
 
   // Obtener los valores de los parámetros y eliminar los que están vacíos
   const item = params.get('item') || '';
-  console.log(item)
-  const items = [
-    params.get('firstClickedContent'),
-    params.get('secondClickedContent'),
-    params.get('thirdClickedContent'),
-    params.get('fourthClickedContent'),
-  ].filter(Boolean) as string[];
-  
+  console.log('Item cicleMenu' + item)
+  let items: string[] = [];
+  if (params.has('breadcrumb')) {
+    items = JSON.parse(params.get('breadcrumb') || '[]') as string[];
+    console.log(items)
+  } else {
+    items = [
+      params.get('firstClickedContent') || '',
+      params.get('secondClickedContent') || '',
+      params.get('thirdClickedContent') || '',
+      params.get('fourthClickedContent') || '',
+    ].filter(Boolean) as string[];
+  }
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -76,7 +82,7 @@ const Category: React.FC = () => {
       exit="exit"
       variants={pageTransition}
     >
-      <h1 className="mt-28 md:mt-32 text-[31px] md:text-[41px] ml-12 md:ml-20 text-white">
+      <h1 className="mt-28 md:mt-32 text-[31px] md:text-[41px] ml-4 md:ml-20 text-white">
         {item}
       </h1>
       

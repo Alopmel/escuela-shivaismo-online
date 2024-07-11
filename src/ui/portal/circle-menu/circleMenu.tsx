@@ -284,7 +284,7 @@ const CircleMenu: React.FC = () => {
         })}        
       </AnimatePresence>
       <AnimatePresence>
-        {extraItemsVisible && (clickedContent === 'Enseñanza de la vía' || clickedContent === 'Comentarios de sutras' || clickedContent === 'Shiva Sutras: La Cosmovisión' || clickedContent === 'Vijñana Bhairava: La Práctica' || clickedContent === 'Los 36 Tattvas' || clickedContent === 'Conceptos de apoyo'   ) && ensenanzaNavItems.map((item, index) => {
+        {extraItemsVisible && (clickedContent === 'Enseñanza de la vía' || clickedContent === 'Comentarios de sutras' || clickedContent === 'Shiva Sutras: La Cosmovisión' || clickedContent === 'Vijñana Bhairava Tantra: La Práctica' || clickedContent === 'Los 36 Tattvas' || clickedContent === 'Conceptos de apoyo'   ) && ensenanzaNavItems.map((item, index) => {
             const position = index === 0 ? { x: 299, y: -81.545} : { x: 282, y: 100 };
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
@@ -311,7 +311,7 @@ const CircleMenu: React.FC = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {extraSubItemsVisible && (clickedContent === 'Comentarios de sutras' || fourthClickedContent === 'Shiva Sutras: La Cosmovisión' || clickedContent === 'Los 36 Tattvas' || clickedContent === 'Vijñana Bhairava: La Práctica')&& comentarioNavItems.map((item, index) => {
+        {extraSubItemsVisible && (clickedContent === 'Comentarios de sutras' || fourthClickedContent === 'Shiva Sutras: La Cosmovisión' || clickedContent === 'Los 36 Tattvas' || clickedContent === 'Vijñana Bhairava Tantra: La Práctica')&& comentarioNavItems.map((item, index) => {
             let position;
             switch(index) {
               case 0:
@@ -342,7 +342,7 @@ const CircleMenu: React.FC = () => {
                 key={index} 
                 className={styles['nav-item']} 
                 style={{ background: '#a161dd77' ,transform: transformStyle, width: '100px', height: '100px' }} 
-                onClick={() => item === 'Vijñana Bhairava: La Práctica' ? handleGoTo(item) : handledDoubleSubItemClick(item)}
+                onClick={() => item === 'Vijñana Bhairava Tantra: La Práctica' ? handleGoTo(item) : handledDoubleSubItemClick(item)}
                 >       
                 
                   {item}

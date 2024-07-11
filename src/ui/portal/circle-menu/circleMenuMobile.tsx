@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './circleMenu.module.css';
 
@@ -31,7 +31,7 @@ const CircleMenuMobile = () => {
                 { text: '3 DESPERTAR', position: { top: 'calc(50% + 82.378px)', left: 'calc(50% + 14px)' } }
               ]
             },
-            { text: 'Vijñana Bhairava: La Práctica', position: { top: 'calc(50% - 50.622px)', left: 'calc(50% + 98px)' } },
+            { text: 'Vijñana Bhairava Tantra: La Práctica', position: { top: 'calc(50% - 50.622px)', left: 'calc(50% + 98px)' } },
             { text: 'Los 36 Tattvas', position: { top: 'calc(50% + 82.378px)', left: 'calc(50% + 14px)' } }
           ]
         },
@@ -48,7 +48,7 @@ const CircleMenuMobile = () => {
       ]
     },
     {
-      text: 'Aplicación en tu vida', position: { top: 'calc(50% - 109px)', left: 'calc(50% + 153px)' },
+      text: 'Aplicación en tu vida', position: { top: 'calc(50% - 115px)', left: 'calc(50% + 153px)' },
       subItems: [
         {
           text: 'Preguntas y respuestas',
@@ -64,7 +64,7 @@ const CircleMenuMobile = () => {
       text: 'Prácticas en diferido', position: { top: 'calc(50% + 14.6218px)', left: 'calc(50% + 153px)' },
       subItems: [
         {
-          text: 'Tandava con Juanjo y Mar',
+          text: 'Tandava y práctica con Mar y Juanjo',
           position: { top: 'calc(50% - 200.622px)', left: 'calc(50% - 45px)' }
         },
         {
@@ -85,7 +85,7 @@ const CircleMenuMobile = () => {
         }
       ]
     },
-    { text: 'Chamanismo', position: { top: 'calc(50% + 112.6218px)', left: 'calc(50% + 67px)' } },
+    { text: 'Chamanismo', position: { top: 'calc(50% + 112.6218px)', left: 'calc(50% + 72px)' } },
     { text: 'Últimos videos subidos', position: { top: 'calc(142% + 0px)', left: 'calc(50% - 50px)' } },
   ];
 
@@ -97,12 +97,40 @@ const CircleMenuMobile = () => {
   const router = useRouter();
   const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
   const params = new URLSearchParams(searchParams.toString());
+  const breadcrumbItem = params.get('item') || '';
+
+  useEffect(() => {
+    if (breadcrumbItem) {
+      // Buscar el item correspondiente en la lista de items
+      const findItem = (items: MenuItem[], text: string): MenuItem | undefined => {
+        for (const item of items) {
+          if (item.text === text) {
+            return item;
+          }
+          if (item.subItems) {
+            const found = findItem(item.subItems, text);
+            if (found) {
+              return found;
+            }
+          }
+        }
+        return undefined;
+      };
+
+      const item = findItem(items, breadcrumbItem);
+      if (item) {
+        toggleMenu();
+        handleItemClick(item);
+      }
+    }
+  }, [breadcrumbItem]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     setActiveItems(items);
     setCentralTitle('Escuela de Shivaismo de Cachemira');
-    setBreadcrumb([]);
+    setBreadcrumb([centralTitle]);
+    console.log(breadcrumb)
   };
 
   const handleItemClick = (item: MenuItem) => {
