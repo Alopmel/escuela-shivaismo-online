@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { lusitana } from "@/ui/fonts";
+import { useState, useEffect } from "react";
 import {
   AtSymbolIcon,
   ExclamationCircleIcon,
@@ -63,73 +62,100 @@ export default function ConfirmResetPasswordForm() {
   );
 
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
+  const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
   const handleInputFocus = () => {
     setIsAnimating(false);
   };
-  return (
 
-    <motion.div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
-    initial="hidden"
-    animate="show"
-    exit="exit"
-    variants={pageTransition}
+  const checkWindowSize = () => {
+    if (typeof window !== 'undefined') {
+      const windowWidth = window.innerWidth;
+      setIsDesktop(windowWidth >= 1024);
+    }
+  };
+
+  useEffect(() => {
+    checkWindowSize();
+    window.addEventListener('resize', checkWindowSize);
+    return () => window.removeEventListener('resize', checkWindowSize);
+  }, []);
+
+  const containerStyle = {
+    borderRadius: '50%',
+    background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 0 30px rgba(0,0,0,0.4)',
+    width: isDesktop ? '400px' : '345px',
+    height: isDesktop ? '400px' : '345px'
+  };
+
+  const imageStyle = {
+    marginBottom: isDesktop ? '30px' : '15px',
+    marginTop: isDesktop ? '50px' : '25px'
+  };
+
+  return (
+    <motion.div 
+      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      variants={pageTransition}
     >
       <form action={dispatch} className="space-y-3">
         <motion.div
-          style={{ 
-            borderRadius: '50%', 
-            background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)', // Ajusta el tamaño y los colores aquí
-            width: '400px', 
-            height: '400px', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            justifyContent: 'flex-start', 
-            alignItems: 'center' , 
-            border: '1px solid rgba(255, 255, 255, 0.2)', 
-            boxShadow: '0 0 30px rgba(0,0,0,0.4)' 
-          }}
+          style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
         >
-          <Image src="/logo_login.png" alt="Logo" width={100} height={100} priority style={{ marginBottom: '30px', marginTop: '50px' }} />
+          <Image src="/logo_login.png" alt="Logo" width={isDesktop ? 100 : 90} height={isDesktop ? 100 : 90} priority style={imageStyle} />
           <div className="w-full flex flex-col items-center mt-[-12px]">
             <div className="relative w-full flex justify-center">
                 <input
-                  className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-10 outline-2 placeholder:text-gray-500 mb-[-7px]"                  id="email"
+                  className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500 mb-[-7px]"
+                  id="email"
                   type="email"
                   name="email"
                   placeholder="Email"
                   required
+                  style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
                 />
                 <AtSymbolIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div className="mt-4 relative w-full flex justify-center">
             <input
-              className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-10 outline-2 placeholder:text-gray-500 mb-[-7px]"              id="password"
+              className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500 mb-[-7px]"
+              id="password"
               type="password"
               name="password"
               placeholder="Enter password"
               required
               minLength={6}
               autoComplete="off"
+              style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
             />
                 <KeyIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"  />
             </div>
             <div className="mt-4 relative w-full flex justify-center">
                 <input
-                  className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-10 outline-2 placeholder:text-gray-500"
+                  className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500"
                   id="code"
                   type="text"
                   name="code"
                   placeholder="Código de confirmación"
                   required
                   minLength={6}
+                  style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
                 />
                 <KeyIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"  />
             </div>
           </div>
-          <ResetPasswordButton />
+          <ResetPasswordButton isDesktop={isDesktop} />
           <div className="flex h-8 items-end space-x-1">
             <div
               className="flex h-8 items-end space-x-1"
@@ -146,8 +172,8 @@ export default function ConfirmResetPasswordForm() {
           </div>
         </motion.div>
       </form>
-    <motion.div 
-        style={{ width: '300px', height: '50px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }} // Added blur filter for diffused effect
+      <motion.div 
+        style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
         variants={shadowAnimation}
         animate={isAnimating ? "animate" : ""}
       />          
@@ -155,11 +181,11 @@ export default function ConfirmResetPasswordForm() {
   );
 }
 
-function ResetPasswordButton() {
+function ResetPasswordButton({ isDesktop }: { isDesktop: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="w-[65%]  h-8 mt-4 rounded-full" aria-disabled={pending}>
+    <Button className="w-[65%] h-8 mt-4 rounded-full" aria-disabled={pending} style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}>
       Resetear contraseña <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );

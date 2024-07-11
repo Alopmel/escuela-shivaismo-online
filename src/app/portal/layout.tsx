@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex">
       <SideNav />
       <main className="flex-1">
-        <HeaderMobile />
+        {/* <HeaderMobile /> */}
         {children}  
       </main>
     </div>
