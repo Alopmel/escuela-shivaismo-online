@@ -1,4 +1,3 @@
-'use client'
 import React, { useEffect, useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext'; 
 import ReactPlayer from 'react-player';
@@ -36,6 +35,11 @@ const pageTransition = {
   }
 };
 
+const extractNumberFromTitle = (title: string) => {
+  const match = title.match(/\d+/g);
+  return match ? parseInt(match[0], 10) : 0;
+};
+
 const CardComponent: React.FC<CardComponentProps> = ({ item, search }) => {
   const { keys } = useBucket();
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
@@ -51,20 +55,22 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, search }) => {
     const fetchVideoData = () => {
       try {
         const upperCaseItem = item.toUpperCase(); 
-        console.log(item)
-        console.log('item upperCaseItem' + upperCaseItem)      
         const filteredKey = keys.filter((keyItem: KeyItem) => keyItem.Key.includes(upperCaseItem));
         const filteredKeys = filteredKey.filter((keyItem: KeyItem) => keyItem.Key.includes('.mp4'));
         const urls = filteredKeys.map((keyItem: KeyItem) => `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`);
-        console.log()
         const titles = filteredKeys.map((keyItem: KeyItem) => {
           const parts = keyItem.Key.split('/');
           return parts[parts.length - 1].replace('.mp4', '');
         });
 
-        setVideoUrls(urls);
-        setVideoTitles(titles);
-        setFilteredKeys(filteredKeys);
+        // Ordenar los títulos y URLs
+        const sortedVideos = titles
+          .map((title, index) => ({ title, url: urls[index], keyItem: filteredKeys[index] }))
+          .sort((a, b) => extractNumberFromTitle(a.title) - extractNumberFromTitle(b.title));
+
+        setVideoUrls(sortedVideos.map(video => video.url));
+        setVideoTitles(sortedVideos.map(video => video.title));
+        setFilteredKeys(sortedVideos.map(video => video.keyItem));
       } catch (error) {
         console.error('Error fetching video data:', error);
       }
@@ -79,7 +85,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, search }) => {
       const newFavorites = prevFavorites.includes(videoKey)
         ? prevFavorites.filter(fav => fav !== videoKey)
         : [...prevFavorites, videoKey];
-      console.log('Favorites in CardComponent:', newFavorites);
       return newFavorites;
     });
   };
@@ -90,7 +95,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, search }) => {
       const newWatchLater = prevWatchLater.includes(videoKey)
         ? prevWatchLater.filter(watch => watch !== videoKey)
         : [...prevWatchLater, videoKey];
-      console.log('WatchLater in CardComponent:', newWatchLater);
       return newWatchLater;
     });
   };

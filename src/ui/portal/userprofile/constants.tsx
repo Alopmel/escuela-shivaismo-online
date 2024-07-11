@@ -41,10 +41,5 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     title: 'Perfil',
     path: '/portal/userprofile/setting',
     icon: <IoSettingsSharp  size={20} />,
-  },
-  {
-    title: 'Salir',
-    path: '/',
-    icon: <IoLogOut size={20} />,
-  },
+  }
 ];

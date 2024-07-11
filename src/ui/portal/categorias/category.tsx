@@ -76,29 +76,15 @@ const Category: React.FC = () => {
       exit="exit"
       variants={pageTransition}
     >
-      <h1
-        style={{
-          marginTop: isMobile ? '67px' : '168px',
-          marginLeft: isMobile ? '12px' : '93px',
-          color: 'rgb(251 251 251)',
-          fontSize: 41,
-        }}
-      >
+      <h1 className="mt-12 md:mt-32 text-[31px] md:text-[41px] ml-12 md:ml-20 text-white">
         {item}
       </h1>
       
       {/* Aquí puedes crear el breadcrumb dinámico */}
-      <nav style={{ marginBottom: '20px', marginLeft: '94px', whiteSpace: 'nowrap', display: 'flex'}}>
+      <nav className="mb-5 ml-12 md:ml-20 whitespace-nowrap flex flex-wrap">        
         {items.map((item, index) => (
           <span key={item}>
-            <span 
-      
-              style={{
-                color: hoveredItems.includes(item) ? 'white' : '#c6c6c6',
-                textDecoration: 'none',
-                transition: 'color 0.3s ease',
-                marginRight: '5px',
-              }}
+            <span key={item} className="transition duration-300 mr-5 mb-3 md:mb-0 text-[#cfcdcd]"
               onMouseEnter={() => handleMouseEnter(item)}
               onMouseLeave={() => handleMouseLeave(item)}  
               onClick={() => handleGoTo(item)}

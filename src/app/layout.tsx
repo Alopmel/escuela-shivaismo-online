@@ -8,6 +8,8 @@ import { FavoritesProvider } from './context/FavoritesContext';
 import { WatchLaterProvider } from "./context/WatchLaterContext";
 import { BucketProvider } from "./context/BucketContext";
 import ErrorBoundary from "@/ui/ErrorBoundary";
+import { Amplify } from 'aws-amplify';
+import Image from "next/image";
 
 
 export const metadata: Metadata = {
@@ -30,7 +32,7 @@ export default function RootLayout({
                 <ConfigureAmplifyClientSide />
                 <ErrorBoundary>
                   <Suspense fallback={<div>Loading...</div>}>
-                    {children}
+                  <Image src="/logo_login.png" alt="Logo" width={100} height={100} className="mt-1 absolute" />                    {children}
                   </Suspense>
                 </ErrorBoundary>
               </>

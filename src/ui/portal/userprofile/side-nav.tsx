@@ -6,10 +6,10 @@ import { SIDENAV_ITEMS } from './constants';
 import { SideNavItem } from './types';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { handleSignOut } from "@/lib/cognitoActions";
-
+import { IoLogOut } from "react-icons/io5";
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 200 });
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
 
@@ -75,8 +75,16 @@ const SideNav = () => {
               <MenuItem key={idx} item={item} isOpen={isOpen} />
             ))}
             <form action={handleSignOut}>
-              <button type='submit'>
-                Salir
+              <button 
+                type='submit'
+                className="flex flex-row items-center p-2 rounded-lg bg-transparent border-none hover:bg-white/20 text-white font-semibold no-underline"
+              >
+                <div className={`flex items-center ${isOpen ? 'space-x-4' : 'justify-center'} w-full`}>
+                  <span style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IoLogOut size={20}/>
+                  </span>
+                  {isOpen && <span className="text-xl ml-2">Salir</span>}
+                </div>         
               </button>
             </form>
           </div>

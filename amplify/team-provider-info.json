@@ -11,17 +11,6 @@
       "StackId": "arn:aws:cloudformation:eu-west-3:471112985974:stack/amplify-escuelashivaismo-dev-5a18d/900b02e0-3d30-11ef-ad0c-06f295a39217",
       "AmplifyAppId": "daud4ul19iz2w",
       "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-escuelashivaismo-dev-5a18d-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
-    },
-    "categories": {
-      "function": {
-        "escuelashivaismoApi": {
-          "deploymentBucketName": "amplify-escuelashivaismo-dev-5a18d-deployment",
-          "s3Key": "amplify-builds/escuelashivaismoApi-7139476333654a564630-build.zip"
-        }
-      },
-      "auth": {
-        "escuelashivaismo": {}
-      }
     }
   }
 }

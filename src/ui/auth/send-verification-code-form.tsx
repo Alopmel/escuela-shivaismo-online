@@ -18,7 +18,7 @@ export default function SendVerificationCode() {
   return (
     <>
       <Button
-        className="mt-4 w-full"
+        className="w-[71%] h-8 mt-[-15px] rounded-full"
         aria-disabled={pending}
         formAction={dispatch}
       >

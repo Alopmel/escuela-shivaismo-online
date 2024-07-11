@@ -69,3 +69,18 @@
   opacity: 1;
   transition: opacity 0.3s;  
 }
+
+.menuItemM{
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #9b51e0bc;
+  color: white;
+}
