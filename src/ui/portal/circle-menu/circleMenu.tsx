@@ -87,7 +87,7 @@ const CircleMenu: React.FC = () => {
   const ensenanzaNavItems = ['Comentarios de sutras', 'Conceptos de apoyo'];
   const aplicacionNavItems = ['Preguntas y respuestas', 'Conferencias Temáticas'];
   const prácticaNavItems = ['Tandava y práctica con Mar y Juanjo', 'Yutkis', 'Otras prácticas', 'Visualizaciones'];
-  const comentarioNavItems = ['Shiva Sutras: La Cosmovisión', 'Vijñana Bhairava: La Práctica', 'Los 36 Tattvas'];
+  const comentarioNavItems = ['Shiva Sutras: La Cosmovisión', 'Vijñana Bhairava Tantra: La Práctica', 'Los 36 Tattvas'];
   const shivasutrasNavItems = ['1 Despertar', '2 Despertar', '3 Despertar'];
   const tattvasNavItems = ['Spandakarika', 'Pratiabhidjaridayam'];
   const conceptoNavItems = ['Sat Sang', 'Textos en PDF', ' Libros Recomendados', 'Pruebas'];
