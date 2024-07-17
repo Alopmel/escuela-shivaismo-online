@@ -5,7 +5,6 @@ import CircleMenuMobile from '@/ui/portal/circle-menu/circleMenuMobile';
 
 const Dashboard = () => {
   const [ isDesktop, setIsDesktop ] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const checkWindowSize = () => {
     let windowWidth = 0;
@@ -31,25 +30,6 @@ const Dashboard = () => {
   if (typeof window !== 'undefined'){
     window.addEventListener('resize', checkWindowSize)
   }
-  // useEffect(() => {
-  //   const checkMobile = () => {
-  //     const mobile = window.innerWidth <= 768;
-  //     console.log(`Ancho de pantalla: ${window.innerWidth}, es móvil: ${mobile}`);
-  //     setIsMobile(mobile);
-  //   };
-
-  //   checkMobile(); // Chequea el tamaño de la pantalla al cargar el componente
-
-  //   const handleResize = () => {
-  //     checkMobile(); // Actualiza el estado al redimensionar la ventana
-  //   };
-
-  //   window.addEventListener('resize', handleResize);
-
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize); // Limpia el event listener al desmontar el componente
-  //   };
-  // }, []);
 
   return (
     <>

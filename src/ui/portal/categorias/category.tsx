@@ -5,6 +5,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import CardComponent from './card-component';
 
+interface CategoryProps {
+  userId: string;
+}
 const pageTransition = {
   hidden: {
     opacity: 0,
@@ -23,7 +26,7 @@ const pageTransition = {
   },
 };
 
-const Category: React.FC = () => {
+const Category: React.FC<CategoryProps> = ({ userId }) => {
   const [hoveredItems, setHoveredItems] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   
@@ -103,7 +106,10 @@ const Category: React.FC = () => {
         ))}
       </nav>
 
-      <CardComponent item={item} search={`?item=${items[0]}`} /> {/* Ejemplo para usar un componente CardComponent */}
+      <CardComponent 
+        userId={userId} 
+        item={item} 
+        search={`?item=${items[0]}`} /> {/* Ejemplo para usar un componente CardComponent */}
     </motion.div>
   );
 };

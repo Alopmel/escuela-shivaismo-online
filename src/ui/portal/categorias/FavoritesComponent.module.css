@@ -1,0 +1,18 @@
+.favoritesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .videoContainer {
+    width: 300px;
+    margin-bottom: 16px;
+  }
+  
+  .videoContainer p {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 16px;
+  }
+  

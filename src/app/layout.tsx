@@ -1,3 +1,4 @@
+
 import { Suspense } from 'react'; // Importa Suspense
 import type { Metadata } from "next";
 import "./globals.css";
@@ -7,8 +8,7 @@ import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { FavoritesProvider } from './context/FavoritesContext';
 import { WatchLaterProvider } from "./context/WatchLaterContext";
 import { BucketProvider } from "./context/BucketContext";
-import ErrorBoundary from "@/ui/ErrorBoundary";
-import { Amplify } from 'aws-amplify';
+import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estructura de archivos
 import Image from "next/image";
 
 
@@ -22,6 +22,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <FavoritesProvider>
       <WatchLaterProvider>
