@@ -2,7 +2,8 @@
 
 'use client';
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { getFavoritesByUserId, Favorite } from '../api/favorites/route'; // Importamos la función de API y el tipo Favorite
+import { getFavoritesByUserId } from '../api/favorites/route'; // Importamos la función de API y el tipo Favorite
+import { Favorite } from '../types/types';
 
 interface FavoritesContextProps {
   favorites: Favorite[];

@@ -97,7 +97,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
         setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
       } catch (error) {
         console.error('Error al eliminar video de favoritos:', error);
-        alert('Error al eliminar video de favoritos');
       }
     } else {
       const url = videoUrls[index];
@@ -106,6 +105,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
         id: uuidv4(),
         userId,
         videoId: uuidv4(),
+        category: 'favorites',
         videoTitle,
         url,
         creationDate: currentDate,
@@ -115,10 +115,8 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
       try {
         await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newFavorite);
         setFavorites(prevFavorites => [...prevFavorites, newFavorite]);
-        alert('Video agregado a favoritos!');
       } catch (error) {
         console.error('Error al agregar video a favoritos:', error);
-        alert('Error al agregar video a favoritos');
       }
     }
   };

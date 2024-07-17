@@ -2,16 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReactPlayer from 'react-player';
 import styles from './FavoritesComponent.module.css';
+import { Favorite } from '@/app/types/types';
 
-interface Favorite {
-  id: string;
-  userId: string;
-  videoId: string;
-  videoTitle: string;
-  url: string;
-  creationDate: string;
-  lastView: string | null;
-}
 
 interface FavoritesComponentProps {
   userId: string;
