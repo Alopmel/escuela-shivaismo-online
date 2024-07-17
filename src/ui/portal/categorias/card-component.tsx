@@ -1,5 +1,3 @@
-// components/CardComponent.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
 import ReactPlayer from 'react-player';
@@ -83,34 +81,51 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     fetchVideoData();
   }, [keys, item]);
 
-  const handleFavoriteClick = async (index: number) => {
-    const videoKey = filteredKeys[index].Key;
-    const videoTitle = videoTitles[index];
-    const url = videoUrls[index];
-    const currentDate = new Date().toISOString();
-    const newFavorite: Favorite = {
-      id: uuidv4(),
-      userId,
-      videoId: null,
-      videoTitle,
-      url,
-      creationDate: currentDate,
-      lastView: null,
-    };
+  const findVideoIdByTitle = (title: string): string | null | undefined => {
+    const favorite = favorites.find((fav) => fav.videoTitle === title);
+    return favorite ? favorite.videoId : null;
+  };
 
-    try {
-      await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newFavorite);
-      setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);
-      alert('Video agregado a favoritos!');
-    } catch (error) {
-      console.error('Error al agregar video a favoritos:', error);
-      alert('Error al agregar video a favoritos');
+  const handleFavoriteClick = async (index: number) => {
+    const videoTitle = videoTitles[index];
+    const videoId = findVideoIdByTitle(videoTitle);
+
+    if (videoId) {
+      try {
+        await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
+        // Realizar la solicitud DELETE para eliminar el video de favoritos
+        setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
+      } catch (error) {
+        console.error('Error al eliminar video de favoritos:', error);
+        alert('Error al eliminar video de favoritos');
+      }
+    } else {
+      const url = videoUrls[index];
+      const currentDate = new Date().toISOString();
+      const newFavorite: Favorite = {
+        id: uuidv4(),
+        userId,
+        videoId: uuidv4(),
+        videoTitle,
+        url,
+        creationDate: currentDate,
+        lastView: null,
+      };
+
+      try {
+        await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newFavorite);
+        setFavorites(prevFavorites => [...prevFavorites, newFavorite]);
+        alert('Video agregado a favoritos!');
+      } catch (error) {
+        console.error('Error al agregar video a favoritos:', error);
+        alert('Error al agregar video a favoritos');
+      }
     }
   };
 
   const handleWatchLaterClick = (index: number) => {
     const videoKey = filteredKeys[index].Key;
-    setWatchLater((prevWatchLater) => {
+    setWatchLater(prevWatchLater => {
       const newWatchLater = prevWatchLater.includes(videoKey)
         ? prevWatchLater.filter((watch) => watch !== videoKey)
         : [...prevWatchLater, videoKey];

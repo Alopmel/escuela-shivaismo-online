@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaHeart, FaClock } from 'react-icons/fa';
 import styles from './cardComponent.module.css';
-import { useFavorites } from '@/app/context/FavoritesContext'; // Ajusta la ruta de importación según tu configuración
+import { useFavorites } from '@/app/context/FavoritesContext';
 import useAuthUser from '@/app/hooks/use-auth-user';
 import { Favorite } from '@/app/types/types';
+import axios from 'axios'; // Importar axios para realizar la solicitud DELETE
 
 const pageTransition = {
   hidden: { opacity: 0 },
@@ -19,7 +20,7 @@ const pageTransition = {
 };
 
 const CardProfile: React.FC = () => {
-  const { favorites } = useFavorites(); // Obtenemos los favoritos del contexto
+  const { favorites, setFavorites } = useFavorites();
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'favorites' | 'watchLater'>('favorites');
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +29,22 @@ const CardProfile: React.FC = () => {
 
   const handleTabChange = (tab: 'favorites' | 'watchLater') => {
     setActiveTab(tab);
+  };
+
+  const handleFavoriteClick = async (videoId: string | null) => {
+    if (!videoId) {
+      console.error('videoId es null o undefined');
+      return;
+    }
+
+    try {
+      await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
+      // Realizar la solicitud DELETE para eliminar el video de favoritos
+      setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
+    } catch (error) {
+      console.error('Error al eliminar video de favoritos:', error);
+      setError('Error al eliminar video de favoritos');
+    }
   };
 
   const renderVideoCards = (videos: Favorite[]) => (
@@ -41,7 +58,7 @@ const CardProfile: React.FC = () => {
             {hoveredVideo === index && (
               <div className={styles.cardIcons}>
                 {activeTab === 'favorites' && (
-                  <div className={styles.cardIcon}>
+                  <div className={styles.cardIcon} onClick={() => handleFavoriteClick(video.videoId)}>
                     <FaHeart size={24} />
                   </div>
                 )}
