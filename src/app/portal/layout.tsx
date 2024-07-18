@@ -1,36 +1,35 @@
-// import HeaderMobile from "@/ui/portal/userprofile/header-mobile"
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import SideNav from "@/ui/portal/userprofile/side-nav";
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const [ isDesktop, setIsDesktop ] = useState<boolean>(false);
 
-  const checkWindowSize = () => {
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+
+  const checkWindowSize = useCallback(() => {
     let windowWidth = 0;
     if (typeof window !== 'undefined') {
       windowWidth = window.innerWidth;
     }
-    if (windowWidth >= 1024) { 
-      setIsDesktop(true)
-      console.log('Destop es true ' + isDesktop)
-      console.log('windowWidth ' + windowWidth)
+    if (windowWidth >= 1024) {
+      setIsDesktop(true);
     } else {
-      setIsDesktop(false)
-      console.log('Destop es false ' + isDesktop)
-      console.log('windowWidth ' + windowWidth)
+      setIsDesktop(false);
     }
-  }
-  // logic when user first load the page
-    useEffect(() => {
-      checkWindowSize();
-    }, [isDesktop])
-  
+  }, []);
+
+  useEffect(() => {
+    checkWindowSize();
+    window.addEventListener('resize', checkWindowSize);
+    return () => {
+      window.removeEventListener('resize', checkWindowSize);
+    };
+  }, [checkWindowSize]);
+
   return (
     <div className="flex">
-      {isDesktop ? (<SideNav />): ('')}
+      {isDesktop ? (<SideNav />) : ('')}
       <main className="flex-1">
-        {/* <HeaderMobile /> */}
-        {children}  
+        {children}
       </main>
     </div>
   );
