@@ -1,85 +1,31 @@
-import { DynamoDB } from 'aws-sdk';
-import AWS from 'aws-sdk';
+import axios from 'axios';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Favorite } from '@/app/types/types';
 
-const dynamoDb = new DynamoDB.DocumentClient();
-const TABLE_NAME = "videoData";
-
-AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-});
-
-type Favorite = {
-    videoId: string,
-    userId: string,
-    category: string, 
-    url: string,
-    title: string,
-    lastview: Date,
-};
-
-// handlers
-export const getFavorites = async (): Promise<Favorite[]> => {
-    const params = {
-        TableName: TABLE_NAME
-    };
-
-    const result = await dynamoDb.scan(params).promise();
-    return result.Items as Favorite[];
-};
+const API_BASE_URL = 'https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com';
 
 export const getFavoritesByUserId = async (userId: string): Promise<Favorite[]> => {
-    const params = {
-        TableName: TABLE_NAME,
-        KeyConditionExpression: 'userId = :userId',
-        ExpressionAttributeValues: {
-            ':userId': userId
-        }
-    };
-
-    const result = await dynamoDb.query(params).promise();
-    return result.Items as Favorite[];
+  try {
+    const response = await axios.get(`${API_BASE_URL}/favorites/${userId}/favorites`);
+    return response.data as Favorite[];
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
+    throw error;
+  }
 };
 
-export const addFavorites = async (favorite: Favorite): Promise<void> => {
-    const params = {
-        TableName: TABLE_NAME,
-        Item: favorite
-    };
-
-    await dynamoDb.put(params).promise();
+const favoritesHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { userId } = req.query;
+  if (!userId || Array.isArray(userId)) {
+    res.status(400).json({ error: 'Invalid userId' });
+    return;
+  }
+  try {
+    const favorites = await getFavoritesByUserId(userId as string);
+    res.status(200).json(favorites);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch favorites' });
+  }
 };
 
-export const deleteFavorites = async (videoId: string, userId: string): Promise<void> => {
-    const params = {
-        TableName: TABLE_NAME,
-        Key: { userId, videoId }
-    };
-
-    await dynamoDb.delete(params).promise();
-};
-
-export const getVideoByID = async (videoId: string, userId: string): Promise<Favorite | undefined> => {
-    const params = {
-        TableName: TABLE_NAME,
-        Key: { userId, videoId }
-    };
-
-    const result = await dynamoDb.get(params).promise();
-    return result.Item as Favorite | undefined;
-};
-
-export const updateFavorites = async (videoId: string, userId: string, lastView: Date): Promise<void> => {
-    const params = {
-        TableName: TABLE_NAME,
-        Key: { userId, videoId },
-        UpdateExpression: 'set lastview = :lastview',
-        ExpressionAttributeValues: {
-            ':lastview': lastView
-        },
-        ReturnValues: 'UPDATED_NEW'
-    };
-
-    await dynamoDb.update(params).promise();
-};
+export default favoritesHandler;

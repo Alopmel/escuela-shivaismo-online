@@ -10,6 +10,7 @@ import { WatchLaterProvider } from "./context/WatchLaterContext";
 import { BucketProvider } from "./context/BucketContext";
 import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estructura de archivos
 import Image from "next/image";
+import Link from 'next/link';
 
 
 export const metadata: Metadata = {
@@ -33,7 +34,10 @@ export default function RootLayout({
                 <ConfigureAmplifyClientSide />
                 <ErrorBoundary>
                   <Suspense fallback={<div>Loading...</div>}>
-                  <Image src="/logo_login.png" alt="Logo" width={100} height={100} className="mt-1 absolute" />                    {children}
+                    <Link href={'/portal'}>
+                      <Image src="/logo_login.png" alt="Logo" width={100} height={100} className="mt-1 absolute" />      
+                    </Link>
+                    {children}
                   </Suspense>
                 </ErrorBoundary>
               </>
