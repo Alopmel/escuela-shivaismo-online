@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useCallback } from "react";
 import SideNav from "@/ui/portal/userprofile/side-nav";
+import Navbar from "@/ui/portal/navbar/navbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
@@ -27,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex">
-      {isDesktop ? (<SideNav />) : ('')}
+      {isDesktop ? (<SideNav />) : (<Navbar/> )}
       <main className="flex-1">
         {children}
       </main>
