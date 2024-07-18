@@ -3,12 +3,12 @@ import { useBucket } from '@/app/context/BucketContext';
 import ReactPlayer from 'react-player';
 import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { useFavorites } from '@/app/context/FavoritesContext'; // Asegúrate de importar Favorite desde el contexto actualizado
+import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { v4 as uuidv4 } from 'uuid';
 import styles from './cardComponente.module.css';
 import axios from 'axios';
-import { Favorite } from '@/app/types/types';
+import { Favorite, WatchLater } from '@/app/types/types';
 
 interface CardComponentProps {
   item: string;
@@ -81,19 +81,18 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     fetchVideoData();
   }, [keys, item]);
 
-  const findVideoIdByTitle = (title: string): string | null | undefined => {
-    const favorite = favorites.find((fav) => fav.videoTitle === title);
-    return favorite ? favorite.videoId : null;
+  const findWatchLaterByTitle = (title: string): string | null | undefined => {
+    const watchLaterItem = watchLater.find((wl) => wl.videoTitle === title);
+    return watchLaterItem ? watchLaterItem.videoId : null;
   };
 
   const handleFavoriteClick = async (index: number) => {
     const videoTitle = videoTitles[index];
-    const videoId = findVideoIdByTitle(videoTitle);
+    const videoId = findWatchLaterByTitle(videoTitle);
 
     if (videoId) {
       try {
         await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
-        // Realizar la solicitud DELETE para eliminar el video de favoritos
         setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
       } catch (error) {
         console.error('Error al eliminar video de favoritos:', error);
@@ -121,14 +120,38 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     }
   };
 
-  const handleWatchLaterClick = (index: number) => {
-    const videoKey = filteredKeys[index].Key;
-    setWatchLater(prevWatchLater => {
-      const newWatchLater = prevWatchLater.includes(videoKey)
-        ? prevWatchLater.filter((watch) => watch !== videoKey)
-        : [...prevWatchLater, videoKey];
-      return newWatchLater;
-    });
+  const handleWatchLaterClick = async (index: number) => {
+    const videoTitle = videoTitles[index];
+    const videoId = findWatchLaterByTitle(videoTitle);
+
+    if (videoId) {
+      try {
+        await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
+        setWatchLater(prevWatchLater => prevWatchLater.filter(watch => watch.videoId !== videoId));
+      } catch (error) {
+        console.error('Error al eliminar video de "Ver más tarde":', error);
+      }
+    } else {
+      const url = videoUrls[index];
+      const currentDate = new Date().toISOString();
+      const newWatchLater: WatchLater = {
+        id: uuidv4(),
+        userId,
+        videoId: uuidv4(),
+        category: 'watchlater',
+        videoTitle,
+        url,
+        creationDate: currentDate,
+        lastView: null,
+      };
+
+      try {
+        await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newWatchLater);
+        setWatchLater(prevWatchLater => [...prevWatchLater, newWatchLater]);
+      } catch (error) {
+        console.error('Error al agregar video a "Ver más tarde":', error);
+      }
+    }
   };
 
   return (
@@ -141,7 +164,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     >
       {videoUrls.map((url, index) => {
         const isFavorite = favorites.some((fav) => fav.url === url);
-        const isWatchLater = watchLater.includes(filteredKeys[index].Key);
+        const isWatchLater = watchLater.some((wl) => wl.url === url);
         return (
           <div
             key={index}

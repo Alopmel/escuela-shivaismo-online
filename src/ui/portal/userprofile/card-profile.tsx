@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FaHeart, FaClock } from 'react-icons/fa';
 import styles from './cardComponent.module.css';
 import { useFavorites } from '@/app/context/FavoritesContext';
+import { useWatchLater } from '@/app/context/WatchLaterContext'; // Importa el contexto WatchLater
 import useAuthUser from '@/app/hooks/use-auth-user';
 import { Favorite } from '@/app/types/types';
 import axios from 'axios'; // Importar axios para realizar la solicitud DELETE
@@ -21,6 +22,7 @@ const pageTransition = {
 
 const CardProfile: React.FC = () => {
   const { favorites, setFavorites } = useFavorites();
+  const { watchLater, setWatchLater } = useWatchLater(); // Usar el contexto WatchLater
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'favorites' | 'watchLater'>('favorites');
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +49,22 @@ const CardProfile: React.FC = () => {
     }
   };
 
+  const handleWatchLaterClick = async (videoId: string | null) => {
+    if (!videoId) {
+      console.error('videoId es null o undefined');
+      return;
+    }
+
+    try {
+      await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
+      // Realizar la solicitud DELETE para eliminar el video de "ver más tarde"
+      setWatchLater(prevWatchLater => prevWatchLater.filter(video => video.videoId !== videoId));
+    } catch (error) {
+      console.error('Error al eliminar video de "ver más tarde":', error);
+      setError('Error al eliminar video de "ver más tarde"');
+    }
+  };
+
   const renderVideoCards = (videos: Favorite[]) => (
     <div className={styles.videoGrid}>
       {videos.length > 0 ? (
@@ -63,7 +81,7 @@ const CardProfile: React.FC = () => {
                   </div>
                 )}
                 {activeTab === 'watchLater' && (
-                  <div className={styles.cardIcon}>
+                  <div className={styles.cardIcon} onClick={() => handleWatchLaterClick(video.videoId)}>
                     <FaClock size={24} />
                   </div>
                 )}
@@ -92,7 +110,7 @@ const CardProfile: React.FC = () => {
         </div>
       </div>
       {error && <p className={styles.error}>{error}</p>}
-      {renderVideoCards(activeTab === 'favorites' ? favorites : [])}
+      {renderVideoCards(activeTab === 'favorites' ? favorites : watchLater)}
     </motion.div>
   );
 };
