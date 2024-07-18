@@ -14,7 +14,7 @@ export const getFavoritesByUserId = async (userId: string): Promise<Favorite[]> 
   }
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const favoritesHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId } = req.query;
   if (!userId || Array.isArray(userId)) {
     res.status(400).json({ error: 'Invalid userId' });
@@ -27,3 +27,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).json({ error: 'Failed to fetch favorites' });
   }
 };
+
+export default favoritesHandler;
