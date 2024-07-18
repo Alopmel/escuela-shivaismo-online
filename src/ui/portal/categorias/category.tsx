@@ -90,7 +90,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       </h1>
       
       {/* Aquí puedes crear el breadcrumb dinámico */}
-      <nav className="mb-5 ml-12 md:ml-20 whitespace-nowrap flex flex-wrap">        
+      <nav className="mb-5 ml-4 md:ml-20 whitespace-nowrap flex flex-wrap">        
         {items.map((item, index) => (
           <span key={item}>
             <span key={item} className="transition duration-300 mr-5 mb-3 md:mb-0 text-[#cfcdcd]"

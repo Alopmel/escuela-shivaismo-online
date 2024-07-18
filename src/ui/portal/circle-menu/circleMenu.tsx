@@ -85,7 +85,7 @@ const CircleMenu: React.FC = () => {
   const navItems = ['Enseñanza de la vía', 'Aplicación en tu vida', 'Prácticas en diferido', 'Chamanismo', 'Último material subido', 'Empieza por aquí'];
   const empiezaNavItems = ['Fechas conferencias y recursos', 'Conceptos importantes y practicas basicas'];
   const ensenanzaNavItems = ['Comentarios de sutras', 'Conceptos de apoyo'];
-  const aplicacionNavItems = ['Preguntas y respuestas', 'Conferencias Temáticas'];
+  const aplicacionNavItems = ['Preguntas y respuestas', 'War Room', 'Conferencias Temáticas'];
   const prácticaNavItems = ['Tandava y práctica con Mar y Juanjo', 'Yutkis', 'Otras prácticas', 'Visualizaciones'];
   const comentarioNavItems = ['Shiva Sutras: La Cosmovisión', 'Vijñana Bhairava Tantra: La Práctica', 'Los 36 Tattvas'];
   const shivasutrasNavItems = ['1 Despertar', '2 Despertar', '3 Despertar'];
@@ -462,7 +462,20 @@ const CircleMenu: React.FC = () => {
       
       <AnimatePresence>
         {extraItemsVisible && clickedContent === 'Aplicación en tu vida' && aplicacionNavItems.map((item, index) => {
-            const position = index === 0 ? { x: 231, y:  183.455 } : { x: 118, y: 301 };
+            let position;
+            switch(index) {
+              case 0:
+                position = { x: 232, y:  154.455 };
+                break;
+              case 1:
+                position = { x: 225, y: 267 };
+                break;
+              case 2:
+                position = { x: 118, y: 301 };
+                break;
+              default:
+                position = { x: 282, y: 100 }; // default case if index is not 0, 1, 2, or 3
+            }
             const transformStyle: string = `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`;
 
             return (
@@ -484,7 +497,7 @@ const CircleMenu: React.FC = () => {
                   height: '100px' }} 
                   onClick={() => handleGoTo(item)}>
                   
-                    {item}
+                  {item}
                   
               </motion.div>
             );

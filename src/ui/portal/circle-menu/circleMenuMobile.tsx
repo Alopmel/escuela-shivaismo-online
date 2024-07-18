@@ -14,7 +14,12 @@ interface MenuItem {
 
 const CircleMenuMobile = () => {
   const items: MenuItem[] = [
-    { text: 'Empieza por aquí', position: { top: 'calc(50% - 257px)', left: 'calc(50% - 49px)' } },
+    { text: 'Empieza por aquí', position: { top: 'calc(50% - 257px)', left: 'calc(50% - 49px)' }, 
+      subItems: [
+        { text: 'Fechas conferencias y recursos', position: { top: 'calc(50% - 145.622px)', left: 'calc(50% + 69px)' } },
+        { text: 'Conceptos importantes y practicas basicas', position: { top: 'calc(50% + 36.378px)', left: 'calc(50% + 70px)' } }
+      ]
+    },
     {
       text: 'Enseñanza de la vía', position: { top: 'calc(50% - 209.6218px)', left: 'calc(50% + 64px)' },
       subItems: [
@@ -32,7 +37,14 @@ const CircleMenuMobile = () => {
               ]
             },
             { text: 'Vijñana Bhairava Tantra: La Práctica', position: { top: 'calc(50% - 50.622px)', left: 'calc(50% + 98px)' } },
-            { text: 'Los 36 Tattvas', position: { top: 'calc(50% + 82.378px)', left: 'calc(50% + 14px)' } }
+            { 
+              text: 'Los 36 Tattvas', 
+              position: { top: 'calc(50% + 82.378px)', left: 'calc(50% + 14px)' },
+              subItems: [
+                { text: 'Spandakarika', position: { top: 'calc(50% - 145.622px)', left: 'calc(50% + 69px)' } },
+                { text: 'Pratiabhidjaridayam', position: { top: 'calc(50% + 36.378px)', left: 'calc(50% + 70px)' } }
+              ]
+            }
           ]
         },
         {
@@ -52,11 +64,15 @@ const CircleMenuMobile = () => {
       subItems: [
         {
           text: 'Preguntas y respuestas',
-          position: { top: 'calc(50% - 145.622px)', left: 'calc(50% + 69px)' }
+          position: { top: 'calc(50% - 189.622px)', left: 'calc(50% + 19px)' }
         },
         {
-          text: 'Conferencias por Temas',
-          position: { top: 'calc(50% + 36.378px)', left: 'calc(50% + 70px)' }
+          text: 'War Room',
+          position: { top: 'calc(50% - 50.622px)', left: 'calc(50% + 98px)' }
+        },
+        {
+          text: 'Conferencias temáticas',
+          position: { top: 'calc(50% + 82.378px)', left: 'calc(50% + 14px)' }
         }
       ]
     },
