@@ -1,18 +1,19 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 import {
   AtSymbolIcon,
   ExclamationCircleIcon,
+  XMarkIcon,  // Importa el ícono de cierre
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleResetPassword } from "@/lib/cognitoActions";
-import { motion} from 'framer-motion'; // Importa motion y CSSProperties desde framer-motion
+import { motion } from 'framer-motion';
 import { CSSProperties } from "react";
 import Image from 'next/image';
 
-// Animation for change the page
+// Animaciones
 const pageTransition = {
   hidden: {
     opacity: 0,
@@ -31,7 +32,6 @@ const pageTransition = {
   }
 };
 
-// Animation for the levitating effect
 const levitateAnimation = {
   animate: {
     y: ["0%", "3%", "0%"],
@@ -43,10 +43,9 @@ const levitateAnimation = {
   }
 };
 
-// Animation for the shadow effect
 const shadowAnimation = {
   animate: {
-    scale: [1, 1.1, 1], // The shadow gets bigger and smaller
+    scale: [1, 1.1, 1],
     transition: {
       duration: 2,
       repeat: Infinity,
@@ -55,10 +54,11 @@ const shadowAnimation = {
   }
 };
 
-export default function SubmitResetPasswordFrom() {
+export default function SubmitResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(handleResetPassword, undefined);
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(!!errorMessage);
 
   const handleInputFocus = () => {
     setIsAnimating(false);
@@ -77,6 +77,11 @@ export default function SubmitResetPasswordFrom() {
     return () => window.removeEventListener('resize', checkWindowSize);
   }, []);
 
+  useEffect(() => {
+    setShowError(!!errorMessage);
+  }, [errorMessage]);
+
+  
   const containerStyle: CSSProperties = {
     borderRadius: '50%',
     background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
@@ -103,6 +108,19 @@ export default function SubmitResetPasswordFrom() {
       exit="exit"
       variants={pageTransition}
     >
+      {/* Mensaje de error */}
+      {showError && (
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[90%] sm:w-[60%] p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-lg text-sm z-50 flex items-center justify-between">
+          <div className="flex items-center">
+            <ExclamationCircleIcon className="h-5 w-5 mr-2" />
+            <p>{errorMessage}</p>
+          </div>
+          <button onClick={() => setShowError(false)} className="text-red-700 hover:text-red-900 border-none bg-transparent">
+            <XMarkIcon className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+
       <form action={dispatch} className="space-y-3">
         <motion.div
           style={containerStyle}
@@ -110,10 +128,9 @@ export default function SubmitResetPasswordFrom() {
           animate={isAnimating ? "animate" : ""}
         >
           <Image src="/logo_login.png" alt="Logo" width={isDesktop ? 100 : 50} height={isDesktop ? 100 : 50} priority style={imageStyle} />
-
           <div className="w-full flex flex-col items-center">
             <div className="relative w-full flex justify-center">
-              <h2 className="mb-4 text-white" style={{ fontSize: isDesktop ? '1rem' : '1.5rem' }}> Recupera tu contraseña</h2>
+              <h2 className="mb-4 text-white" style={{ fontSize: '1.5rem' }}> Recupera tu contraseña</h2>
             </div> 
             <div className="relative w-full flex justify-center">
               <input
@@ -129,20 +146,6 @@ export default function SubmitResetPasswordFrom() {
             </div>  
           </div>
           <SendConfirmationCodeButton isDesktop={isDesktop} />
-          <div className="flex h-8 items-end space-x-1">
-            <div
-              className="flex h-8 items-end space-x-1"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {errorMessage && (
-                <>
-                  <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                  <p className="text-sm text-red-500">{errorMessage}</p>
-                </>
-              )}
-            </div>
-          </div>
         </motion.div>
       </form>
       <motion.div 

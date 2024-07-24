@@ -14,8 +14,8 @@ import Link from 'next/link';
 
 
 export const metadata: Metadata = {
-  title: "Next.js Cognito Authentication",
-  description: "Cognito authenticated Next.js app.",
+  title: "Tantra Shivaismo de Cachemira ",
+  description: "Escuela online",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
     <FavoritesProvider>
       <WatchLaterProvider>
         <BucketProvider>
-          <html lang="en">
+          <html lang="es">
             <body className={`${inter.className} antialiased`}>
               <>
                 <ConfigureAmplifyClientSide />

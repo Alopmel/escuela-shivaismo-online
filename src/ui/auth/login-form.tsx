@@ -1,19 +1,39 @@
-'use client'
+"use client";
+
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion'; // Importa CSSProperties desde framer-motion
+import { motion } from 'framer-motion';
 import { CSSProperties } from "react";
 import Image from 'next/image';
 import Link from 'next/link';
-import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
+import { IoEyeOff, IoEye } from 'react-icons/io5'; // Importar iconos de react-icons
 import { Button } from '@/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
 import { handleSignIn } from '@/lib/cognitoActions';
+
+// Función para traducir los mensajes de error al español
+const translateErrorMessage = (message: string): string => {
+  const errorMessages: { [key: string]: string } = {
+    "User already exists.": "El usuario ya existe",
+    "Incorrect username or password.": "Nombre de usuario o contraseña incorrectos",
+    "User is not confirmed.": "El usuario no está confirmado",
+    "Password does not conform to policy.": "La contraseña no cumple con la política",
+    "Invalid verification code provided.": "Código de verificación proporcionado inválido",
+    "Username cannot be empt.y": "El nombre de usuario no puede estar vacío",
+    "Password did not conform with policy: Password must have uppercase characters.": "La contraseña debe contener un carácter en mayúscula"
+    // Agrega más mapeos según sea necesario
+  };
+
+  return errorMessages[message] || "Error desconocido";
+};
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(!!errorMessage);
+  const [showPassword, setShowPassword] = useState<boolean>(false); // Estado para gestionar la visibilidad de la contraseña
 
   const handleInputFocus = () => {
     setIsAnimating(false);
@@ -32,7 +52,11 @@ export default function LoginForm() {
     return () => window.removeEventListener('resize', checkWindowSize);
   }, []);
 
-  // Animation for change the page
+  useEffect(() => {
+    setShowError(!!errorMessage);
+  }, [errorMessage]);
+
+  // Animaciones para el cambio de página
   const pageTransition = {
     hidden: { opacity: 0 },
     show: {
@@ -45,7 +69,7 @@ export default function LoginForm() {
     }
   };
 
-  // Animation for the levitating effect
+  // Animación para el efecto de levitación
   const levitateAnimation = {
     animate: {
       y: ["0%", "3%", "0%"],
@@ -57,10 +81,10 @@ export default function LoginForm() {
     }
   };
 
-  // Animation for the shadow effect
+  // Animación para el efecto de sombra
   const shadowAnimation = {
     animate: {
-      scale: [1, 1.1, 1], // The shadow gets bigger and smaller
+      scale: [1, 1.1, 1], // La sombra se hace más grande y más pequeña
       transition: {
         duration: 2,
         repeat: Infinity,
@@ -87,6 +111,10 @@ export default function LoginForm() {
     marginTop: isDesktop ? '50px' : '25px'
   };
 
+  const closeError = () => {
+    setShowError(false);
+  };
+
   return (
     <motion.div 
       style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
@@ -95,6 +123,19 @@ export default function LoginForm() {
       exit="exit"
       variants={pageTransition}
     >
+      {/* Mensaje de error */}
+      {showError && errorMessage && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-lg text-sm z-50 flex items-center justify-between">
+          <div className="flex items-center">
+            <ExclamationCircleIcon className="h-5 w-5 mr-2 text-red-500" />
+            <p>{translateErrorMessage(errorMessage)}</p>
+          </div>
+          <button onClick={closeError} className="ml-2 text-red-500 hover:text-red-700 border-none bg-transparent">
+            <XMarkIcon className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+
       <form action={dispatch} className="space-y-3">
         <motion.div
           style={containerStyle}
@@ -120,7 +161,7 @@ export default function LoginForm() {
               <input
                 className="peer block w-3/5 h-[1.2rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500"                  
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Introduce tu contraseña"
                 required
@@ -128,6 +169,17 @@ export default function LoginForm() {
                 style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
               />
               <KeyIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              {showPassword ? (
+                <IoEye
+                  className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500"
+                  onClick={() => setShowPassword(false)}
+                />
+              ) : (
+                <IoEyeOff
+                  className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500"
+                  onClick={() => setShowPassword(true)}
+                />
+              )}
             </div>
           </div>
           <LoginButton isDesktop={isDesktop} />
@@ -140,25 +192,11 @@ export default function LoginForm() {
               Olvidaste la contraseña?
             </Link>
           </div>
-          <div className="flex h-8 items-end space-x-1">
-            <div
-              className="flex h-8 items-end space-x-1"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {errorMessage && (
-                <>
-                  <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                  <p className="text-sm text-red-500">{errorMessage}</p>
-                </>
-              )}
-            </div>
-          </div>
         </motion.div>
       </form>
 
       <motion.div 
-        style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }} // Added blur filter for diffused effect
+        style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
         variants={shadowAnimation}
         animate={isAnimating ? "animate" : ""}
       />          

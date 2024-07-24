@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FocusEvent, ChangeEvent } from "react";
 import {
   AtSymbolIcon,
   ExclamationCircleIcon,
   KeyIcon,
+  XMarkIcon, // Importa el ícono de la cruz
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/ui/button";
@@ -13,58 +14,72 @@ import { handleConfirmResetPassword } from "@/lib/cognitoActions";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { CSSProperties } from "react";
+import logoGreen from '../../../public/logo_green.png'; // Asegúrate de que la ruta sea correcta
+import logoRed from '../../../public/logo_red.png'; // Asegúrate de que la ruta sea correcta
 
-  // Animation for change the page
-  const pageTransition = {
-    hidden: {
-      opacity: 0,
-    },
-    show: {
-      opacity: 1,
-      transition: {
-        duration: 0.5
-      }
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        duration: 0.5
-      }
+const pageTransition = {
+  hidden: {
+    opacity: 0,
+  },
+  show: {
+    opacity: 1,
+    transition: {
+      duration: 0.5
     }
-  };
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.5
+    }
+  }
+};
 
-  // Animation for the levitating effect
-  const levitateAnimation = {
-    animate: {
-      y: ["0%", "3%", "0%"],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+const levitateAnimation = {
+  animate: {
+    y: ["0%", "3%", "0%"],
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      ease: "easeInOut"
     }
-  };
+  }
+};
 
-  // Animation for the shadow effect
-  const shadowAnimation = {
-    animate: {
-      scale: [1, 1.1, 1], // The shadow gets bigger and smaller
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+const shadowAnimation = {
+  animate: {
+    scale: [1, 1.1, 1],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
     }
-  };  
+  }
+};  
 
 export default function ConfirmResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(
     handleConfirmResetPassword,
     undefined
   );
+  const [showError, setShowError] = useState(true);
 
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const [password, setPassword] = useState<string>('');
+
+  const handlePasswordFocus = (e: FocusEvent<HTMLInputElement>) => {
+    setShowPasswordRequirements(true);
+  };
+
+  const handlePasswordBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setShowPasswordRequirements(false);
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
 
   const handleInputFocus = () => {
     setIsAnimating(false);
@@ -82,6 +97,34 @@ export default function ConfirmResetPasswordForm() {
     window.addEventListener('resize', checkWindowSize);
     return () => window.removeEventListener('resize', checkWindowSize);
   }, []);
+
+  const passwordMeetsCriteria = (criteria: string): boolean => {
+    switch (criteria) {
+      case 'minLength':
+        return password.length >= 8;
+      case 'number':
+        return /\d/.test(password);
+      case 'specialChar':
+        return /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      case 'uppercase':
+        return /[A-Z]/.test(password);
+      case 'lowercase':
+        return /[a-z]/.test(password);
+      default:
+        return false;
+    }
+  };
+
+  const getLogoSrc = (criteria: string): JSX.Element => {
+    return (
+      <Image
+        src={passwordMeetsCriteria(criteria) ? logoGreen : logoRed}
+        alt="Logo"
+        width={11}
+        height={15}
+      />
+    );
+  };
 
   const containerStyle: CSSProperties = {
     borderRadius: '50%',
@@ -109,6 +152,24 @@ export default function ConfirmResetPasswordForm() {
       exit="exit"
       variants={pageTransition}
     >
+      {/* Mensaje de error */}
+      {errorMessage && showError && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[60%] sm:w-3/5 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-lg text-sm z-50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <ExclamationCircleIcon className="inline h-5 w-5 mr-2" />
+              <span>{errorMessage}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowError(false)}
+              className="text-red-700 hover:text-red-900 border-none bg-transparent"
+            >
+              <XMarkIcon className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
       <form action={dispatch} className="space-y-3">
         <motion.div
           style={containerStyle}
@@ -130,18 +191,54 @@ export default function ConfirmResetPasswordForm() {
                 <AtSymbolIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div className="mt-4 relative w-full flex justify-center">
-            <input
-              className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500 mb-[-7px]"
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              required
-              minLength={6}
-              autoComplete="off"
-              style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
-            />
-                <KeyIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"  />
+              <input
+                className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500 mb-[-7px]"
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                required
+                minLength={8}
+                onFocus={handlePasswordFocus}
+                onBlur={handlePasswordBlur}
+                onChange={handlePasswordChange}
+                style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
+              />
+              <KeyIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"  />
+              {showPasswordRequirements && (
+                <div className="absolute top-[2.5rem] left-1/2 transform -translate-x-1/2 w-3/5 p-3 bg-white border border-gray-300 rounded-lg shadow-lg text-sm z-40">
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('minLength')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('minLength') ? 'green' : 'red' }}>
+                      Longitud mínima de 8 caracteres
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('number')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('number') ? 'green' : 'red' }}>
+                      Contiene 1 número
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('specialChar')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('specialChar') ? 'green' : 'red' }}>
+                      Contiene 1 carácter especial
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('uppercase')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('uppercase') ? 'green' : 'red' }}>
+                      Contiene 1 letra mayúscula
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('lowercase')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('lowercase') ? 'green' : 'red' }}>
+                      Contiene 1 letra minúscula
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="mt-4 relative w-full flex justify-center">
                 <input
@@ -158,20 +255,6 @@ export default function ConfirmResetPasswordForm() {
             </div>
           </div>
           <ResetPasswordButton isDesktop={isDesktop} />
-          <div className="flex h-8 items-end space-x-1">
-            <div
-              className="flex h-8 items-end space-x-1"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {errorMessage && (
-                <>
-                  <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                  <p className="text-sm text-red-500">{errorMessage}</p>
-                </>
-              )}
-            </div>
-          </div>
         </motion.div>
       </form>
       <motion.div 
