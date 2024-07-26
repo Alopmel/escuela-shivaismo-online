@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import styles from './cardComponente.module.css';
 import axios from 'axios';
 import { Favorite, WatchLater } from '@/app/types/types';
+import { useSearchParams, useRouter } from 'next/navigation'; // Importar useSearchParams y usePathname
 
 interface CardComponentProps {
   item: string;
@@ -51,6 +52,11 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
   const [filteredKeys, setFilteredKeys] = useState<KeyItem[]>([]);
+  
+  const router = useRouter()
+  const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
+
+  const params = new URLSearchParams(searchParams.toString());// Obtener el pathname actual
 
   useEffect(() => {
     if (!item) return;
@@ -93,7 +99,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     if (videoId) {
       try {
         await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
-        // Realizar la solicitud DELETE para eliminar el video de favoritos
         setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
       } catch (error) {
         console.error('Error al eliminar video de favoritos:', error);
@@ -125,6 +130,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     const watchLaterItem = watchLater.find((wl) => wl.videoTitle === title);
     return watchLaterItem ? watchLaterItem.videoId : null;
   };
+
   const handleWatchLaterClick = async (index: number) => {
     const videoTitle = videoTitles[index];
     const videoId = findWatchLaterByTitle(videoTitle);
@@ -159,6 +165,14 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     }
   };
 
+  const handleDoubleClick = (videoUrl: string) => {
+    console.log('Video URL:', videoUrl); // Mostrar URL en consola
+    const videoId = videoUrl;
+    const params = new URLSearchParams({
+      videoUrl: videoId,
+    });
+    router.push(`/portal/categorias/video-player?${params.toString()}`);  };
+
   return (
     <motion.div
       initial="hidden"
@@ -176,9 +190,24 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
             className={styles.cardContainer}
             onMouseEnter={() => setHoveredVideo(index)}
             onMouseLeave={() => setHoveredVideo(null)}
+            onDoubleClick={() => handleDoubleClick(url)} // Añadir el manejador de doble clic
           >
             <div className={styles.cardContainer_01}>
-              <ReactPlayer url={url} controls={hoveredVideo === index} width="100%" height="100%" className={styles.cardPlayer} />
+              <ReactPlayer 
+                url={url} 
+                controls={hoveredVideo === index} 
+                width="100%" 
+                height="100%" 
+                className={styles.cardPlayer} 
+                playing={false} // Asegurarse de que no esté reproduciéndose automáticamente
+                config={{
+                  file: {
+                    attributes: {
+                      onDoubleClick: () => handleDoubleClick(url), // Manejador adicional para el evento de doble clic
+                    },
+                  },
+                }}
+              />
             </div>
             {(hoveredVideo === index || isFavorite || isWatchLater) && (
               <div className={styles.cardIcons}>

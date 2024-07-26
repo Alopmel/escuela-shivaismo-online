@@ -22,6 +22,7 @@ export async function GET() {
   
   try {
     const res = await s3.listObjectsV2(params).promise();
+    console.log('res ' + res)
     return NextResponse.json(res); // Return the AWS response directly
   } catch (error) {
     console.error('Error fetching S3 objects:', error);
