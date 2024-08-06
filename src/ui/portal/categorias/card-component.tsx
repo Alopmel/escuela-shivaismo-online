@@ -10,7 +10,6 @@ import styles from './cardComponente.module.css';
 import axios from 'axios';
 import { Favorite, WatchLater } from '@/app/types/types';
 import { useRouter } from 'next/navigation';
-import { updateVideoViews } from '@/app/api/recommended/route'; // Import the updateVideoViews function
 
 interface CardComponentProps {
   item: string;
@@ -155,11 +154,24 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   };
 
   const handlePlay = async (key: KeyItem) => {
-    console.log('Playing video key:', key.Key); // Mostrar solo la key del video
+    const videoId = encodeURIComponent(key.Key); // Codifica el videoId para usarlo en la URL
+    console.log('Playing video key:', videoId); // Mostrar solo el nombre del archivo
+
+    if (!videoId) {
+      console.error('Error: videoId is empty');
+      return;
+    }
+
+    // Ajusta la URL sin parámetros
+    const url = `https://xe6258whge.execute-api.eu-west-2.amazonaws.com/recommended/${videoId}`; // El {id} se reemplaza con el valor correcto en Lambda
+
     try {
-      await updateVideoViews(key.Key); // Call the function to update views
+      const response = await axios.get(url);
+      console.log('Response data:', response.data);
+      return response.data;
     } catch (error) {
       console.error('Error updating video views:', error);
+      throw error;
     }
   };
 
