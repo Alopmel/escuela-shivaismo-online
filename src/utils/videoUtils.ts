@@ -4,6 +4,10 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { Favorite, WatchLater } from '@/app/types/types';
 
+// Define KeyItem type
+type KeyItem = {
+    Key: string;
+  };
 // Utilidad para extraer número de título
 export const extractNumberFromTitle = (title: string): number => {
   const match = title.match(/\d+/g);
