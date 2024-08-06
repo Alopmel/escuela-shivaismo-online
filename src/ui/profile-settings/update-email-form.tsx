@@ -4,11 +4,11 @@ import { AtSymbolIcon, ExclamationCircleIcon, KeyIcon } from "@heroicons/react/2
 import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleConfirmUserAttribute, handleUpdateUserAttribute } from "@/lib/cognitoActions";
-import useAuthUser from "@/app/hooks/use-auth-user";
+import { useUser } from "@/app/context/UserContext"; // Importa el hook del contexto
 import styles from './userProfile.module.css'; // Importar estilos CSS
 
 export default function UpdateEmailForm() {
-  const user = useAuthUser();
+  const { user } = useUser(); // Obtén el usuario del contexto
   const [status, dispatch] = useFormState(handleUpdateUserAttribute, "");
   const [confirmStatus, dispatchConfirm] = useFormState(handleConfirmUserAttribute, undefined);
 
@@ -27,7 +27,7 @@ export default function UpdateEmailForm() {
                 name="email"
                 placeholder="Enter your email address"
                 required
-                defaultValue={user?.email}
+                defaultValue={user?.email || ""} // Usa el valor del contexto
                 className={`${styles.formInput} peer`}
               />
               <AtSymbolIcon className={`${styles.formIcon} pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500`} />
@@ -37,7 +37,7 @@ export default function UpdateEmailForm() {
                 id="current_email"
                 type="hidden"
                 name="current_email"
-                defaultValue={user?.email}
+                defaultValue={user?.email || ""} // Usa el valor del contexto
               />
             </div>
           </div>

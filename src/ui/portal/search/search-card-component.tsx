@@ -1,24 +1,18 @@
-// /src/iu/portal/categorias/video-player/card-component.tsx
-
-import React, { useEffect, useState } from 'react';
-import { useBucket } from '@/app/context/BucketContext';
+import React, { useState } from 'react';
 import ReactPlayer from 'react-player';
 import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useRouter } from 'next/navigation';
-import { extractNumberFromTitle, getTitleWithoutExtension, handleFavoriteToggle, handleWatchLaterToggle, handlePlay } from '@/utils/videoUtils';
-import styles from './cardComponente.module.css';
+import { extractNumberFromTitle, handleFavoriteToggle, handleWatchLaterToggle, handlePlay } from '@/utils/videoUtils';
+import styles from '../userprofile/cardComponent.module.css';
 
-interface CardComponentProps {
+interface SearchCardComponentProps {
   item: string;
   userId: string;
+  videoData: { url: string; title: string; key: { Key: string } }[];
 }
-
-type KeyItem = {
-  Key: string;
-};
 
 const pageTransition = {
   hidden: { opacity: 0 },
@@ -32,54 +26,19 @@ const pageTransition = {
   },
 };
 
-const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
-  const { keys } = useBucket();
-  const [videoData, setVideoData] = useState<{ url: string; title: string; key: KeyItem }[]>([]);
+const SearchCardComponent: React.FC<SearchCardComponentProps> = ({ item, userId, videoData }) => {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!item) return;
-
-    const fetchVideoData = () => {
-      try {
-        const upperCaseItem = item.toUpperCase();
-        const filteredKeys = keys.filter((keyItem: KeyItem) =>
-          keyItem.Key.includes(upperCaseItem) &&
-          (keyItem.Key.endsWith('.mp4') || keyItem.Key.endsWith('.mov'))
-        );
-
-        const videoData = filteredKeys.map((keyItem: KeyItem) => {
-          const url = `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`;
-          const parts = keyItem.Key.split('/');
-          const fileName = parts[parts.length - 1];
-          const title = getTitleWithoutExtension(fileName); // Utiliza la nueva función
-          return { url, title, key: keyItem };
-        });
-
-        const sortedVideoData = videoData.sort((a, b) =>
-          extractNumberFromTitle(a.title) - extractNumberFromTitle(b.title)
-        );
-
-        setVideoData(sortedVideoData);
-      } catch (error) {
-        console.error('Error fetching video data:', error);
-      }
-    };
-
-    fetchVideoData();
-  }, [keys, item]);
-
   const handleDoubleClick = (videoUrl: string) => {
     console.log('Video URL:', videoUrl); // Mostrar URL en consola
     const videoFileName = videoUrl.split('/').pop();
-    const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : ''; // Utiliza la nueva función
+    const videoId = videoFileName ? videoFileName.replace(/\.(mp4|mov)$/i, '') : '';
     const params = new URLSearchParams({ videoUrl: videoId });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
-  
 
   return (
     <motion.div
@@ -93,6 +52,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
         const isFavorite = favorites.some((fav) => fav.url === url);
         const isWatchLater = watchLater.some((wl) => wl.url === url);
 
+        // Mostrar la información de los videos en la consola
+        console.log(`Rendering video ${index + 1}:`, { url, title, key });
+
         return (
           <div
             key={index}
@@ -102,22 +64,22 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
             onDoubleClick={() => handleDoubleClick(url)}
           >
             <div className={styles.cardContainer_01}>
-            <ReactPlayer
-              url={url}
-              controls={hoveredVideo === index}
-              width="100%"
-              height="100%"
-              className={styles.cardPlayer}
-              playing={false}
-              onPlay={() => {handlePlay(key);}}
-              config={{
-                file: {
-                  attributes: {
-                    onDoubleClick: () => handleDoubleClick(url),
+              <ReactPlayer
+                url={url}
+                controls={hoveredVideo === index}
+                width="100%"
+                height="100%"
+                className={styles.cardPlayer}
+                playing={false}
+                onPlay={() => { handlePlay(key); }}
+                config={{
+                  file: {
+                    attributes: {
+                      onDoubleClick: () => handleDoubleClick(url),
+                    },
                   },
-                },
-              }}
-            />
+                }}
+              />
             </div>
             {(hoveredVideo === index || isFavorite || isWatchLater) && (
               <div className={styles.cardIcons}>
@@ -139,4 +101,4 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   );
 };
 
-export default CardComponent;
+export default SearchCardComponent;
