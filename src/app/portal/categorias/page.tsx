@@ -1,8 +1,9 @@
 'use client'
 import Category from "@/ui/portal/categorias/category";
-import useAuthUser from "@/app/hooks/use-auth-user";
+import { useUser } from "@/app/context/UserContext";
+
 export default function Dashboard() {
-  const user = useAuthUser();
-  const userId = user ? user.userId : 'null'
-    return <Category  userId={userId}/>;
-  }
+  const { userId } = useUser(); // Obtener userId del contexto
+
+  return <Category userId={userId || ''} />;
+}

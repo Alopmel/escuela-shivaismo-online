@@ -8,6 +8,7 @@ import CardComponent from './card-component';
 interface CategoryProps {
   userId: string;
 }
+
 const pageTransition = {
   hidden: {
     opacity: 0,
@@ -30,18 +31,17 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
   const [hoveredItems, setHoveredItems] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   
-  const router = useRouter()
-  const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const params = new URLSearchParams(searchParams.toString());
 
-  // Obtener los valores de los parámetros y eliminar los que están vacíos
   const item = params.get('item') || '';
-  console.log('Item cicleMenu' + item)
+  console.log('Item cicleMenu' + item);
   let items: string[] = [];
   if (params.has('breadcrumb')) {
     items = JSON.parse(params.get('breadcrumb') || '[]') as string[];
-    console.log(items)
+    console.log(items);
   } else {
     items = [
       params.get('firstClickedContent') || '',
@@ -71,6 +71,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
   const handleMouseLeave = (item: string) => {
     setHoveredItems(prevItems => prevItems.filter(i => i !== item));
   };
+
   const handleGoTo = (item: string) => {
     const params = new URLSearchParams({
       item: item,
@@ -78,6 +79,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
 
     router.push(`/portal?${params.toString()}`);
   };
+
   return (
     <motion.div
       initial="hidden"
@@ -89,19 +91,18 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
         {item}
       </h1>
       
-      {/* Aquí puedes crear el breadcrumb dinámico */}
       <nav className="mb-5 ml-4 md:ml-20 whitespace-nowrap flex flex-wrap">        
         {items.map((item, index) => (
           <span key={item}>
-            <span key={item} className="transition duration-300 mr-5 mb-3 md:mb-0 text-[#cfcdcd]"
+            <span
+              className="transition duration-300 mr-5 mb-3 md:mb-0 text-[#cfcdcd]"
               onMouseEnter={() => handleMouseEnter(item)}
-              onMouseLeave={() => handleMouseLeave(item)}  
+              onMouseLeave={() => handleMouseLeave(item)}
               onClick={() => handleGoTo(item)}
             >
               {item}
               {index < items.length - 1 && <span style={{ color: '#c6c6c6' }}> / </span>}
             </span>
-            
           </span>
         ))}
       </nav>
@@ -109,7 +110,8 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       <CardComponent 
         userId={userId} 
         item={item} 
-        search={`?item=${items[0]}`} /> {/* Ejemplo para usar un componente CardComponent */}
+         // Corregido aquí
+      />
     </motion.div>
   );
 };
