@@ -66,13 +66,38 @@ const CardProfile: React.FC = () => {
     }
   };
 
+  const handlePlay = async (video: Favorite) => {
+    console.log('Video object:', video);
+    console.log('video.key:', video.key);
+    const videoId = encodeURIComponent(video.key); 
+    const url = 'https://xe6258whge.execute-api.eu-west-2.amazonaws.com/recommended';
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'videoId': videoId,
+        }
+      });
+        
+      console.log('Response data:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating video views:', error);
+      throw error;
+    }
+  };
+  
   const renderVideoCards = (videos: Favorite[]) => (
     <div className={styles.videoGrid}>
       {videos.length > 0 ? (
         videos.map((video, index) => (
           <div key={video.id} className={styles.cardContainer} onMouseEnter={() => setHoveredVideo(index)} onMouseLeave={() => setHoveredVideo(null)}>
             <div className={styles.cardContainer_01}>
-              <video src={video.url} controls={hoveredVideo === index} className={styles.cardPlayer} />
+              <video 
+                src={video.url} 
+                controls={hoveredVideo === index} 
+                className={styles.cardPlayer}
+                onPlay={() => handlePlay(video)} />
             </div>
             {hoveredVideo === index && (
               <div className={styles.cardIcons}>
