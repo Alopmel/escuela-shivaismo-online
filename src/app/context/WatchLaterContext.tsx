@@ -1,7 +1,9 @@
+// src/app/context/WatchLaterContext.tsx
 'use client';
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { getWatchLaterByUserId } from '@/lib/watchLaterData'; // Importamos la función de API y el tipo WatchLater
 import { WatchLater } from '../types/types';
+import { useUser } from '@/app/context/UserContext';
 
 interface WatchLaterContextProps {
   watchLater: WatchLater[];
@@ -16,8 +18,15 @@ interface WatchLaterProviderProps {
 
 export const WatchLaterProvider: React.FC<WatchLaterProviderProps> = ({ children }) => {
   const [watchLater, setWatchLater] = useState<WatchLater[]>([]);
+  const { user, userId, loading } = useUser();
 
   useEffect(() => {
+    if (loading || !userId) {
+      return;
+    }
+
+    console.log('User ID from useUser:', userId); // Asumiendo que `username` es el ID del usuario
+
     const fetchWatchLater = async (userId: string) => {
       try {
         const fetchedWatchLater = await getWatchLaterByUserId(userId);
@@ -27,9 +36,8 @@ export const WatchLaterProvider: React.FC<WatchLaterProviderProps> = ({ children
       }
     };
 
-    const userId = 'c6a2c274-8001-7060-0a1c-87077fd101e1'; // Ejemplo: obtén el userId de alguna manera (por ejemplo, desde props o contextos superiores)
     fetchWatchLater(userId);
-  }, []);
+  }, [loading, userId]);
 
   useEffect(() => {
     console.log('WatchLater updated in context:', watchLater);

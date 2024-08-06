@@ -1,3 +1,4 @@
+// /src/iu/portal/userprofile/card-component.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaHeart, FaClock } from 'react-icons/fa';

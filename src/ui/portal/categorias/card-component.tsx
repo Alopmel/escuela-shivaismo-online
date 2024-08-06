@@ -9,7 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 import styles from './cardComponente.module.css';
 import axios from 'axios';
 import { Favorite, WatchLater } from '@/app/types/types';
-import { useSearchParams, useRouter } from 'next/navigation'; // Importar useSearchParams y usePathname
+import { useRouter } from 'next/navigation';
+import { updateVideoViews } from '@/app/api/recommended/route'; // Import the updateVideoViews function
 
 interface CardComponentProps {
   item: string;
@@ -22,41 +23,36 @@ type KeyItem = {
 };
 
 const pageTransition = {
-  hidden: {
-    opacity: 0,
-  },
+  hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
+    transition: { duration: 0.5 },
   },
   exit: {
     opacity: 0,
-    transition: {
-      duration: 0.5,
-    },
+    transition: { duration: 0.5 },
   },
 };
 
+// Utilidad para extraer número de título
 const extractNumberFromTitle = (title: string): number => {
   const match = title.match(/\d+/g);
   return match ? parseInt(match[0], 10) : 0;
 };
 
-const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) => {
+// Nueva función para extraer el título sin la extensión del archivo
+const getTitleWithoutExtension = (fileName: string): string => {
+  return fileName.replace(/\.(mp4|mov)$/i, ''); // Reemplaza .mp4 o .mov con cadena vacía
+};
+
+const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   const { keys } = useBucket();
-  const [videoUrls, setVideoUrls] = useState<string[]>([]);
-  const [videoTitles, setVideoTitles] = useState<string[]>([]);
+  const [videoData, setVideoData] = useState<{ url: string; title: string; key: KeyItem }[]>([]);
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
-  const [filteredKeys, setFilteredKeys] = useState<KeyItem[]>([]);
   
-  const router = useRouter()
-  const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
-
-  const params = new URLSearchParams(searchParams.toString());// Obtener el pathname actual
+  const router = useRouter();
 
   useEffect(() => {
     if (!item) return;
@@ -64,21 +60,24 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     const fetchVideoData = () => {
       try {
         const upperCaseItem = item.toUpperCase();
-        const filteredKey = keys.filter((keyItem: KeyItem) => keyItem.Key.includes(upperCaseItem));
-        const filteredKeys = filteredKey.filter((keyItem: KeyItem) => keyItem.Key.includes('.mp4'));
-        const urls = filteredKeys.map((keyItem: KeyItem) => `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`);
-        const titles = filteredKeys.map((keyItem: KeyItem) => {
+        const filteredKeys = keys.filter((keyItem: KeyItem) =>
+          keyItem.Key.includes(upperCaseItem) &&
+          (keyItem.Key.endsWith('.mp4') || keyItem.Key.endsWith('.mov'))
+        );
+
+        const videoData = filteredKeys.map((keyItem: KeyItem) => {
+          const url = `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`;
           const parts = keyItem.Key.split('/');
-          return parts[parts.length - 1].replace('.mp4', '');
+          const fileName = parts[parts.length - 1];
+          const title = getTitleWithoutExtension(fileName); // Utiliza la nueva función
+          return { url, title, key: keyItem };
         });
 
-        const sortedVideos = titles
-          .map((title, index) => ({ title, url: urls[index], keyItem: filteredKeys[index] }))
-          .sort((a, b) => extractNumberFromTitle(a.title) - extractNumberFromTitle(b.title));
+        const sortedVideoData = videoData.sort((a, b) =>
+          extractNumberFromTitle(a.title) - extractNumberFromTitle(b.title)
+        );
 
-        setVideoUrls(sortedVideos.map((video) => video.url));
-        setVideoTitles(sortedVideos.map((video) => video.title));
-        setFilteredKeys(sortedVideos.map((video) => video.keyItem));
+        setVideoData(sortedVideoData);
       } catch (error) {
         console.error('Error fetching video data:', error);
       }
@@ -87,91 +86,90 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
     fetchVideoData();
   }, [keys, item]);
 
-  const findVideoIdByTitle = (title: string): string | null | undefined => {
+  const handleFavoriteToggle = async (index: number, isFavorite: boolean) => {
+    const { title, url } = videoData[index];
     const favorite = favorites.find((fav) => fav.videoTitle === title);
-    return favorite ? favorite.videoId : null;
-  };
 
-  const handleFavoriteClick = async (index: number) => {
-    const videoTitle = videoTitles[index];
-    const videoId = findVideoIdByTitle(videoTitle);
-
-    if (videoId) {
+    if (isFavorite && favorite) {
+      // Remove from favorites
       try {
-        await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
-        setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
+        await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${favorite.videoId}`);
+        setFavorites((prevFavorites) => prevFavorites.filter((fav) => fav.videoId !== favorite.videoId));
       } catch (error) {
-        console.error('Error al eliminar video de favoritos:', error);
+        console.error('Error removing video from favorites:', error);
       }
-    } else {
-      const url = videoUrls[index];
-      const currentDate = new Date().toISOString();
+    } else if (!isFavorite) {
+      // Add to favorites
       const newFavorite: Favorite = {
         id: uuidv4(),
         userId,
         videoId: uuidv4(),
         category: 'favorites',
-        videoTitle,
+        videoTitle: title,
         url,
-        creationDate: currentDate,
+        creationDate: new Date().toISOString(),
         lastView: null,
       };
 
       try {
         await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newFavorite);
-        setFavorites(prevFavorites => [...prevFavorites, newFavorite]);
+        setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);
       } catch (error) {
-        console.error('Error al agregar video a favoritos:', error);
+        console.error('Error adding video to favorites:', error);
       }
     }
   };
 
-  const findWatchLaterByTitle = (title: string): string | null | undefined => {
+  const handleWatchLaterToggle = async (index: number, isWatchLater: boolean) => {
+    const { title, url } = videoData[index];
     const watchLaterItem = watchLater.find((wl) => wl.videoTitle === title);
-    return watchLaterItem ? watchLaterItem.videoId : null;
-  };
 
-  const handleWatchLaterClick = async (index: number) => {
-    const videoTitle = videoTitles[index];
-    const videoId = findWatchLaterByTitle(videoTitle);
-
-    if (videoId) {
+    if (isWatchLater && watchLaterItem) {
+      // Remove from watch later
       try {
-        await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
-        setWatchLater(prevWatchLater => prevWatchLater.filter(watch => watch.videoId !== videoId));
+        await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${watchLaterItem.videoId}`);
+        setWatchLater((prevWatchLater) => prevWatchLater.filter((watch) => watch.videoId !== watchLaterItem.videoId));
       } catch (error) {
-        console.error('Error al eliminar video de "Ver más tarde":', error);
+        console.error('Error removing video from "Watch Later":', error);
       }
-    } else {
-      const url = videoUrls[index];
-      const currentDate = new Date().toISOString();
+    } else if (!isWatchLater) {
+      // Add to watch later
       const newWatchLater: WatchLater = {
         id: uuidv4(),
         userId,
         videoId: uuidv4(),
         category: 'watchlater',
-        videoTitle,
+        videoTitle: title,
         url,
-        creationDate: currentDate,
+        creationDate: new Date().toISOString(),
         lastView: null,
       };
 
       try {
         await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newWatchLater);
-        setWatchLater(prevWatchLater => [...prevWatchLater, newWatchLater]);
+        setWatchLater((prevWatchLater) => [...prevWatchLater, newWatchLater]);
       } catch (error) {
-        console.error('Error al agregar video a "Ver más tarde":', error);
+        console.error('Error adding video to "Watch Later":', error);
       }
+    }
+  };
+
+  const handlePlay = async (key: KeyItem) => {
+    console.log('Playing video key:', key.Key); // Mostrar solo la key del video
+    try {
+      await updateVideoViews(key.Key); // Call the function to update views
+    } catch (error) {
+      console.error('Error updating video views:', error);
     }
   };
 
   const handleDoubleClick = (videoUrl: string) => {
     console.log('Video URL:', videoUrl); // Mostrar URL en consola
-    const videoId = videoUrl;
-    const params = new URLSearchParams({
-      videoUrl: videoId,
-    });
-    router.push(`/portal/categorias/video-player?${params.toString()}`);  };
+    const videoFileName = videoUrl.split('/').pop();
+    const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : ''; // Utiliza la nueva función
+    const params = new URLSearchParams({ videoUrl: videoId });
+    router.push(`/portal/categorias/video-player?${params.toString()}`);
+  };
 
   return (
     <motion.div
@@ -181,29 +179,31 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
       variants={pageTransition}
       style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}
     >
-      {videoUrls.map((url, index) => {
+      {videoData.map(({ url, title, key }, index) => {
         const isFavorite = favorites.some((fav) => fav.url === url);
         const isWatchLater = watchLater.some((wl) => wl.url === url);
+
         return (
           <div
             key={index}
             className={styles.cardContainer}
             onMouseEnter={() => setHoveredVideo(index)}
             onMouseLeave={() => setHoveredVideo(null)}
-            onDoubleClick={() => handleDoubleClick(url)} // Añadir el manejador de doble clic
+            onDoubleClick={() => handleDoubleClick(url)}
           >
             <div className={styles.cardContainer_01}>
-              <ReactPlayer 
-                url={url} 
-                controls={hoveredVideo === index} 
-                width="100%" 
-                height="100%" 
-                className={styles.cardPlayer} 
-                playing={false} // Asegurarse de que no esté reproduciéndose automáticamente
+              <ReactPlayer
+                url={url}
+                controls={hoveredVideo === index}
+                width="100%"
+                height="100%"
+                className={styles.cardPlayer}
+                playing={false}
+                onPlay={() => handlePlay(key)}
                 config={{
                   file: {
                     attributes: {
-                      onDoubleClick: () => handleDoubleClick(url), // Manejador adicional para el evento de doble clic
+                      onDoubleClick: () => handleDoubleClick(url),
                     },
                   },
                 }}
@@ -211,16 +211,16 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId, search }) =
             </div>
             {(hoveredVideo === index || isFavorite || isWatchLater) && (
               <div className={styles.cardIcons}>
-                <div className={styles.cardIcon} onClick={() => handleFavoriteClick(index)}>
+                <div className={styles.cardIcon} onClick={() => handleFavoriteToggle(index, isFavorite)}>
                   {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
                 </div>
-                <div className={styles.cardIcon} onClick={() => handleWatchLaterClick(index)}>
+                <div className={styles.cardIcon} onClick={() => handleWatchLaterToggle(index, isWatchLater)}>
                   {isWatchLater ? <FaClock size={24} /> : <FaRegClock size={24} />}
                 </div>
               </div>
             )}
             <div>
-              <p className={styles.title}>{videoTitles[index]}</p>
+              <p className={styles.title}>{title}</p>
             </div>
           </div>
         );

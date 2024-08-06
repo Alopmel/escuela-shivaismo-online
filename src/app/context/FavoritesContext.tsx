@@ -1,9 +1,9 @@
 // src/app/context/FavoritesContext.tsx
-
 'use client';
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { getFavoritesByUserId } from '@/lib/favoriteData'; // Importamos la función de API y el tipo Favorite
+import { getFavoritesByUserId } from '@/lib/favoriteData';
 import { Favorite } from '../types/types';
+import { useUser } from '@/app/context/UserContext';
 
 interface FavoritesContextProps {
   favorites: Favorite[];
@@ -18,8 +18,15 @@ interface FavoritesProviderProps {
 
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const { userId, loading } = useUser();
 
   useEffect(() => {
+    if (loading || !userId) {
+      return;
+    }
+
+    console.log('User ID from useUser:', userId); // Asumiendo que `userId` es el ID del usuario
+
     const fetchFavorites = async (userId: string) => {
       try {
         const fetchedFavorites = await getFavoritesByUserId(userId);
@@ -29,10 +36,8 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
       }
     };
 
-    // Aquí podrías tener una función para obtener el userId del usuario actual
-    const userId = 'c6a2c274-8001-7060-0a1c-87077fd101e1'; // Ejemplo: obtén el userId de alguna manera (por ejemplo, desde props o contextos superiores)
     fetchFavorites(userId);
-  }, []);
+  }, [loading, userId]);
 
   useEffect(() => {
     console.log('Favorites updated in context:', favorites);
