@@ -31,6 +31,7 @@ const pageTransition = {
   },
 };
 
+
 const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const { favorites, setFavorites } = useFavorites();

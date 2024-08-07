@@ -5,7 +5,7 @@ import { handleSignOut } from "@/lib/cognitoActions";
 
 const Navbar = () => {
   return (
-    <nav className="absolute left-[126px] top-[20px] flex justify-between bg-transparent">
+    <nav className="absolute left-[177px] top-[20px] flex justify-between bg-transparent">
       <div className="flex items-center">
         <form action={handleSignOut} className="mr-2">
           <button

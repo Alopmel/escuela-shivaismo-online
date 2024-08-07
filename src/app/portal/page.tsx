@@ -1,8 +1,10 @@
+// src/ui/portal/Dashboard.tsx
 'use client'
 import { useEffect, useState, useCallback } from 'react';
 import CircleMenu from '@/ui/portal/circle-menu/circleMenu';
 import CircleMenuMobile from '@/ui/portal/circle-menu/circleMenuMobile';
 import Search from '@/ui/portal/search/search';
+
 const Dashboard = () => {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
@@ -11,11 +13,7 @@ const Dashboard = () => {
     if (typeof window !== 'undefined') {
       windowWidth = window.innerWidth;
     }
-    if (windowWidth >= 1024) {
-      setIsDesktop(true);
-    } else {
-      setIsDesktop(false);
-    }
+    setIsDesktop(windowWidth >= 1024);
   }, []);
 
   useEffect(() => {
@@ -27,10 +25,10 @@ const Dashboard = () => {
   }, [checkWindowSize]);
 
   return (
-    <>
-      <Search /> {/* Agrega el componente de búsqueda */}
+    <div className="relative flex h-screen justify-center items-center">
+      <Search /> {/* Search is fixed to the top right */}
       {isDesktop ? (<CircleMenu />) : (<CircleMenuMobile />)}
-    </>
+    </div>
   );
 };
 
