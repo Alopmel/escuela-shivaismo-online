@@ -4,11 +4,12 @@ import { ExclamationCircleIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleUpdateUserAttribute } from "@/lib/cognitoActions";
-import useAuthUser from "@/app/hooks/use-auth-user";
+import { useUser } from "@/app/context/UserContext"; // Importa el hook del contexto
 import styles from './userProfile.module.css'; // Importar estilos CSS
 
 export default function UpdateProfileForm() {
-  const user = useAuthUser();
+  const { user } = useUser(); // Obtén el usuario del contexto
+
   const [status, dispatch] = useFormState(handleUpdateUserAttribute, "");
 
   return (

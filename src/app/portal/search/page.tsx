@@ -1,8 +1,8 @@
-// /src/app/portal/ page.tsx
 'use client'
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useBucket } from '@/app/context/BucketContext';
+import { useUser } from '@/app/context/UserContext'; // Importa useUser
 import SearchCardComponent from '@/ui/portal/search/search-card-component';
 
 const Page = () => {
@@ -10,6 +10,8 @@ const Page = () => {
   const [filteredVideos, setFilteredVideos] = useState<{ url: string; title: string; key: { Key: string } }[]>([]);
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get('searchTerm') || '';
+
+  const { userId, loading } = useUser(); // Usa useUser para obtener userId
 
   useEffect(() => {
     if (searchTerm) {
@@ -30,10 +32,14 @@ const Page = () => {
     }
   }, [searchTerm, keys]);
 
+  if (loading) {
+    return <div>Cargando...</div>; // Muestra un indicador de carga si los datos del usuario todavía se están cargando
+  }
+
   return (
     <div>
       <h1>Resultados de la búsqueda: {searchTerm}</h1>
-      <SearchCardComponent item={searchTerm} userId="" videoData={filteredVideos} />
+      <SearchCardComponent userId={userId || ''} videoData={filteredVideos} />
     </div>
   );
 };

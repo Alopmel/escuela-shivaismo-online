@@ -1,13 +1,12 @@
-// src/utils/videoUtils.ts
-
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { Favorite, WatchLater } from '@/app/types/types';
 
 // Define KeyItem type
 type KeyItem = {
-    Key: string;
-  };
+  Key: string;
+};
+
 // Utilidad para extraer número de título
 export const extractNumberFromTitle = (title: string): number => {
   const match = title.match(/\d+/g);
@@ -20,8 +19,23 @@ export const getTitleWithoutExtension = (fileName: string): string => {
 };
 
 // Manejar favoritos
-export const handleFavoriteToggle = async (index: number, videoData: { title: string; url: string; key: KeyItem }[], favorites: Favorite[], setFavorites: React.Dispatch<React.SetStateAction<Favorite[]>>, userId: string) => {
+export const handleFavoriteToggle = async (
+  index: number,
+  videoData: { title: string; url: string; key: KeyItem }[],
+  favorites: Favorite[],
+  setFavorites: React.Dispatch<React.SetStateAction<Favorite[]>>,
+  userId: string
+) => {
   const { title, url, key } = videoData[index];
+  console.log('handleFavoriteToggle called with:', {
+    index,
+    title,
+    url,
+    key,
+    favorites,
+    userId,
+  });
+
   const favorite = favorites.find((fav) => fav.url === url);
 
   if (favorite) {
@@ -29,6 +43,7 @@ export const handleFavoriteToggle = async (index: number, videoData: { title: st
     try {
       await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${favorite.videoId}`);
       setFavorites((prevFavorites) => prevFavorites.filter((fav) => fav.videoId !== favorite.videoId));
+      console.log(`Removed from favorites: ${url}`);
     } catch (error) {
       console.error('Error removing video from favorites:', error);
     }
@@ -43,12 +58,13 @@ export const handleFavoriteToggle = async (index: number, videoData: { title: st
       url,
       creationDate: new Date().toISOString(),
       lastView: null,
-      key: key.Key // Añade la propiedad key
+      key: key.Key, // Añade la propiedad key
     };
 
     try {
       await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newFavorite);
       setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);
+      console.log(`Added to favorites: ${url}`);
     } catch (error) {
       console.error('Error adding video to favorites:', error);
     }
@@ -56,8 +72,23 @@ export const handleFavoriteToggle = async (index: number, videoData: { title: st
 };
 
 // Manejar "Watch Later"
-export const handleWatchLaterToggle = async (index: number, videoData: { title: string; url: string; key: KeyItem }[], watchLater: WatchLater[], setWatchLater: React.Dispatch<React.SetStateAction<WatchLater[]>>, userId: string) => {
+export const handleWatchLaterToggle = async (
+  index: number,
+  videoData: { title: string; url: string; key: KeyItem }[],
+  watchLater: WatchLater[],
+  setWatchLater: React.Dispatch<React.SetStateAction<WatchLater[]>>,
+  userId: string
+) => {
   const { title, url, key } = videoData[index];
+  console.log('handleWatchLaterToggle called with:', {
+    index,
+    title,
+    url,
+    key,
+    watchLater,
+    userId,
+  });
+
   const watchLaterItem = watchLater.find((wl) => wl.url === url);
 
   if (watchLaterItem) {
@@ -65,6 +96,7 @@ export const handleWatchLaterToggle = async (index: number, videoData: { title: 
     try {
       await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${watchLaterItem.videoId}`);
       setWatchLater((prevWatchLater) => prevWatchLater.filter((watch) => watch.videoId !== watchLaterItem.videoId));
+      console.log(`Removed from watch later: ${url}`);
     } catch (error) {
       console.error('Error removing video from "Watch Later":', error);
     }
@@ -79,12 +111,13 @@ export const handleWatchLaterToggle = async (index: number, videoData: { title: 
       url,
       creationDate: new Date().toISOString(),
       lastView: null,
-      key: key.Key // Añade la propiedad key
+      key: key.Key, // Añade la propiedad key
     };
 
     try {
       await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newWatchLater);
       setWatchLater((prevWatchLater) => [...prevWatchLater, newWatchLater]);
+      console.log(`Added to watch later: ${url}`);
     } catch (error) {
       console.error('Error adding video to "Watch Later":', error);
     }
@@ -93,30 +126,29 @@ export const handleWatchLaterToggle = async (index: number, videoData: { title: 
 
 // Manejar reproducción de video
 export const handlePlay = async (key: { Key: string }) => {
-    console.log('handlePlay called with key:', key);
-  
-    const videoId = encodeURIComponent(key.Key); // Asegúrate de usar `key.Key` aquí
-    console.log('Playing video key:', videoId);
-  
-    if (!videoId) {
-      console.error('Error: videoId is empty');
-      return;
-    }
-  
-    const url = 'https://xe6258whge.execute-api.eu-west-2.amazonaws.com/recommended';
-  
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          'videoId': videoId,
-        }
-      });
-  
-      console.log('Response data:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating video views:', error);
-      throw error;
-    }
-  };
-  
+  console.log('handlePlay called with key:', key);
+
+  const videoId = encodeURIComponent(key.Key); // Asegúrate de usar `key.Key` aquí
+  console.log('Playing video key:', videoId);
+
+  if (!videoId) {
+    console.error('Error: videoId is empty');
+    return;
+  }
+
+  const url = 'https://xe6258whge.execute-api.eu-west-2.amazonaws.com/recommended';
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        videoId: videoId,
+      },
+    });
+
+    console.log('Response data:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating video views:', error);
+    throw error;
+  }
+};

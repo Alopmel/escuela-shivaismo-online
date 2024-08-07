@@ -1,18 +1,23 @@
+// src/iu/portal/categorias/video-player/card-component.tsx
 import React, { useState } from 'react';
+import { useBucket } from '@/app/context/BucketContext';
 import ReactPlayer from 'react-player';
 import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useRouter } from 'next/navigation';
-import { extractNumberFromTitle, handleFavoriteToggle, handleWatchLaterToggle, handlePlay } from '@/utils/videoUtils';
+import { extractNumberFromTitle, getTitleWithoutExtension, handleFavoriteToggle, handleWatchLaterToggle, handlePlay } from '@/utils/videoUtils';
 import styles from '../userprofile/cardComponent.module.css';
 
-interface SearchCardComponentProps {
-  item: string;
+interface CardComponentProps {
+  videoData: { url: string; title: string; key: KeyItem }[]; // Cambiado a videoData como prop
   userId: string;
-  videoData: { url: string; title: string; key: { Key: string } }[];
 }
+
+type KeyItem = {
+  Key: string;
+};
 
 const pageTransition = {
   hidden: { opacity: 0 },
@@ -26,16 +31,16 @@ const pageTransition = {
   },
 };
 
-const SearchCardComponent: React.FC<SearchCardComponentProps> = ({ item, userId, videoData }) => {
+const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
   const router = useRouter();
 
   const handleDoubleClick = (videoUrl: string) => {
-    console.log('Video URL:', videoUrl); // Mostrar URL en consola
+    console.log('Video URL:', videoUrl);
     const videoFileName = videoUrl.split('/').pop();
-    const videoId = videoFileName ? videoFileName.replace(/\.(mp4|mov)$/i, '') : '';
+    const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
     const params = new URLSearchParams({ videoUrl: videoId });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
@@ -51,9 +56,6 @@ const SearchCardComponent: React.FC<SearchCardComponentProps> = ({ item, userId,
       {videoData.map(({ url, title, key }, index) => {
         const isFavorite = favorites.some((fav) => fav.url === url);
         const isWatchLater = watchLater.some((wl) => wl.url === url);
-
-        // Mostrar la información de los videos en la consola
-        console.log(`Rendering video ${index + 1}:`, { url, title, key });
 
         return (
           <div
@@ -71,7 +73,7 @@ const SearchCardComponent: React.FC<SearchCardComponentProps> = ({ item, userId,
                 height="100%"
                 className={styles.cardPlayer}
                 playing={false}
-                onPlay={() => { handlePlay(key); }}
+                onPlay={() => {handlePlay(key);}}
                 config={{
                   file: {
                     attributes: {
@@ -101,4 +103,4 @@ const SearchCardComponent: React.FC<SearchCardComponentProps> = ({ item, userId,
   );
 };
 
-export default SearchCardComponent;
+export default CardComponent;
