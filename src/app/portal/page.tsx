@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import CircleMenu from '@/ui/portal/circle-menu/circleMenu';
 import CircleMenuMobile from '@/ui/portal/circle-menu/circleMenuMobile';
-
+import Search from '@/ui/portal/search/search';
 const Dashboard = () => {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
@@ -28,6 +28,7 @@ const Dashboard = () => {
 
   return (
     <>
+      <Search /> {/* Agrega el componente de búsqueda */}
       {isDesktop ? (<CircleMenu />) : (<CircleMenuMobile />)}
     </>
   );

@@ -110,7 +110,6 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       <CardComponent 
         userId={userId} 
         item={item} 
-         // Corregido aquí
       />
     </motion.div>
   );

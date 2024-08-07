@@ -30,9 +30,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex">
+       <Search /> {/* Agrega el componente de búsqueda */}
       {isDesktop ? (<SideNav />) : (<Navbar />)}
-      <main className="flex-1  mt-28 md:mt-32 ml-12 md:ml-20 text-white ">
-        <Search /> {/* Agrega el componente de búsqueda */}
+      <main className="flex-1  ">
         {children}
       </main>
     </div>
