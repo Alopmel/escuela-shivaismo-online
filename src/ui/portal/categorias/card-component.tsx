@@ -1,5 +1,3 @@
-// /src/iu/portal/categorias/video-player/card-component.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
 import ReactPlayer from 'react-player';
@@ -7,6 +5,7 @@ import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
+import { useProgress } from '@/app/context/ProgressContext';
 import { useRouter } from 'next/navigation';
 import { 
   extractNumberFromTitle, 
@@ -14,7 +13,11 @@ import {
   handleFavoriteToggle, 
   handleWatchLaterToggle, 
   handlePlay,
-  cleanVideoId, } from '@/utils/videoUtils';
+  cleanVideoId,
+  throttle,
+  handleVideoProgress
+} from '@/utils/videoUtils';
+import { Progress } from '@/app/types/types';
 import styles from './cardComponente.module.css';
 
 interface CardComponentProps {
@@ -44,6 +47,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
+  const { progress, setProgress } = useProgress();
   const router = useRouter();
 
   useEffect(() => {
@@ -86,8 +90,27 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
     const params = new URLSearchParams({ videoTitle: videoTitle, videoUrl });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
-  
-  
+
+  // Usar throttle en la función handleVideoProgress
+  const throttledHandleVideoProgress = throttle(async (
+    played: number,
+    index: number,
+    videoData: { url: string; title: string; key: KeyItem }[],
+    progress: Progress[],
+    setProgress: React.Dispatch<React.SetStateAction<Progress[]>>,
+    userId: string
+  ) => {
+    const progressPercentage = played * 100;
+    const { title, url } = videoData[index];
+
+    // Verificar si el progreso ya está registrado en el estado
+    const existingProgress = progress.some((pg) => pg.url === url);
+
+    if (progressPercentage >= 90 && !existingProgress) {
+      // Llamar a handleVideoProgress si el progreso no existe
+      await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
+    }
+  }, 5000);
 
   return (
     <motion.div
@@ -100,6 +123,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
       {videoData.map(({ url, title, key }, index) => {
         const isFavorite = favorites.some((fav) => fav.url === url);
         const isWatchLater = watchLater.some((wl) => wl.url === url);
+        const isViewed = progress.some((pg) => pg.url === url); // Verifica si el video ha sido visto
 
         return (
           <div
@@ -109,23 +133,31 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
             onMouseLeave={() => setHoveredVideo(null)}
             onDoubleClick={() => handleDoubleClick(url)}
           >
-            <div className={styles.cardContainer_01}>
-            <ReactPlayer
-              url={url}
-              controls={hoveredVideo === index}
-              width="100%"
-              height="100%"
-              className={styles.cardPlayer}
-              playing={false}
-              onPlay={() => {handlePlay(key);}}
-              config={{
-                file: {
-                  attributes: {
-                    onDoubleClick: () => handleDoubleClick(url),
+            <div className={`${styles.cardContainer_01} relative`}>
+              <ReactPlayer
+                url={url}
+                controls={hoveredVideo === index}
+                width="100%"
+                height="100%"
+                className={styles.cardPlayer}
+                playing={false}
+                onPlay={() => { handlePlay(key); }}
+                onProgress={({ played }) => {
+                  throttledHandleVideoProgress(played, index, videoData, progress, setProgress, userId);
+                }}
+                config={{
+                  file: {
+                    attributes: {
+                      onDoubleClick: () => handleDoubleClick(url),
+                    },
                   },
-                },
-              }}
-            />
+                }}
+              />
+              {isViewed && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
+                  <span className="text-white text-4xl font-bold">Visto</span>
+                </div>
+              )}
             </div>
             {(hoveredVideo === index || isFavorite || isWatchLater) && (
               <div className={styles.cardIcons}>

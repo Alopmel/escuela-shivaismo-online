@@ -1,7 +1,6 @@
-// /src/utils/videoUtils.ts
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { Favorite, WatchLater } from '@/app/types/types';
+import { Favorite, WatchLater, Progress } from '@/app/types/types';
 
 // Define KeyItem type
 type KeyItem = {
@@ -20,9 +19,20 @@ export const getTitleWithoutExtension = (fileName: string): string => {
 };
 
 export const cleanVideoId = (videoFileName: string): string => {
-    // La expresión regular busca un patrón de un número seguido de un punto y un espacio opcional
-    return videoFileName.replace(/^\d+\.\s*/, '');
-  }
+  // La expresión regular busca un patrón de un número seguido de un punto y un espacio opcional
+  return videoFileName.replace(/^\d+\.\s*/, '');
+}
+
+// Función para debounce
+const debounce = (func: Function, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: any[]) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
 
 // Manejar favoritos
 export const handleFavoriteToggle = async (
@@ -96,6 +106,7 @@ export const handleWatchLaterToggle = async (
   });
 
   const watchLaterItem = watchLater.find((wl) => wl.url === url);
+  console.log('watchLater' ,watchLater)
 
   if (watchLaterItem) {
     // Remove from watch later
@@ -157,4 +168,68 @@ export const handlePlay = async (key: { Key: string }) => {
     console.error('Error updating video views:', error);
     throw error;
   }
+};
+
+// Manejar el progreso del video
+export const handleVideoProgress = debounce(
+  async (
+    played: number,
+    index: number,
+    videoData: { title: string; url: string; key: KeyItem }[],
+    progress: Progress[],
+    setProgress: React.Dispatch<React.SetStateAction<Progress[]>>,
+    userId: string
+  ) => {
+    const progressPercentage = played * 100;
+    const { title, url } = videoData[index];
+
+    console.log('handleProgressToggle called with:', {
+      index,
+      title,
+      url,
+      progress,
+      userId,
+    });
+
+    if (progressPercentage >= 90) {
+      // Verificar si el progreso ya existe
+      const progressItem = progress.find((pg) => pg.url === url);
+      console.log('progressItem-->', progressItem);
+
+      if (!progressItem) {
+        // Si no existe, añadir progreso
+        const newProgress: Progress = {
+          id: uuidv4(),
+          userId,
+          url,
+          videoId: uuidv4(),
+          videoTitle: cleanVideoId(title),
+          creationDate: new Date().toISOString(),
+        };
+
+        try {
+          await axios.put('https://kqyeh8sa4j.execute-api.eu-west-2.amazonaws.com/progress', newProgress);
+          setProgress((prevProgress) => [...prevProgress, newProgress]);
+          console.log(`Added to progress: ${url}`);
+        } catch (error) {
+          console.error('Error adding video to "Progress":', error);
+        }
+      } else {
+        console.log(`Progress already exists for videoId ${progressItem.videoId}, no action taken.`);
+      }
+    }
+  },
+  1000 // Ajusta el tiempo de debounce según tus necesidades
+);
+
+// Función para hacer throttle
+export const throttle = (func: Function, limit: number) => {
+  let inThrottle: boolean;
+  return function (...args: any[]) {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
 };

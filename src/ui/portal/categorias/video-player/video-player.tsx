@@ -1,8 +1,12 @@
 'use client'
+
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import 'tailwindcss/tailwind.css';
+import { throttle, handleVideoProgress } from '@/utils/videoUtils'; // Importa las funciones necesarias
+import { Progress } from '@/app/types/types';
+import { useUser } from "@/app/context/UserContext";
 
 // Importa ReactPlayer dinámicamente para evitar problemas de hidratación
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
@@ -21,13 +25,21 @@ const VideoPlayer: React.FC = () => {
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
-  const username = 'Alba'; // Nombre del usuario hardcodeado
+  const [isClient, setIsClient] = useState(false);
+  const [progress, setProgress] = useState<Progress[]>([]);
+  const { userId } = useUser(); // Obtener userId del contexto
+  const { name } = useUser(); 
+
+  useEffect(() => {
+    setIsClient(true);
+    console.log('Video url------->' + videoUrl);
+  }, [videoUrl]);
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
       const comment: Comment = {
         text: newComment,
-        user: username,
+        user: name || 'Anonymous',
         date: new Date().toLocaleString(),
       };
       setComments([...comments, comment]);
@@ -35,12 +47,17 @@ const VideoPlayer: React.FC = () => {
     }
   };
 
-  // Solo renderiza el player en el cliente
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-    console.log('Video url------->' + videoUrl);
-  }, []);
+  // Usar throttle en la función handleVideoProgress
+  const throttledHandleVideoProgress = throttle(async (
+    played: number,
+    index: number,
+    videoData: { url: string; title: string; key: { Key: string } }[],
+    progress: Progress[],
+    setProgress: React.Dispatch<React.SetStateAction<Progress[]>>,
+    userId: string
+  ) => {
+    await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
+  }, 5000);
 
   return (
     <div className="flex flex-col items-center p-4 min-h-screen">
@@ -54,6 +71,10 @@ const VideoPlayer: React.FC = () => {
               width="100%"
               height="100%"
               playing={false}
+              onProgress={({ played }) => {
+                // Aquí puedes pasar datos adicionales si es necesario
+                throttledHandleVideoProgress(played, 0, [{ url: videoUrl, title: videoTitle, key: { Key: 'dummy_key' } }], progress, setProgress, userId);
+              }}
             />
           )}
         </div>

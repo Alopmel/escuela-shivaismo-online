@@ -1,53 +1,63 @@
-// src/app/hooks/use-auth-user.ts
 'use client';
-import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
+import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 
 interface UserAttributes {
   userId: string;
-  username: string; // Asegúrate de que este campo es el adecuado para userId
-  email: string;    // Añade la propiedad email
+  username: string;
+  name?: string;
+  email: string;
   isAdmin: boolean;
-  // Añade otros atributos del usuario aquí según sea necesario
   [key: string]: any;
 }
 
 export default function useAuthUser() {
   const [user, setUser] = useState<UserAttributes | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    async function getUser() {
+    const getUser = async () => {
       try {
         const session = await fetchAuthSession();
         if (!session.tokens) {
           setLoading(false);
           return;
         }
-        const userAttributes = await fetchUserAttributes();
-        const currentUser = await getCurrentUser();
-        const user = {
+
+        const [userAttributes, currentUser] = await Promise.all([
+          fetchUserAttributes(),
+          getCurrentUser(),
+        ]);
+
+        const userData: UserAttributes = {
           ...currentUser,
           ...userAttributes,
-          email: userAttributes.email || "", // Asegúrate de que 'email' esté incluido
-          isAdmin: false,
+          email: userAttributes.email ?? "",
+          isAdmin: (session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined)?.includes("Admins") ?? false,
         };
-        const groups = session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined;
-        user.isAdmin = Boolean(groups && groups.includes("Admins"));
-        setUser(user as UserAttributes);
-        setUserId(user.username); // Asegúrate de que `username` es el campo adecuado para `userId`
-        setEmail(user.email)
+
+        setUser(userData);
       } catch (error) {
         console.error('Error fetching user:', error);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     getUser();
   }, []);
 
-  return { user, userId, email, loading };
+  return { 
+    user: user ? {
+      userId: user.userId,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin
+    } : null, 
+    userId: user?.username ?? null,
+    name: user?.name ?? null,
+    email: user?.email ?? null,
+    loading
+  };
 }

@@ -23,3 +23,12 @@ export interface WatchLater {
   lastView: string | null;
   key: string; // Añade esta propiedad
 }
+
+export interface Progress {
+  id: string,
+  userId: string,
+  url: string,
+  videoId: string | null;
+  videoTitle: string,
+  creationDate: string,
+}

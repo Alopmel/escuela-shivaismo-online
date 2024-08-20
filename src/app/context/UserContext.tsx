@@ -6,6 +6,7 @@ import useAuthUser from '@/app/hooks/use-auth-user';
 interface UserContextProps {
   user: Record<string, any> | null;
   userId: string | null;
+  name: string | null;
   email: string | null;
   loading: boolean;
 }
@@ -17,10 +18,10 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const { user, userId, email, loading } = useAuthUser();
+  const { user, userId, name, email, loading } = useAuthUser();
 
   return (
-    <UserContext.Provider value={{ user, userId, email, loading }}>
+    <UserContext.Provider value={{ user, userId, name, email, loading }}>
       {children}
     </UserContext.Provider>
   );

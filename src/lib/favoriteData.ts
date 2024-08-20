@@ -1,3 +1,4 @@
+// /src/lib/favoriteData.ts
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Favorite } from '@/app/types/types';
