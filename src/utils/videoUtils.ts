@@ -1,3 +1,4 @@
+// /src/utils/videoUtils.ts
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { Favorite, WatchLater } from '@/app/types/types';
@@ -17,6 +18,11 @@ export const extractNumberFromTitle = (title: string): number => {
 export const getTitleWithoutExtension = (fileName: string): string => {
   return fileName.replace(/\.(mp4|mov)$/i, ''); // Reemplaza .mp4 o .mov con cadena vacía
 };
+
+export const cleanVideoId = (videoFileName: string): string => {
+    // La expresión regular busca un patrón de un número seguido de un punto y un espacio opcional
+    return videoFileName.replace(/^\d+\.\s*/, '');
+  }
 
 // Manejar favoritos
 export const handleFavoriteToggle = async (

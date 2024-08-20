@@ -10,7 +10,7 @@ import { BucketProvider } from "./context/BucketContext";
 import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estructura de archivos
 import Image from "next/image";
 import Link from 'next/link';
-import { AppProps } from 'next/app';
+
 
 export const metadata: Metadata = {
   title: "Tantra Shivaismo de Cachemira ",

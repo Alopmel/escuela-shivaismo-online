@@ -8,7 +8,13 @@ import { motion } from 'framer-motion';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useRouter } from 'next/navigation';
-import { extractNumberFromTitle, getTitleWithoutExtension, handleFavoriteToggle, handleWatchLaterToggle, handlePlay } from '@/utils/videoUtils';
+import { 
+  extractNumberFromTitle, 
+  getTitleWithoutExtension, 
+  handleFavoriteToggle, 
+  handleWatchLaterToggle, 
+  handlePlay,
+  cleanVideoId, } from '@/utils/videoUtils';
 import styles from './cardComponente.module.css';
 
 interface CardComponentProps {
@@ -73,12 +79,14 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   }, [keys, item]);
 
   const handleDoubleClick = (videoUrl: string) => {
-    console.log('Video URL:', videoUrl); // Mostrar URL en consola
     const videoFileName = videoUrl.split('/').pop();
-    const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : ''; // Utiliza la nueva función
-    const params = new URLSearchParams({ videoUrl: videoId });
+    const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
+    const videoTitle = videoId ? cleanVideoId(videoId) : '';
+    
+    const params = new URLSearchParams({ videoTitle: videoTitle, videoUrl });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
+  
   
 
   return (
