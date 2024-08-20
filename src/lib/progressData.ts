@@ -1,4 +1,4 @@
-// /src/lib/favoriteData.ts
+// /src/lib/progressData.ts
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Progress } from '@/app/types/types';

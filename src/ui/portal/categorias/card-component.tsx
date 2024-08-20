@@ -49,6 +49,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   const { watchLater, setWatchLater } = useWatchLater();
   const { progress, setProgress } = useProgress();
   const router = useRouter();
+  const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!item) return;
@@ -65,7 +66,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
           const url = `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`;
           const parts = keyItem.Key.split('/');
           const fileName = parts[parts.length - 1];
-          const title = getTitleWithoutExtension(fileName); // Utiliza la nueva función
+          const title = getTitleWithoutExtension(fileName);
           return { url, title, key: keyItem };
         });
 
@@ -91,7 +92,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
 
-  // Usar throttle en la función handleVideoProgress
   const throttledHandleVideoProgress = throttle(async (
     played: number,
     index: number,
@@ -103,11 +103,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
     const progressPercentage = played * 100;
     const { title, url } = videoData[index];
 
-    // Verificar si el progreso ya está registrado en el estado
     const existingProgress = progress.some((pg) => pg.url === url);
 
     if (progressPercentage >= 90 && !existingProgress) {
-      // Llamar a handleVideoProgress si el progreso no existe
       await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
     }
   }, 5000);
@@ -123,7 +121,8 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
       {videoData.map(({ url, title, key }, index) => {
         const isFavorite = favorites.some((fav) => fav.url === url);
         const isWatchLater = watchLater.some((wl) => wl.url === url);
-        const isViewed = progress.some((pg) => pg.url === url); // Verifica si el video ha sido visto
+        const isViewed = progress.some((pg) => pg.url === url);
+        const isPlaying = playingVideoIndex === index;
 
         return (
           <div
@@ -140,8 +139,12 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
                 width="100%"
                 height="100%"
                 className={styles.cardPlayer}
-                playing={false}
-                onPlay={() => { handlePlay(key); }}
+                playing={isPlaying}
+                onPlay={() => { 
+                  handlePlay(key); 
+                  setPlayingVideoIndex(index); 
+                }}
+                onPause={() => setPlayingVideoIndex(null)}
                 onProgress={({ played }) => {
                   throttledHandleVideoProgress(played, index, videoData, progress, setProgress, userId);
                 }}
@@ -149,11 +152,12 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
                   file: {
                     attributes: {
                       onDoubleClick: () => handleDoubleClick(url),
+                      controlsList: 'nodownload', // Aquí eliminamos la opción de descargar
                     },
                   },
                 }}
               />
-              {isViewed && (
+              {isViewed && !isPlaying && hoveredVideo !== index && ( // Ocultar en hover
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
                   <span className="text-white text-4xl font-bold">Visto</span>
                 </div>

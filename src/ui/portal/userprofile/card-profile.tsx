@@ -115,7 +115,7 @@ const CardProfile: React.FC = () => {
             )}
             <div>
               <p className={styles.title}>{video.videoTitle}</p>
-              <p className={styles.ptitle}>500 visualizaciones -</p>
+              <p className={styles.ptitle}>500 </p>
             </div>
           </div>
         ))

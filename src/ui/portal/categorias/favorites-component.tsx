@@ -34,6 +34,7 @@ const FavoritesComponent: React.FC<FavoritesComponentProps> = ({ userId }) => {
     return <div>No favorites found</div>;
   }
 
+  
   return (
     <div className={styles.favoritesContainer}>
       {favorites.map((favorite) => (
