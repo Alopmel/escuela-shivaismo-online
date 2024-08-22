@@ -148,10 +148,10 @@ export const handleWatchLaterToggle = async (
 
 
 export const handlePlay = async (key: { Key: string }) => {
-  console.log('handlePlay called with key:', key);
+  // console.log('handlePlay called with key:', key);
 
   const videoTitle = key.Key;
-  console.log('Playing video with title:', videoTitle);
+  // console.log('Playing video with title:', videoTitle);
 
   try {
     // Paso 1: Obtener todas las clases
@@ -201,6 +201,7 @@ export const handleVideoProgress = debounce(
 
     if (progressPercentage >= 90) {
       // Verificar si el progreso ya existe
+      console.log('progress', progress)
       const progressItem = progress.find((pg) => pg.url === url);
       console.log('progressItem-->', progressItem);
 

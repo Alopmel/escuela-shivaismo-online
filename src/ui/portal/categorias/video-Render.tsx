@@ -1,4 +1,4 @@
-// /src/ui/components/VideoRender.tsx
+// src/ui/components/VideoRender.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -13,7 +13,6 @@ import {
     handleWatchLaterToggle,
     handleFavoriteToggle,
     handlePlay,
-    getTitleWithoutExtension,
     cleanVideoId
 } from '@/utils/videoUtils';
 import { useRouter } from 'next/navigation';
@@ -34,26 +33,23 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
     const router = useRouter();
 
     const handleDoubleClick = (videoUrl: string) => {
-        const videoFileName = videoUrl.split('/').pop();
-        const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
-        const videoTitle = videoId ? cleanVideoId(videoId) : '';
-
-        const params = new URLSearchParams({ videoTitle, videoUrl });
-        router.push(`/portal/categorias/video-player?${params.toString()}`);
+        const video = videoData.find(v => v.url === videoUrl);
+        if (video) {
+            const params = new URLSearchParams({
+                videoUrl: video.url,
+                videoTitle: video.title,
+                key: JSON.stringify(video.key) // Enviar key como cadena JSON
+            });
+            router.push(`/portal/categorias/video-player?${params.toString()}`);
+        }
     };
 
     const throttledHandleVideoProgress = throttle(
         async (played: number, index: number) => {
-            const progressPercentage = played * 100;
-            const { url } = videoData[index];
-            const existingProgress = progress.some((pg) => pg.url === url);
-
-            if (progressPercentage >= 90 && !existingProgress) {
-                await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
-            }
+          await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
         },
-        5000
-    );
+        5000 // Ajusta el tiempo de throttling según sea necesario
+      );
 
     const pageTransition = {
         hidden: { opacity: 0 },
@@ -92,6 +88,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                 className={styles.cardPlayer}
                                 playing={isPlaying}
                                 onPlay={() => {
+                                    // Pasar key como parte del estado actual
                                     handlePlay(key);
                                     setPlayingVideoIndex(index);
                                 }}

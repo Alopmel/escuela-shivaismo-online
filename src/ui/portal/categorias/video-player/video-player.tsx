@@ -1,11 +1,12 @@
 // src/app/components/VideoPlayer.tsx
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { throttle,handleVideoProgress, putComment } from '@/utils/videoUtils'; // Importa las funciones necesarias
+import { throttle, handleVideoProgress, putComment, handlePlay } from '@/utils/videoUtils'; // Importa la función handlePlay
 import { Progress, Comment } from '@/app/types/types';
-import { useComments } from '@/app/context/CommentContext'; // Usa el contexto actualizado
+import { useComments } from '@/app/context/CommentContext';
 import { useUser } from "@/app/context/UserContext";
 
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
@@ -14,6 +15,8 @@ const VideoPlayer: React.FC = () => {
   const searchParams = useSearchParams();
   const videoUrl = searchParams.get('videoUrl') || '';
   const videoTitle = searchParams.get('videoTitle') || '';
+  const keyString = searchParams.get('key') || '{}';
+  const key = JSON.parse(keyString); // Convertir el string JSON a objeto
 
   const { comments, setComments, fetchComments } = useComments();
   const [newComment, setNewComment] = useState<string>('');
@@ -32,7 +35,7 @@ const VideoPlayer: React.FC = () => {
     const trimmedComment = newComment.trim();
     if (trimmedComment) {
       const comment: Comment = {
-        id: new Date().toISOString(), // Genera un ID único para el comentario
+        id: new Date().toISOString(),
         userId: userId || '',
         videoId: videoUrl,
         userName: name || 'Anonymous',
@@ -40,8 +43,8 @@ const VideoPlayer: React.FC = () => {
         creationDate: new Date().toLocaleString(),
       };
 
-      setComments([...comments, comment]); // Actualiza el estado local de los comentarios
-      setNewComment(''); // Limpia el campo de comentario
+      setComments([...comments, comment]);
+      setNewComment('');
 
       try {
         await putComment(videoUrl, videoTitle, userId || '', name || 'Anonymous', trimmedComment);
@@ -79,8 +82,12 @@ const VideoPlayer: React.FC = () => {
               width="100%"
               height="100%"
               playing={false}
+              onPlay={() => {
+                // Llama a handlePlay con el objeto key correcto
+                handlePlay(key);
+              }}
               onProgress={({ played }) => {
-                throttledHandleVideoProgress(played, 0, [{ url: videoUrl, title: videoTitle, key: { Key: 'dummy_key' } }], progress, setProgress, userId);
+                throttledHandleVideoProgress(played, 0, [{ url: videoUrl, title: videoTitle, key }], progress, setProgress, userId);
               }}
             />
           )}
