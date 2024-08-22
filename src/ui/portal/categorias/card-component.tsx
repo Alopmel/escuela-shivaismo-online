@@ -1,25 +1,11 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
-import ReactPlayer from 'react-player';
-import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { useFavorites } from '@/app/context/FavoritesContext';
-import { useWatchLater } from '@/app/context/WatchLaterContext';
-import { useProgress } from '@/app/context/ProgressContext';
-import { useRouter } from 'next/navigation';
 import {
   extractNumberFromTitle,
   getTitleWithoutExtension,
-  handleFavoriteToggle,
-  handleWatchLaterToggle,
-  handlePlay,
-  cleanVideoId,
-  throttle,
-  handleVideoProgress
 } from '@/utils/videoUtils';
-import { Progress } from '@/app/types/types';
-import styles from './cardComponente.module.css';
-
+import VideoRender from './video-Render';
 interface CardComponentProps {
   item: string;
   userId: string;
@@ -27,6 +13,10 @@ interface CardComponentProps {
 
 type KeyItem = {
   Key: string;
+  LastModified?: string;
+  ETag?: string;
+  Size?: number;
+  StorageClass?: string;
 };
 
 const pageTransition = {
@@ -44,12 +34,6 @@ const pageTransition = {
 const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   const { keys } = useBucket();
   const [videoData, setVideoData] = useState<{ url: string; title: string; key: KeyItem }[]>([]);
-  const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
-  const { favorites, setFavorites } = useFavorites();
-  const { watchLater, setWatchLater } = useWatchLater();
-  const { progress, setProgress } = useProgress();
-  const router = useRouter();
-  const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!item) return;
@@ -67,7 +51,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
           const parts = keyItem.Key.split('/');
           const fileName = parts[parts.length - 1];
           const title = getTitleWithoutExtension(fileName);
-          return { url, title, key: keyItem };
+          return { url, title, key: keyItem }; // Aquí pasamos todo el key
         });
 
         const sortedVideoData = videoData.sort((a, b) =>
@@ -83,103 +67,8 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
     fetchVideoData();
   }, [keys, item]);
 
-  const handleDoubleClick = (videoUrl: string) => {
-    const videoFileName = videoUrl.split('/').pop();
-    const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
-    const videoTitle = videoId ? cleanVideoId(videoId) : '';
-
-    const params = new URLSearchParams({ videoTitle: videoTitle, videoUrl });
-    router.push(`/portal/categorias/video-player?${params.toString()}`);
-  };
-
-  const throttledHandleVideoProgress = throttle(async (
-    played: number,
-    index: number,
-    videoData: { url: string; title: string; key: KeyItem }[],
-    progress: Progress[],
-    setProgress: React.Dispatch<React.SetStateAction<Progress[]>>,
-    userId: string
-  ) => {
-    const progressPercentage = played * 100;
-    const { title, url } = videoData[index];
-
-    const existingProgress = progress.some((pg) => pg.url === url);
-
-    if (progressPercentage >= 90 && !existingProgress) {
-      await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
-    }
-  }, 5000);
-
   return (
-    <motion.div
-      initial="hidden"
-      animate="show"
-      exit="exit"
-      variants={pageTransition}
-      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}
-    >
-      {videoData.map(({ url, title, key }, index) => {
-        const isFavorite = favorites.some((fav) => fav.url === url);
-        const isWatchLater = watchLater.some((wl) => wl.url === url);
-        const isViewed = progress.some((pg) => pg.url === url);
-        const isPlaying = playingVideoIndex === index;
-
-        return (
-          <div
-            key={index}
-            className={styles.cardContainer}
-            onMouseEnter={() => setHoveredVideo(index)}
-            onMouseLeave={() => setHoveredVideo(null)}
-            onDoubleClick={() => handleDoubleClick(url)}
-          >
-            <div className={`${styles.cardContainer_01} relative`}>
-              <ReactPlayer
-                url={url}
-                controls={hoveredVideo === index}
-                width="100%"
-                height="100%"
-                className={styles.cardPlayer}
-                playing={isPlaying}
-                onPlay={() => {
-                handlePlay(key);
-                  setPlayingVideoIndex(index);
-                }}
-                onPause={() => setPlayingVideoIndex(null)}
-                onProgress={({ played }) => {
-                  throttledHandleVideoProgress(played, index, videoData, progress, setProgress, userId);
-                }}
-                config={{
-                  file: {
-                    attributes: {
-                      onDoubleClick: () => handleDoubleClick(url),
-                      controlsList: 'nodownload', // Aquí eliminamos la opción de descargar
-                    },
-                  },
-                }}
-              />
-              {isViewed && !isPlaying && hoveredVideo !== index && ( // Ocultar en hover
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
-                  <span className="text-white text-4xl font-bold">Visto</span>
-                </div>
-              )}
-            </div>
-            {(hoveredVideo === index || isFavorite || isWatchLater) && (
-              <div className={styles.cardIcons}>
-                <div className={styles.cardIcon} onClick={() => handleFavoriteToggle(index, videoData, favorites, setFavorites, userId)}>
-                  {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
-                </div>
-                <div className={styles.cardIcon} onClick={() => handleWatchLaterToggle(index, videoData, watchLater, setWatchLater, userId)}>
-                  {isWatchLater ? <FaClock size={24} /> : <FaRegClock size={24} />}
-                </div>
-              </div>
-            )}
-            <div>
-              <p className={styles.title}>{title}</p>
-            </div>
-          </div>
-        );
-      })}
-    </motion.div>
+    <VideoRender videoData={videoData} userId={userId} />
   );
 };
 

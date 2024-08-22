@@ -1,143 +1,65 @@
-// /src/iu/portal/userprofile/card-component.tsx
+// /src/ui/portal/userprofile/CardProfile.tsx
+'use client'
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaHeart, FaClock } from 'react-icons/fa';
-import styles from './cardComponent.module.css';
 import { useFavorites } from '@/app/context/FavoritesContext';
-import { useWatchLater } from '@/app/context/WatchLaterContext'; // Importa el contexto WatchLater
+import { useWatchLater } from '@/app/context/WatchLaterContext';
 import useAuthUser from '@/app/hooks/use-auth-user';
-import { Favorite } from '@/app/types/types';
-import axios from 'axios'; // Importar axios para realizar la solicitud DELETE
+import VideoRender from '../categorias/video-Render';
+import styles from './cardComponent.module.css';
 
 const pageTransition = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { duration: 0.5 },
-  },
-  exit: {
-    opacity: 0,
-    transition: { duration: 0.5 },
-  },
+  show: { opacity: 1, transition: { duration: 0.5 } },
+  exit: { opacity: 0, transition: { duration: 0.5 } },
 };
 
 const CardProfile: React.FC = () => {
-  const { favorites, setFavorites } = useFavorites();
-  const { watchLater, setWatchLater } = useWatchLater(); // Usar el contexto WatchLater
-  const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
+  const { favorites } = useFavorites();
+  const { watchLater } = useWatchLater();
   const [activeTab, setActiveTab] = useState<'favorites' | 'watchLater'>('favorites');
-  const [error, setError] = useState<string | null>(null);
   const user = useAuthUser();
-  const userId = user ? user.userId : 'null';
+  const userId = user?.userId ?? ''; // Asegúrate de que userId sea un string
 
   const handleTabChange = (tab: 'favorites' | 'watchLater') => {
     setActiveTab(tab);
   };
 
-  const handleFavoriteClick = async (videoId: string | null) => {
-    if (!videoId) {
-      console.error('videoId es null o undefined');
-      return;
-    }
-
-    try {
-      await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
-      // Realizar la solicitud DELETE para eliminar el video de favoritos
-      setFavorites(prevFavorites => prevFavorites.filter(fav => fav.videoId !== videoId));
-    } catch (error) {
-      console.error('Error al eliminar video de favoritos:', error);
-      setError('Error al eliminar video de favoritos');
-    }
-  };
-
-  const handleWatchLaterClick = async (videoId: string | null) => {
-    if (!videoId) {
-      console.error('videoId es null o undefined');
-      return;
-    }
-
-    try {
-      await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${videoId}`);
-      // Realizar la solicitud DELETE para eliminar el video de "ver más tarde"
-      setWatchLater(prevWatchLater => prevWatchLater.filter(video => video.videoId !== videoId));
-    } catch (error) {
-      console.error('Error al eliminar video de "ver más tarde":', error);
-      setError('Error al eliminar video de "ver más tarde"');
-    }
-  };
-
-  const handlePlay = async (video: Favorite) => {
-    console.log('Video object:', video);
-    console.log('video.key:', video.key);
-    const videoId = encodeURIComponent(video.key); 
-    const url = 'https://njaav0ch9f.execute-api.eu-west-2.amazonaws.com/totalViews';
-
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          'videoId': videoId,
-        }
-      });
-        
-      console.log('Response data:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating video views:', error);
-      throw error;
-    }
-  };
-  
-  const renderVideoCards = (videos: Favorite[]) => (
-    <div className={styles.videoGrid}>
-      {videos.length > 0 ? (
-        videos.map((video, index) => (
-          <div key={video.id} className={styles.cardContainer} onMouseEnter={() => setHoveredVideo(index)} onMouseLeave={() => setHoveredVideo(null)}>
-            <div className={styles.cardContainer_01}>
-              <video 
-                src={video.url} 
-                controls={hoveredVideo === index} 
-                className={styles.cardPlayer}
-                // onPlay={() => handlePlay(video)} 
-                />
-            </div>
-            {hoveredVideo === index && (
-              <div className={styles.cardIcons}>
-                {activeTab === 'favorites' && (
-                  <div className={styles.cardIcon} onClick={() => handleFavoriteClick(video.videoId)}>
-                    <FaHeart size={24} />
-                  </div>
-                )}
-                {activeTab === 'watchLater' && (
-                  <div className={styles.cardIcon} onClick={() => handleWatchLaterClick(video.videoId)}>
-                    <FaClock size={24} />
-                  </div>
-                )}
-              </div>
-            )}
-            <div>
-              <p className={styles.title}>{video.videoTitle}</p>
-              <p className={styles.ptitle}>500 </p>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p style={{ color: 'white' }}>No hay videos disponibles.</p>
-      )}
-    </div>
-  );
-
   return (
     <motion.div initial="hidden" animate="show" exit="exit" variants={pageTransition} className={styles.container}>
       <div className={styles.tabs}>
-        <div className={activeTab === 'favorites' ? styles.activeTab : styles.tab} onClick={() => handleTabChange('favorites')}>
+        <div
+          className={activeTab === 'favorites' ? styles.activeTab : styles.tab}
+          onClick={() => handleTabChange('favorites')}
+        >
           Favoritos
         </div>
-        <div className={activeTab === 'watchLater' ? styles.activeTab : styles.tab} onClick={() => handleTabChange('watchLater')}>
+        <div
+          className={activeTab === 'watchLater' ? styles.activeTab : styles.tab}
+          onClick={() => handleTabChange('watchLater')}
+        >
           Ver más tarde
         </div>
       </div>
-      {error && <p className={styles.error}>{error}</p>}
-      {renderVideoCards(activeTab === 'favorites' ? favorites : watchLater)}
+      {activeTab === 'favorites' ? (
+        <VideoRender 
+          videoData={favorites.map(({ url, videoTitle , key}) => ({
+            url,
+            title: videoTitle, 
+            key: { Key: key }
+          }))} 
+          userId={userId} 
+        />
+      ) : (
+        <VideoRender 
+          videoData={watchLater.map(({ url, videoTitle, key }) => ({
+            url, 
+            title: videoTitle, 
+            key: { Key: key }
+          }))} 
+          userId={userId} 
+        />
+      )}
     </motion.div>
   );
 };

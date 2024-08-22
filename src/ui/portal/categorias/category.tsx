@@ -91,7 +91,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
         {item}
       </h1>
       
-      <nav className="mb-5 ml-4 md:ml-20 whitespace-nowrap flex flex-wrap">        
+      <nav className="mb-5 ml-4 md:ml-20 whitespace-nowrap flex flex-wrap pointer-events-auto">        
         {items.map((item, index) => (
           <span key={item}>
             <span
