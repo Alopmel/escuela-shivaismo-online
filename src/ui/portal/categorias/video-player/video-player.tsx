@@ -1,53 +1,58 @@
-'use client'
-
+// src/app/components/VideoPlayer.tsx
+'use client';
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import 'tailwindcss/tailwind.css';
-import { throttle, handleVideoProgress } from '@/utils/videoUtils'; // Importa las funciones necesarias
-import { Progress } from '@/app/types/types';
+import { throttle,handleVideoProgress, putComment } from '@/utils/videoUtils'; // Importa las funciones necesarias
+import { Progress, Comment } from '@/app/types/types';
+import { useComments } from '@/app/context/CommentContext'; // Usa el contexto actualizado
 import { useUser } from "@/app/context/UserContext";
 
-// Importa ReactPlayer dinámicamente para evitar problemas de hidratación
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
-interface Comment {
-  text: string;
-  user: string;
-  date: string;
-}
-
 const VideoPlayer: React.FC = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const videoUrl = searchParams.get('videoUrl') || '';
-  const videoTitle = searchParams.get('videoTitle') || ''; // Asegúrate de que se está obteniendo correctamente
+  const videoTitle = searchParams.get('videoTitle') || '';
 
-  const [comments, setComments] = useState<Comment[]>([]);
+  const { comments, setComments, fetchComments } = useComments();
   const [newComment, setNewComment] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
   const [progress, setProgress] = useState<Progress[]>([]);
-  const { userId } = useUser(); // Obtener userId del contexto
-  const { name } = useUser(); 
+  const { userId, name } = useUser();
 
   useEffect(() => {
     setIsClient(true);
-    console.log('Video url------->' + videoUrl);
+    if (videoUrl) {
+      fetchComments(videoUrl); // Usar fetchComments del contexto
+    }
   }, [videoUrl]);
 
-  const handleCommentSubmit = () => {
-    if (newComment.trim()) {
+  const handleCommentSubmit = async () => {
+    const trimmedComment = newComment.trim();
+    if (trimmedComment) {
       const comment: Comment = {
-        text: newComment,
-        user: name || 'Anonymous',
-        date: new Date().toLocaleString(),
+        id: new Date().toISOString(), // Genera un ID único para el comentario
+        userId: userId || '',
+        videoId: videoUrl,
+        userName: name || 'Anonymous',
+        text: trimmedComment,
+        creationDate: new Date().toLocaleString(),
       };
-      setComments([...comments, comment]);
-      setNewComment('');
+
+      setComments([...comments, comment]); // Actualiza el estado local de los comentarios
+      setNewComment(''); // Limpia el campo de comentario
+
+      try {
+        await putComment(videoUrl, videoTitle, userId || '', name || 'Anonymous', trimmedComment);
+      } catch (error) {
+        console.error('Error al enviar el comentario:', error);
+      }
+    } else {
+      console.warn('El comentario está vacío y no se enviará.');
     }
   };
 
-  // Usar throttle en la función handleVideoProgress
   const throttledHandleVideoProgress = throttle(async (
     played: number,
     index: number,
@@ -58,6 +63,9 @@ const VideoPlayer: React.FC = () => {
   ) => {
     await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
   }, 5000);
+
+  // Filtra los comentarios para mostrar solo los del video actual
+  const filteredComments = comments.filter(comment => comment.videoId === videoUrl);
 
   return (
     <div className="flex flex-col items-center p-4 min-h-screen">
@@ -72,7 +80,6 @@ const VideoPlayer: React.FC = () => {
               height="100%"
               playing={false}
               onProgress={({ played }) => {
-                // Aquí puedes pasar datos adicionales si es necesario
                 throttledHandleVideoProgress(played, 0, [{ url: videoUrl, title: videoTitle, key: { Key: 'dummy_key' } }], progress, setProgress, userId);
               }}
             />
@@ -96,11 +103,11 @@ const VideoPlayer: React.FC = () => {
               </button>
             </div>
             <div className="mt-4">
-              {comments.map((comment, index) => (
-                <div key={index} className="bg-white bg-opacity-30 backdrop-blur-md p-2 my-2 rounded-md shadow-sm">
-                  <p className="font-bold">{comment.user}</p>
+              {filteredComments.map((comment) => (
+                <div key={comment.id} className="bg-white bg-opacity-30 backdrop-blur-md p-2 my-2 rounded-md shadow-sm">
+                  <p className="font-bold">{comment.userName}</p>
                   <p>{comment.text}</p>
-                  <p className="text-sm text-gray-500">{comment.date}</p>
+                  <p className="text-sm text-gray-500">{comment.creationDate}</p>
                 </div>
               ))}
             </div>

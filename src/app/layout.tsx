@@ -8,6 +8,7 @@ import { FavoritesProvider } from './context/FavoritesContext';
 import { WatchLaterProvider } from "./context/WatchLaterContext";
 import { BucketProvider } from "./context/BucketContext";
 import { ProgressProvider } from './context/ProgressContext';
+import { CommentProvider } from '@/app/context/CommentContext';
 import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estructura de archivos
 import Image from "next/image";
 import Link from 'next/link';
@@ -27,25 +28,27 @@ export default function RootLayout({
     <UserProvider>
       <FavoritesProvider>
         <WatchLaterProvider>
-          <ProgressProvider>
-            <BucketProvider>
-              <html lang="es">
-                <body className={`${inter.className} antialiased`}>
-                  <>
-                    <ConfigureAmplifyClientSide />
-                    <ErrorBoundary>
-                      <Suspense fallback={<div>Loading...</div>}>
-                        <Link href={'/portal'}>
-                          <Image src="/logo_login.png" alt="Logo" width={100} height={100} className="mt-1 absolute" />      
-                        </Link>
-                        {children}
-                      </Suspense>
-                    </ErrorBoundary>
-                  </>
-                </body>
-              </html>
-            </BucketProvider>
-          </ProgressProvider>
+          <CommentProvider>
+            <ProgressProvider>
+              <BucketProvider>
+                <html lang="es">
+                  <body className={`${inter.className} antialiased`}>
+                    <>
+                      <ConfigureAmplifyClientSide />
+                      <ErrorBoundary>
+                        <Suspense fallback={<div>Loading...</div>}>
+                          <Link href={'/portal'}>
+                            <Image src="/logo_login.png" alt="Logo" width={100} height={100} className="mt-1 absolute" />      
+                          </Link>
+                          {children}
+                        </Suspense>
+                      </ErrorBoundary>
+                    </>
+                  </body>
+                </html>
+              </BucketProvider>
+            </ProgressProvider>          
+          </CommentProvider>
         </WatchLaterProvider>
       </FavoritesProvider>
     </UserProvider>

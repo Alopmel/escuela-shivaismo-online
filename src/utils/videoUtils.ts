@@ -7,6 +7,11 @@ type KeyItem = {
   Key: string;
 };
 
+interface Video {
+  id: string;
+  videoId: string;
+  // Otros atributos del video si son necesarios
+}
 // Utilidad para extraer número de título
 export const extractNumberFromTitle = (title: string): number => {
   const match = title.match(/\d+/g);
@@ -141,34 +146,37 @@ export const handleWatchLaterToggle = async (
   }
 };
 
-// Manejar reproducción de video
+
 export const handlePlay = async (key: { Key: string }) => {
   console.log('handlePlay called with key:', key);
 
-  const videoId = encodeURIComponent(key.Key); // Asegúrate de usar `key.Key` aquí
-  console.log('Playing video key:', videoId);
-
-  if (!videoId) {
-    console.error('Error: videoId is empty');
-    return;
-  }
-
-  const url = 'https://xe6258whge.execute-api.eu-west-2.amazonaws.com/recommended';
+  const videoTitle = key.Key;
+  console.log('Playing video with title:', videoTitle);
 
   try {
-    const response = await axios.get(url, {
-      headers: {
-        videoId: videoId,
-      },
-    });
+    // Paso 1: Obtener todas las clases
+    const response = await axios.get<Video[]>('https://n8rv8ni618.execute-api.eu-west-2.amazonaws.com/clases');
 
-    console.log('Response data:', response.data);
-    return response.data;
+    // Paso 2: Buscar el video por su título
+    const video = response.data.find((v) => v.videoId === videoTitle);
+
+    if (!video) {
+      console.error(`No se encontró el video con el título: ${videoTitle}`);
+      return;
+    }
+
+    const videoId = video.id;
+
+    // Paso 3: Hacer la actualización del video
+    const updateResponse = await axios.put(`https://n8rv8ni618.execute-api.eu-west-2.amazonaws.com/clases/${videoId}`);
+
+    console.log(`Updated video views for: ${videoId}`, updateResponse.data);
   } catch (error) {
     console.error('Error updating video views:', error);
     throw error;
   }
 };
+
 
 // Manejar el progreso del video
 export const handleVideoProgress = debounce(
@@ -233,3 +241,53 @@ export const throttle = (func: Function, limit: number) => {
     }
   };
 };
+
+
+// Funcion para manejar los comentarios
+export const putComment = async (videoId: string, videoTitle: string, userId: string, userName: string, text: string) => {
+  const newComment = {
+    id: uuidv4(), // Asegúrate de que el ID esté bien generado
+    videoId,
+    videoTitle,
+    userId,
+    userName,
+    text, // Este campo debe estar presente
+    creationDate: new Date().toISOString(),
+  };
+
+  try {
+    const response = await axios.put('https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment', newComment);
+    console.log('Comment added:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw error;
+  }
+};
+
+
+export const getComments = async (videoId: string) => {
+  try {
+    const videoIdC = encodeURIComponent(videoId);
+    console.log('videoIdC--', videoIdC);
+
+    const response = await axios.get(`https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment/${videoIdC}`);
+    console.log('Fetched comments:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    throw error;
+  }
+};
+
+// // Funcion para manejar
+// export const getRecommendedVideos = async (videoId: string) => {
+//   try {
+//     const response = await axios.get(`https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment/${videoId}`);
+//     console.log('Recommended videos:', response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching recommended videos:', error);
+//     throw error;
+//   }
+// };

@@ -7,7 +7,9 @@ import { motion } from 'framer-motion';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useRouter } from 'next/navigation';
-import { extractNumberFromTitle, getTitleWithoutExtension, handleFavoriteToggle, handleWatchLaterToggle, handlePlay } from '@/utils/videoUtils';
+import { extractNumberFromTitle, getTitleWithoutExtension, handleFavoriteToggle, handleWatchLaterToggle, 
+  // handlePlay 
+} from '@/utils/videoUtils';
 import styles from '../userprofile/cardComponent.module.css';
 
 interface CardComponentProps {
@@ -74,7 +76,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
                 height="100%"
                 className={styles.cardPlayer}
                 playing={false}
-                onPlay={() => {handlePlay(key);}}
+                // onPlay={() => {handlePlay(key);}}
                 config={{
                   file: {
                     attributes: {

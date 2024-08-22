@@ -70,7 +70,7 @@ const CardProfile: React.FC = () => {
     console.log('Video object:', video);
     console.log('video.key:', video.key);
     const videoId = encodeURIComponent(video.key); 
-    const url = 'https://xe6258whge.execute-api.eu-west-2.amazonaws.com/recommended';
+    const url = 'https://njaav0ch9f.execute-api.eu-west-2.amazonaws.com/totalViews';
 
     try {
       const response = await axios.get(url, {
@@ -97,7 +97,8 @@ const CardProfile: React.FC = () => {
                 src={video.url} 
                 controls={hoveredVideo === index} 
                 className={styles.cardPlayer}
-                onPlay={() => handlePlay(video)} />
+                // onPlay={() => handlePlay(video)} 
+                />
             </div>
             {hoveredVideo === index && (
               <div className={styles.cardIcons}>

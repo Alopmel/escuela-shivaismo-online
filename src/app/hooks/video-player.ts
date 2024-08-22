@@ -5,6 +5,7 @@ export const useVideoPlayer = () => {
   const router = useRouter();
 
   const handleDoubleClick = (videoUrl: string) => {
+    console.log('videoUrl')
     const videoFileName = videoUrl.split('/').pop();
     const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
     const videoTitle = videoId ? cleanVideoId(videoId) : '';

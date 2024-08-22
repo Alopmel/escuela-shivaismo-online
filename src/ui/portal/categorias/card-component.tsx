@@ -7,11 +7,11 @@ import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useProgress } from '@/app/context/ProgressContext';
 import { useRouter } from 'next/navigation';
-import { 
-  extractNumberFromTitle, 
-  getTitleWithoutExtension, 
-  handleFavoriteToggle, 
-  handleWatchLaterToggle, 
+import {
+  extractNumberFromTitle,
+  getTitleWithoutExtension,
+  handleFavoriteToggle,
+  handleWatchLaterToggle,
   handlePlay,
   cleanVideoId,
   throttle,
@@ -87,7 +87,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
     const videoFileName = videoUrl.split('/').pop();
     const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
     const videoTitle = videoId ? cleanVideoId(videoId) : '';
-    
+
     const params = new URLSearchParams({ videoTitle: videoTitle, videoUrl });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
@@ -140,9 +140,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
                 height="100%"
                 className={styles.cardPlayer}
                 playing={isPlaying}
-                onPlay={() => { 
-                  handlePlay(key); 
-                  setPlayingVideoIndex(index); 
+                onPlay={() => {
+                handlePlay(key);
+                  setPlayingVideoIndex(index);
                 }}
                 onPause={() => setPlayingVideoIndex(null)}
                 onProgress={({ played }) => {

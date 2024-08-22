@@ -32,3 +32,13 @@ export interface Progress {
   videoTitle: string,
   creationDate: string,
 }
+
+
+export interface Comment {
+  id: string;
+  userId: string;
+  videoId: string | null;
+  userName: string;
+  text: string;
+  creationDate: string;
+}
