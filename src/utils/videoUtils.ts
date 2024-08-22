@@ -281,14 +281,14 @@ export const getComments = async (videoId: string) => {
   }
 };
 
-// // Funcion para manejar
-// export const getRecommendedVideos = async (videoId: string) => {
-//   try {
-//     const response = await axios.get(`https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment/${videoId}`);
-//     console.log('Recommended videos:', response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching recommended videos:', error);
-//     throw error;
-//   }
-// };
+// Funcion para manejar
+export const getRecommendedVideos = async (videoId: string) => {
+  try {
+    const response = await axios.get(`https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment/${videoId}`);
+    console.log('Recommended videos:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching recommended videos:', error);
+    throw error;
+  }
+};

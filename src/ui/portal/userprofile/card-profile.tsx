@@ -8,6 +8,7 @@ import useAuthUser from '@/app/hooks/use-auth-user';
 import VideoRender from '../categorias/video-Render';
 import styles from './cardComponent.module.css';
 
+
 const pageTransition = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { duration: 0.5 } },
