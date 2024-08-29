@@ -27,24 +27,29 @@ const filterExistingVideos = (
   favoritesData: Favorite[], 
   watchLaterData: WatchLater[]
 ): Video[] => {
-  // Normalizar los títulos en progressData
+  // Normalizar los títulos en progressData, favoritesData, y watchLaterData
   const normalizedViewedTitles = new Set(
     progressData.map(item => normalizeTitle(item.videoTitle))
   );
-
-  // Crear conjuntos de palabras clave extraídas de cada set
-  const favoriteVideoKeys = new Set(favoritesData.map(item => item.key));
-  const watchLaterVideoKeys = new Set(watchLaterData.map(item => item.key));
+  const normalizedFavoritesTitles = new Set(
+    favoritesData.map(item => normalizeTitle(item.videoTitle))
+  );
+  const normalizedWatchLaterTitles = new Set(
+    watchLaterData.map(item => normalizeTitle(item.videoTitle))
+  );
 
   // Filtrar videos existentes
-  return videos.filter(video => {
+  const filteredVideos = videos.filter(video => {
     const normalizedTitle = normalizeTitle(video.title);
     return (
       !normalizedViewedTitles.has(normalizedTitle) && 
-      !favoriteVideoKeys.has(video.key) && 
-      !watchLaterVideoKeys.has(video.key)
+      !normalizedFavoritesTitles.has(normalizedTitle) && 
+      !normalizedWatchLaterTitles.has(normalizedTitle)
     );
   });
+
+  console.log('Filtered videos:', filteredVideos);
+  return filteredVideos;
 };
 
 // Función para obtener videos recomendados
@@ -58,23 +63,23 @@ export const getRecommendedVideos = async (
     // Obtener todos los videos
     const response = await axios.get<Video[]>(API_BASE_URL);
     const allVideos = response.data;
+    console.log('All videos:', allVideos);
 
     // Filtrar videos que ya han sido vistos, favoritos o están en "ver más tarde"
     const filteredVideos = filterExistingVideos(allVideos, progressData, favoritesData, watchLaterData);
 
-    // Ordenar los videos restantes por número de visitas y tomar los 10 primeros
-    const recommendedVideos = filteredVideos
-      .sort((a, b) => b.totalViews - a.totalViews)
-      .slice(0, 10);
+    // Eliminar los videos que ya existen en watchLater o favorites
+    const finalRecommendedVideos = filteredVideos.slice(0, 10); // Obtener los primeros 10 registros
 
-    console.log('recommendedVideos -->', recommendedVideos);
-    return recommendedVideos;
+    console.log('Final recommended videos:', finalRecommendedVideos);
+    return finalRecommendedVideos;
   } catch (error) {
     console.error('Error fetching recommended videos:', error);
     throw error;
   }
 };
 
+// Función para obtener los 10 videos más vistos
 // Función para obtener los 10 videos más vistos
 export const getMostViewedVideos = async (
   progressData: Progress[],
@@ -85,17 +90,20 @@ export const getMostViewedVideos = async (
     // Obtener todos los videos
     const response = await axios.get<Video[]>(API_BASE_URL);
     const allVideos = response.data;
+    console.log('All videos:', allVideos);
+
+    // Ordenar todos los videos por número de visitas de mayor a menor
+    const sortedVideos = allVideos
+      .sort((a, b) => b.totalViews - a.totalViews);
 
     // Filtrar videos que ya han sido vistos, favoritos o están en "ver más tarde"
-    const filteredVideos = filterExistingVideos(allVideos, progressData, favoritesData, watchLaterData);
+    const filteredVideos = filterExistingVideos(sortedVideos, progressData, favoritesData, watchLaterData);
 
-    // Ordenar los videos restantes por número de visitas y tomar los 10 primeros
-    const mostViewedVideos = filteredVideos
-      .sort((a, b) => b.totalViews - a.totalViews)
-      .slice(0, 10);
+    // Tomar los primeros 10 videos
+    const top10MostViewedVideos = filteredVideos.slice(0, 10);
 
-    console.log('mostViewedVideos -->', mostViewedVideos);
-    return mostViewedVideos;
+    console.log('Top 10 most viewed videos:', top10MostViewedVideos);
+    return top10MostViewedVideos;
   } catch (error) {
     console.error('Error fetching most viewed videos:', error);
     throw error;
