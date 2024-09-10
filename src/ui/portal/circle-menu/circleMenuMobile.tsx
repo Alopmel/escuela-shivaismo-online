@@ -119,7 +119,7 @@ const CircleMenuMobile = () => {
     if (breadcrumb.length === 0) {
       setActiveItems(items); // Volver al menú principal si no hay breadcrumb
     }
-  }, [breadcrumb, items]);
+  }, [breadcrumb]);
 
   const toggleMenu = useCallback(() => {
     setIsOpen(prevIsOpen => !prevIsOpen);
@@ -162,8 +162,9 @@ const CircleMenuMobile = () => {
       return currentItems;
     };
 
-    setActiveItems(findItemByBreadcrumb(items, breadcrumb.slice(0, -1)));
-    setCentralTitle(breadcrumb[breadcrumb.length - 2] || 'Escuela de Shivaismo de Cachemira');
+    const updatedBreadcrumb = breadcrumb.slice(0, -1);
+    setActiveItems(findItemByBreadcrumb(items, updatedBreadcrumb));
+    setCentralTitle(updatedBreadcrumb[updatedBreadcrumb.length - 1] || 'Escuela de Shivaismo de Cachemira');
   }, [breadcrumb, items]);
 
   const circleDivStyle = isOpen
