@@ -17,15 +17,15 @@ const WelcomePlayer = () => {
       animate="show"
       exit="exit"
       variants={pageTransition}
-      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', padding: '1rem' }}
+      className="flex flex-wrap justify-center items-center p-4 md:p-6" // Ajustar padding
     >
-      <div className={`p-6 mt-5 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${antonio.className} w-full sm:w-[600px] md:w-[800px]`}>
+      <div className={`mt-5 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${antonio.className} w-full sm:w-[600px] md:w-[800px]`}>
         <ReactPlayer
           url="https://dz9uj6zxn56ls.cloudfront.net/Fechas conferencias y recursos/1.BIENVENIDA AL GRUPO.mp4" // Cambia esta URL por la de tu video
           controls={true}
           width="100%"
           height="auto"
-          className="rounded-lg overflow-hidden" // Agrega border-radius al video                    
+          className="rounded-lg overflow-hidden" // Agrega border-radius al video
         />
       </div>
     </motion.div>
