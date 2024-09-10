@@ -1,5 +1,4 @@
-// src/app/context/UserContext.tsx
-'use client';
+'use client'
 import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import useAuthUser from '@/app/hooks/use-auth-user';
 
@@ -21,8 +20,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { user, userId, name, email, loading } = useAuthUser();
   
   useEffect(() => {
-    console.log('Favorites updated in context:', user);
+    console.log('User updated in context:', user);
   }, [user]);
+  
   return (
     <UserContext.Provider value={{ user, userId, name, email, loading }}>
       {children}

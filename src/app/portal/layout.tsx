@@ -2,22 +2,22 @@
 'use client'
 import { useEffect, useState, useCallback } from "react";
 import SideNav from "@/ui/portal/userprofile/side-nav";
-import SideNavbarMobile from '@/ui/portal/userprofile/side-nav-mov'
+import SideNavbarMobile from '@/ui/portal/userprofile/side-nav-mov';
 import Search from "@/ui/portal/search/search";
+import useAuthUser from '@/app/hooks/use-auth-user'; // Usa el hook
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const { user, userId, name, email, loading } = useAuthUser();
+
+  console.log('User in Layout:', user); // Verifica que el usuario esté disponible
 
   const checkWindowSize = useCallback(() => {
     let windowWidth = 0;
     if (typeof window !== 'undefined') {
       windowWidth = window.innerWidth;
     }
-    if (windowWidth >= 1024) {
-      setIsDesktop(true);
-    } else {
-      setIsDesktop(false);
-    }
+    setIsDesktop(windowWidth >= 1024);
   }, []);
 
   useEffect(() => {
@@ -28,10 +28,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     };
   }, [checkWindowSize]);
 
+  if (loading) {
+    return <div>Loading...</div>; // Maneja el estado de carga
+  }
+
   return (
     <div className="flex auth-background">
-              <Search /> {/* Agrega el componente de búsqueda */}
-      {isDesktop ? (<SideNav />) : (<SideNavbarMobile /> )}
+      <Search /> {/* Agrega el componente de búsqueda */}
+      {isDesktop ? (<SideNav />) : (<SideNavbarMobile />)}
       <main className="flex-1">
         {children}
       </main>
