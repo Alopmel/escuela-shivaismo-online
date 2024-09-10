@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
 import ReactPlayer from 'react-player';
@@ -44,14 +46,12 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
   const router = useRouter();
 
   const handleDoubleClick = (videoUrl: string) => {
-    console.log('Video URL:', videoUrl);
     const videoFileName = videoUrl.split('/').pop();
     const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
     const params = new URLSearchParams({ videoUrl: videoId });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
   };
 
-  // Función para remover el número y punto del título
   const cleanTitle = (title: string) => {
     return title.replace(/^\d+\.\s*/, ''); // Elimina números seguidos de un punto
   };

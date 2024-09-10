@@ -36,9 +36,8 @@ const Search: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-[1.4rem] sm:top-4 right-4 p-4 flex items-center gap-2 z-50">
+    <div className="fixed top-[1.4rem] sm:top-4 right-4 p-4 flex items-center gap-2 z-50 .no-select">
       <div className="relative flex items-center">
-        {/* Ícono de búsqueda principal */}
         <motion.div
           initial={{ opacity: 1 }}
           animate={{ opacity: isClicked ? 0 : 1 }}
@@ -56,7 +55,6 @@ const Search: React.FC = () => {
           />
         </motion.div>
 
-        {/* Input de búsqueda */}
         <motion.input
           type="text"
           placeholder="Buscar..."
@@ -67,15 +65,12 @@ const Search: React.FC = () => {
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: isClicked ? '150px' : 0, opacity: isClicked ? 1 : 0 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className={`w-36 h-7 pl-12 p-2 text-[#00d1d1] border-2 rounded-full border-sky-200 shadow-[0_0_2px_#d8feff,inset_0_0_2px_#b2e8f1,0_0_4px_#00d1d1,0_0_8px_#00d1d1,0_0_12px_#00d1d1] placeholder-[#00d1d1] bg-white/10 backdrop-blur-lg ${
-            isClicked ? 'ml-8' : ''
-          }`}
+          className={`w-36 h-7 pl-12 p-2 text-[#00d1d1] border-2 rounded-full border-sky-200 shadow-[0_0_2px_#d8feff,inset_0_0_2px_#b2e8f1,0_0_4px_#00d1d1,0_0_8px_#00d1d1,0_0_12px_#00d1d1] placeholder-[#00d1d1] bg-white/10 backdrop-blur-lg ${isClicked ? 'ml-8' : ''}`}
           style={{
             transformOrigin: 'right center', // Alinea la expansión desde la derecha
           }}
         />
 
-        {/* Ícono de búsqueda para activar búsqueda */}
         {isClicked && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -89,7 +84,6 @@ const Search: React.FC = () => {
               style={{ color: '#00d1d1' }}
             />
           </motion.div>
-          
         )}
       </div>
     </div>

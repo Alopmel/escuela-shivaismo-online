@@ -16,29 +16,29 @@ const ConferenceSchedule: React.FC = () => {
       animate="show"
       exit="exit"
       variants={pageTransition}
-      className="flex flex-col items-center justify-center lg:flex-row lg:flex-wrap"
+      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start', padding: '1rem' }}
     >
-      <div className={`p-6 mt-5 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${roboto.className} w-[90%] md:w-[800px]`}>
-        <h1 className="text-2xl font-bold mb-6 text-white text-center">Horarios Conferencias en Directo</h1>
+      <div className={`p-6 mt-5 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${roboto.className} w-full sm:w-[600px] md:w-[800px]`}>
+        <h1 className="text-xl md:text-2xl font-bold mb-6 text-white text-center">Horarios Conferencias en Directo</h1>
         <ul className="list-none pl-0 md:pl-6 mb-6 text-white">
           {[
-            { day: "Lunes 22:00h", activity: "Clase Tandava (Irene)" },
-            { day: "Martes 22:00h", activity: "Clase Tandava (Ana)" },
-            { day: "Miércoles 10:00h", activity: "Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)" },
-            { day: "Miércoles 22:00h", activity: "Conferencias Temáticas (Mar y Juanjo)" },
-            { day: "Jueves 10:00h", activity: "Clase Tandava (Gloria)" },
-            { day: "Jueves 22:00h", activity: "Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)" },
-          ].map((item, index) => (
+            { time: 'Lunes 22:00h', description: 'Clase Tandava (Irene)' },
+            { time: 'Martes 22:00h', description: 'Clase Tandava (Ana)' },
+            { time: 'Miércoles 10:00h', description: 'Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)' },
+            { time: 'Miércoles 22:00h', description: 'Conferencias Temáticas (Mar y Juanjo)' },
+            { time: 'Jueves 10:00h', description: 'Clase Tandava (Gloria)' },
+            { time: 'Jueves 22:00h', description: 'Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)' }
+          ].map(({ time, description }, index) => (
             <li key={index} className="mb-4 flex items-start">
               <Image
                 src="/logo_red.png"
                 alt="Logo"
-                width={20}
-                height={20}
+                width={20} // Ajusta el tamaño según sea necesario
+                height={16}
                 className="w-4 mr-4 rounded-lg"
                 style={{ filter: 'invert(1)' }}
               />
-              <strong>{item.day}:</strong> {item.activity}
+              <strong>{time}:</strong> {description}
             </li>
           ))}
         </ul>
@@ -48,7 +48,7 @@ const ConferenceSchedule: React.FC = () => {
         <div className="bg-gray-800 bg-opacity-70 p-4 rounded-md">
           <p className="font-semibold mb-3 text-white">Enlace y Contraseña para Asistir a las Conferencias:</p>
           <p className="text-white mb-2">
-            <strong>Enlace Conferencias:</strong>
+            <strong>Enlace Conferencias:</strong> 
             <a href="https://zoom.us/j/487385294" className="text-blue-300 hover:underline" target="_blank" rel="noopener noreferrer">
               https://zoom.us/j/487385294
             </a>

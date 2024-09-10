@@ -40,7 +40,7 @@ const CardProfile: React.FC = () => {
           className={`${activeTab === 'watchLater' ? styles.activeTab : styles.tab} ${roboto.className}`}
           onClick={() => handleTabChange('watchLater')}
         >
-          Ver más tarde
+          Ver después
         </div>
       </div>
       {activeTab === 'favorites' ? (

@@ -53,7 +53,8 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
           left: isClicked ? '255px' : '271px',
           width: isClicked ? '50px' : '60px',
           height: isClicked ? '50px' : '60px',
-          transition: 'top 0.5s ease, left 0.5s ease'
+          transition: 'top 0.5s ease, left 0.5s ease',
+          outline: 'none' // Eliminar el borde de selección azul
         }}
         animate={{
           rotate: isClicked ? 45 : 0, // Girar para formar una X
@@ -61,8 +62,7 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
           transition: { duration: 0.5, ease: "easeInOut" }
         }}
       >
-        <span className={styles.symbol}><TiPlus />
-        </span> {/* Cambia el símbolo */}
+        <span className={styles.symbol}><TiPlus /></span> {/* Cambia el símbolo */}
       </motion.div>
     </>
   );

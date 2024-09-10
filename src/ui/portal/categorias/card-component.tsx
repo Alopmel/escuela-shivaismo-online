@@ -1,4 +1,3 @@
-// src/components/CardComponent.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -89,19 +88,17 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
   }, [keys, item]);
 
   return (
-    <div>
+    <div style={{ userSelect: 'none' }}> {/* Desactiva la selección de texto */}
       {item === 'Fechas conferencias y recursos' ? (
         <>
-          <div>
-            <WelcomePlayer />
-            <ConferenceSchedule />
-          </div>
+          <WelcomePlayer />
+          <ConferenceSchedule />
           <AvailableResources />
         </>
       ) : item === 'Textos en PDF' ? (
-        <TextRenderer /> // Renderiza el componente TextRenderer si el item es 'TEXTOS EN PDF'
+        <TextRenderer /> 
       ) : item === 'Libros Recomendados' ? (
-        <BookRenderer /> // Renderiza el componente BookRenderer si el item es 'LIBROS RECOMENDADOS'
+        <BookRenderer />
       ) : (
         <VideoRender videoData={videoData} userId={userId} />
       )}

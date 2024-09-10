@@ -88,18 +88,19 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       <div 
         // className='mt-28 md:mt-36 ml-4 md:ml-24'
       >
-        <h1 className=" text-[31px] md:text-[41px]  text-white .no-select">
+        <h1 className="text-[31px] md:text-[41px] text-white" style={{ userSelect: 'none' }}>
           {item}
         </h1>
         
-        <nav className={`mb-5 whitespace-nowrap flex flex-wrap ${roboto.className}`}>        
+        <nav className={`mb-5 whitespace-nowrap flex flex-wrap ${roboto.className}`}>
           {fullBreadcrumb.map((breadcrumbItem, index) => (
             <span key={breadcrumbItem}>
               <span
-                className="transition duration-300 mr-3 mb-3 md:mb-0  text-[#e5e5e5] text-[1.1rem]"
+                className="transition duration-300 mr-3 mb-3 md:mb-0 text-[#e5e5e5] text-[1.1rem]"
                 onMouseEnter={() => handleMouseEnter(breadcrumbItem)}
                 onMouseLeave={() => handleMouseLeave(breadcrumbItem)}
                 onClick={() => handleGoTo(index)}
+                style={{ cursor: index < fullBreadcrumb.length - 1 ? 'pointer' : 'default' }} // Puntero solo en breadcrumb
               >
                 {breadcrumbItem}
                 {index < fullBreadcrumb.length - 1 && <span style={{ color: '#c6c6c6' }}> / </span>}
@@ -108,7 +109,6 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
           ))}
         </nav>
       </div>
-      
 
       <CardComponent 
         userId={userId} 

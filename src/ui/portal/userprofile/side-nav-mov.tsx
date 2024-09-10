@@ -26,7 +26,7 @@ const SideNavbarMobile = () => {
       {/* Overlay que aparece sobre los elementos de fondo */}
       {isClicked && (
         <motion.div
-          className="overlay absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
+          className="overlay absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10 .no-select"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
