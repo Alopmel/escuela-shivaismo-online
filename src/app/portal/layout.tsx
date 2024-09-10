@@ -5,6 +5,7 @@ import SideNav from "@/ui/portal/userprofile/side-nav";
 import SideNavbarMobile from '@/ui/portal/userprofile/side-nav-mov';
 import Search from "@/ui/portal/search/search";
 import useAuthUser from '@/app/hooks/use-auth-user'; // Usa el hook
+import NeonSpinner from "@/ui/neon-spinner";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
@@ -29,7 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [checkWindowSize]);
 
   if (loading) {
-    return <div>Loading...</div>; // Maneja el estado de carga
+    return <NeonSpinner />; // Maneja el estado de carga
   }
 
   return (
