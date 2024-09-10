@@ -35,6 +35,22 @@ const CircleMenuDesktop: React.FC = () => {
   const breadcrumb = breadcrumbString.split(',').filter((item) => item);  // Convertir a array y eliminar valores vacíos
   console.log('breadcrumb', breadcrumb);
 
+  useEffect(() => {
+    if (breadcrumb.length > 0) {
+      const item = breadcrumb[0];
+      setSelectedItem(findItem(items, item) || null);
+    }
+    if (breadcrumb.length > 1) {
+      const secondItem = breadcrumb[1];
+      setSelectedSecondItem(findItem(items, secondItem) || null);
+    }
+    if (breadcrumb.length > 2) {
+      const thirdItem = breadcrumb[2];
+      setSelectedThirdItem(findItem(items, thirdItem) || null);
+    }
+    setIsClicked(breadcrumb.length > 0);
+  }, [breadcrumb]);
+
   const items: MenuItem[] = [
     { text: 'Empieza por aquí', position: { top: 'calc(50% - 256px)', left: 'calc(50% + 32px)' }, 
       subItems: [
