@@ -1,11 +1,10 @@
-'use client'
-import React ,{ useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useProgress } from '@/app/context/ProgressContext';
-import { throttle, handleVideoProgress, handleWatchLaterToggle, handleFavoriteToggle, handlePlay, cleanVideoId } from '@/utils/videoUtils';
+import { throttle, handleVideoProgress, handleWatchLaterToggle, handleFavoriteToggle, handlePlay } from '@/utils/videoUtils';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import styles from './VideoRender.module.css';
@@ -20,10 +19,24 @@ interface VideoRenderProps {
 const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
     const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
     const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
+    const [isMobile, setIsMobile] = useState(false); // Detectar si es versión móvil
     const { favorites, setFavorites } = useFavorites();
     const { watchLater, setWatchLater } = useWatchLater();
     const { progress, setProgress } = useProgress();
     const router = useRouter();
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const handleDoubleClick = (videoUrl: string) => {
         const video = videoData.find(v => v.url === videoUrl);
@@ -33,6 +46,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                 videoTitle: video.title,
                 key: JSON.stringify(video.key)
             });
+            // Redirigir al video player
             router.push(`/portal/categorias/video-player?${params.toString()}`);
         }
     };
@@ -44,18 +58,16 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
         5000
     );
 
-    const pageTransition = {
-        hidden: { opacity: 0 },
-        show: { opacity: 1, transition: { duration: 0.5 } },
-        exit: { opacity: 0, transition: { duration: 0.5 } },
-    };
-
     return (
         <motion.div
             initial="hidden"
             animate="show"
             exit="exit"
-            variants={pageTransition}
+            variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { duration: 0.5 } },
+                exit: { opacity: 0, transition: { duration: 0.5 } },
+            }}
             style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}
         >
             {videoData.map(({ url, title, key }, index) => {
@@ -70,7 +82,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                         className={styles.cardContainer}
                         onMouseEnter={() => setHoveredVideo(index)}
                         onMouseLeave={() => setHoveredVideo(null)}
-                        onDoubleClick={() => handleDoubleClick(url)}
+                        onDoubleClick={() => isMobile ? handleDoubleClick(url) : null} // Solo redirigir en móvil
                     >
                         <div className={`${styles.cardContainer_01} relative`}>
                             <ReactPlayer
@@ -79,10 +91,12 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                 width="100%"
                                 height="100%"
                                 className={styles.cardPlayer}
-                                playing={isPlaying}
+                                playing={isPlaying && !isMobile} // Evitar reproducción automática en móvil
                                 onPlay={() => {
-                                    handlePlay(key);
-                                    setPlayingVideoIndex(index);
+                                    if (!isMobile) {
+                                        handlePlay(key);
+                                        setPlayingVideoIndex(index);
+                                    }
                                 }}
                                 onPause={() => setPlayingVideoIndex(null)}
                                 onProgress={({ played }) => {
@@ -99,7 +113,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                             />
                             {isViewed && !isPlaying && hoveredVideo !== index && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
-                                    <Image src="/check_neon1.svg" alt="Visto" width={128} height={128} /> {/* Tamaño ajustado de la imagen */}
+                                    <Image src="/check_neon1.svg" alt="Visto" width={128} height={128} />
                                 </div>
                             )}
                         </div>
@@ -109,13 +123,13 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                     className={styles.cardIcon}
                                     onClick={() => handleFavoriteToggle(index, videoData, favorites, setFavorites, userId)}
                                 >
-                                    {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />} {/* Tamaño reducido de iconos */}
+                                    {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
                                 </div>
                                 <div
                                     className={styles.cardIcon}
                                     onClick={() => handleWatchLaterToggle(index, videoData, watchLater, setWatchLater, userId)}
                                 >
-                                    {isWatchLater ? <FaClock size={24} /> : <FaRegClock size={24} />} {/* Tamaño reducido de iconos */}
+                                    {isWatchLater ? <FaClock size={24} /> : <FaRegClock size={24} />}
                                 </div>
                             </div>
                         )}

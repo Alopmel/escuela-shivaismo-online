@@ -14,6 +14,7 @@ interface MenuItem {
 }
 
 const CircleMenuMobile = () => {
+  
   const items: MenuItem[] = [
     { text: 'Empieza por aquí', position: { top: 'calc(50% - 257px)', left: 'calc(50% - 62px)' }, 
       subItems: [
@@ -113,6 +114,11 @@ const CircleMenuMobile = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  
+  const params = new URLSearchParams(searchParams.toString());
+  const itemFromParams = params.get('breadcrumbItem') || '';
+  console.log('itemFromParams --->> ', itemFromParams)
 
   // Manejo del cambio en breadcrumb
   useEffect(() => {

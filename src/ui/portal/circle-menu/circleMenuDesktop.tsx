@@ -133,9 +133,7 @@ const CircleMenuDesktop: React.FC = () => {
     { text: 'Últimos videos subidos', position: { top: 'calc(50% - 256px)', left: 'calc(50% - 180px)' } },
   ];
 
-  const menuBreadcrumb = ['Empieza por aquí','Enseñanza de la vía','Aplicación en tu vida','Prácticas en diferido','Chamanismo','Últimos videos subidos']
-
-    // Función para encontrar el camino del breadcrumb
+   // Función para encontrar el camino del breadcrumb
     const findItemPath = (items: MenuItem[], text: string, path: string[] = []): string[] | null => {
       for (const item of items) {
         if (item.text === text) return [...path, text];
