@@ -88,7 +88,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       <div 
         // className='mt-28 md:mt-36 ml-4 md:ml-24'
       >
-        <h1 className=" text-[31px] md:text-[41px]  text-white">
+        <h1 className=" text-[31px] md:text-[41px]  text-white .no-select">
           {item}
         </h1>
         

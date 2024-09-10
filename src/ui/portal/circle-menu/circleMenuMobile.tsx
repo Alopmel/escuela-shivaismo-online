@@ -174,7 +174,7 @@ const CircleMenuMobile = () => {
   return (
     <div
       onClick={(e) => { e.stopPropagation(); toggleMenu(); }}
-      className={styles.ball}
+      className={`${styles.ball}`}
       style={{
         width: '160px',
         height: '160px',
@@ -189,6 +189,8 @@ const CircleMenuMobile = () => {
         justifyContent: 'center',
         cursor: 'pointer',
         color: 'white',
+        userSelect: 'none',
+        outline: 'none',  // Asegurarse de que no se muestre el borde azul
         ...circleDivStyle
       }}
     >
