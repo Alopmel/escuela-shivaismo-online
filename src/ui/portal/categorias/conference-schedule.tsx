@@ -4,98 +4,65 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 const pageTransition = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { duration: 0.5 } },
-    exit: { opacity: 0, transition: { duration: 0.5 } },
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.5 } },
+  exit: { opacity: 0, transition: { duration: 0.5 } },
 };
 
 const ConferenceSchedule: React.FC = () => {
+  const scheduleItems = [
+    { day: 'Lunes', time: '22:00h', event: 'Clase Tandava (Irene)' },
+    { day: 'Martes', time: '22:00h', event: 'Clase Tandava (Ana)' },
+    { day: 'Miércoles', time: '10:00h', event: 'Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)' },
+    { day: 'Miércoles', time: '22:00h', event: 'Conferencias Temáticas (Mar y Juanjo)' },
+    { day: 'Jueves', time: '10:00h', event: 'Clase Tandava (Gloria)' },
+    { day: 'Jueves', time: '22:00h', event: 'Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)' },
+  ];
+
   return (
     <motion.div
       initial="hidden"
       animate="show"
       exit="exit"
       variants={pageTransition}
-      className="flex flex-wrap justify-center items-start p-4 md:p-6" // Ajustar padding
+      className="flex flex-wrap justify-center items-start p-2 md:p-4"
     >
-      <div className={`p-4 md:p-6 mt-5 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${roboto.className} w-full lg:w-[800px]`}>
-        <h1 className="text-2xl font-bold mb-6 text-white text-center">Horarios Conferencias en Directo</h1>
-        <ul className="list-none pl-0 mb-6 text-white">
-          <li className="mb-4 flex items-start">
-            <Image 
+      <div className={`p-4 mt-2 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${roboto.className} w-full lg:w-[600px]`}>
+        <h1 className="text-xl md:text-2xl font-bold mb-4 text-white text-center">
+          Horarios Conferencias en Directo
+        </h1>
+        <ul className="list-none pl-0 mb-4 text-white">
+          {scheduleItems.map(({ day, time, event }, index) => (
+            <li key={index} className="mb-3 flex items-start">
+              <Image
                 src="/logo_red.png"
                 alt="Logo"
-                width={25}
-                height={25}
-                className="w-4 mr-4 mt-[0.9rem] rounded-lg"
+                width={24} // Tamaño uniforme para todos los íconos
+                height={24} // Tamaño uniforme para todos los íconos
+                className="w-6 mr-3 rounded-lg"
                 style={{ filter: 'invert(1)' }}
-            />
-            <strong>Lunes 22:00h:</strong> Clase Tandava (Irene)
-          </li>
-          <li className="mb-4 flex items-start">
-            <Image 
-                src="/logo_red.png"
-                alt="Logo"
-                width={25}
-                height={25}
-                className="w-4 mr-4 mt-[0.9rem] rounded-lg"
-                style={{ filter: 'invert(1)' }}
-            />
-            <strong>Martes 22:00h:</strong> Clase Tandava (Ana)
-          </li>
-          <li className="mb-4 flex items-start">
-            <Image 
-                src="/logo_red.png"
-                alt="Logo"
-                width={25}
-                height={25}
-                className="w-4 mr-4 mt-[0.9rem] rounded-lg"
-                style={{ filter: 'invert(1)' }}
-            />
-            <strong>Miércoles 10:00h:</strong> Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)
-          </li>
-          <li className="mb-4 flex items-start">
-            <Image 
-                src="/logo_red.png"
-                alt="Logo"
-                width={25}
-                height={25}
-                className="w-4 mr-4 mt-[0.9rem] rounded-lg"
-                style={{ filter: 'invert(1)' }}
-            />
-            <strong>Miércoles 22:00h:</strong> Conferencias Temáticas (Mar y Juanjo)
-          </li>
-          <li className="mb-4 flex items-start">
-            <Image 
-                src="/logo_red.png"
-                alt="Logo"
-                width={25}
-                height={25}
-                className="w-4 mr-4 mt-[0.9rem] rounded-lg"
-                style={{ filter: 'invert(1)' }}
-            />
-            <strong>Jueves 10:00h:</strong> Clase Tandava (Gloria)
-          </li>
-          <li className="mb-4 flex items-start">
-            <Image 
-                src="/logo_red.png"
-                alt="Logo"
-                width={25}
-                height={25}
-                className="w-4 mr-4 mt-[0.9rem] rounded-lg"
-                style={{ filter: 'invert(1)' }}
-            />
-            <strong>Jueves 22:00h:</strong> Tandava y Prácticas del Vijñana Bhairava Tantra (Mar o Juanjo)
-          </li>
+              />
+              <span>
+                <strong>{day} {time}:</strong> {event}
+              </span>
+            </li>
+          ))}
         </ul>
-        <p className="mb-6 text-white text-center">
+        <p className="mb-4 text-white text-center">
           Eventualmente se harán clases extras de apoyo y de algún tema particular que anunciaremos en el grupo de WhatsApp.
         </p>
         <div className="bg-gray-800 bg-opacity-70 p-4 rounded-md">
-          <p className="font-semibold mb-3 text-white">Enlace y Contraseña para Asistir a las Conferencias:</p>
-          <p className="text-white mb-2">
-            <strong>Enlace Conferencias:</strong> 
-            <a href="https://zoom.us/j/487385294" className="text-blue-300 hover:underline" target="_blank" rel="noopener noreferrer">
+          <p className="font-semibold mb-2 text-white">
+            Enlace y Contraseña para Asistir a las Conferencias:
+          </p>
+          <p className="text-white mb-1">
+            <strong>Enlace Conferencias:</strong>{' '}
+            <a
+              href="https://zoom.us/j/487385294"
+              className="text-blue-300 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               https://zoom.us/j/487385294
             </a>
           </p>
