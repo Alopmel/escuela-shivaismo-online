@@ -12,6 +12,7 @@ import { CommentProvider } from '@/app/context/CommentContext';
 import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estructura de archivos
 import Image from "next/image";
 import Link from 'next/link';
+import NeonSpinner from '@/ui/neon-spinner';
 
 export const metadata: Metadata = {
   title: "Tantra Shivaismo de Cachemira ",
@@ -36,7 +37,7 @@ export default function RootLayout({
                     <>
                       <ConfigureAmplifyClientSide />
                       <ErrorBoundary>
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense fallback={<NeonSpinner />}>
                           <Link href={'/portal'}>
                             <Image 
                               src="/logo_login.png"

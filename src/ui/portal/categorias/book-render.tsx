@@ -102,7 +102,7 @@ const BookRenderer: React.FC = () => {
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#51033a] font-bold flex items-center justify-center no-underline hover:text-[#b84e98] transition-colors duration-300"
+              className="text-[#d731a5] font-bold flex items-center justify-center no-underline hover:text-[#f78bd7] transition-colors duration-300"
             >
               Cómpralo ahora
               <MdOutlineDownloading className="ml-2" />

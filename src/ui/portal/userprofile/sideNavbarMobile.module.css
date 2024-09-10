@@ -1,0 +1,25 @@
+/* Overlay con efecto Glassmorphism */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px); /* Efecto Glassmorphism */
+    z-index: 10;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+  }
+  
+  .overlay.show {
+    opacity: 1;
+  }
+  
+  .nav {
+    position: absolute;
+    left: 177px;
+    top: 20px;
+    z-index: 20;
+  }
+  

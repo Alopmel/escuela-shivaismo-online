@@ -6,6 +6,7 @@ import VideoRender from '../categorias/video-Render';
 import { useBucket } from '@/app/context/BucketContext';
 import { useUser } from '@/app/context/UserContext';
 import { formatTitle } from '@/utils/videoUtils';
+import NeonSpinner from '@/ui/neon-spinner';
 
 interface Video {
   id: string;
@@ -50,7 +51,7 @@ const LatestUpload: React.FC = () => {
     fetchLatestUploads();
   }, [userId, loading, keys]);
 
-  if (loadingLatestUploads) return <p>Loading latest uploads...</p>;
+  if (loadingLatestUploads) return <NeonSpinner />;
   if (!userId) return null;
 
   return (

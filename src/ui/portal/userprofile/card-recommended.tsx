@@ -11,6 +11,7 @@ import { useWatchLater } from '@/app/context/WatchLaterContext';
 import styles from './cardComponent.module.css';
 import { formatTitle } from '@/utils/videoUtils'; // Asegúrate de ajustar la ruta según tu estructura
 import { roboto } from '@/app/fonts';
+import NeonSpinner from '@/ui/neon-spinner';
 // Define the Video type
 interface Video {
   id: string;
@@ -64,7 +65,7 @@ const CardProfile: React.FC = () => {
     setActiveTab(tab);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <NeonSpinner />;
   if (!userId) return <p>No user found.</p>;
 
   return (

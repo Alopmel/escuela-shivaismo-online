@@ -86,14 +86,6 @@
   z-index: 20; /* Asegurarse de que el menú esté por delante del overlay */
 }
 
-.sideSphere {
-  /* Otros estilos */
-  outline: none; /* Eliminar el borde de enfoque */
-}
-
-.sideSphere:focus {
-  outline: none; /* También eliminar el borde de enfoque cuando recibe clic */
-}
 /* SIDESPHERE */
 .subSphere {
   width: 100px;

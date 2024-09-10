@@ -147,7 +147,7 @@ const TextRenderer: React.FC = () => {
                 href={`${path}${route.route}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#51033a] font-bold mr-4 flex items-center no-underline hover:text-[#b84e98] transition-colors duration-300"
+                className="text-[#d731a5] font-bold mr-4 flex items-center no-underline hover:text-[#f78bd7] transition-colors duration-300"
               >
                 {route.title}
                 <MdOutlineDownloading className="ml-2" />

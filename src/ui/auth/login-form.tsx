@@ -159,6 +159,7 @@ export default function LoginForm() {
                 name="email"
                 placeholder="Introduce tu email"
                 required
+                autoComplete="email" // Atributo autocomplete añadido
                 style={{ 
                   fontSize: isDesktop ? '1rem' : '0.75rem',
                   borderColor: '#BB42CE', // Borde del color neón
@@ -177,6 +178,7 @@ export default function LoginForm() {
                 placeholder="Introduce tu contraseña"
                 required
                 minLength={6}
+                autoComplete="current-password" // Atributo autocomplete añadido
                 style={{ 
                   fontSize: isDesktop ? '1rem' : '0.75rem',
                   borderColor: '#BB42CE', // Borde del color neón

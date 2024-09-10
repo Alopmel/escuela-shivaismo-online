@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useBucket } from '@/app/context/BucketContext';
 import { useUser } from '@/app/context/UserContext'; // Importa useUser
 import SearchCardComponent from '@/ui/portal/search/search-card-component';
+import NeonSpinner from '@/ui/neon-spinner';
 
 const Page = () => {
   const { keys } = useBucket(); // Obtén los datos del bucket
@@ -33,7 +34,7 @@ const Page = () => {
   }, [searchTerm, keys]);
 
   if (loading) {
-    return <div>Cargando...</div>; // Muestra un indicador de carga si los datos del usuario todavía se están cargando
+    return <NeonSpinner />; // Muestra un indicador de carga si los datos del usuario todavía se están cargando
   }
 
   return (
