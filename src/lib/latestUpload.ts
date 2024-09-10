@@ -18,6 +18,6 @@ export const getLatestUploads = (keys: KeyItem[]): KeyItem[] => {
     })
     .slice(0, 10);
 
-  console.log('Top 10 latest uploads:', latestUploads);
+  // console.log('Top 10 latest uploads:', latestUploads);
   return latestUploads;
 };

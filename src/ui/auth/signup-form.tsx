@@ -315,11 +315,11 @@ export default function SignUpForm() {
           <SignUpButton isDesktop={isDesktop} />
         </motion.div>
       </form>
-      <motion.div 
+      {/* <motion.div 
         style={{ width: '300px', height: '50px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
         variants={shadowAnimation}
         animate={isAnimating ? "animate" : ""}
-      /> 
+      />  */}
     </motion.div>
   );
 }

@@ -33,7 +33,7 @@ export default function RootLayout({
             <ProgressProvider>
               <BucketProvider>
                 <html lang="es">
-                  <body className={`${antonio.className} antialiased`}>
+                  <body className={`${antonio.className} antialiased auth-background`}>
                     <>
                       <ConfigureAmplifyClientSide />
                       <ErrorBoundary>

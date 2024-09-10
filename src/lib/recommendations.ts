@@ -39,7 +39,7 @@ const filterExistingVideos = (
   const normalizedViewedTitles = new Set(
     progressData.map(item => normalizeTitle(item.videoTitle))
   );
-  console.log('normalizedViewedTitles -->', normalizedViewedTitles);
+  // console.log('normalizedViewedTitles -->', normalizedViewedTitles);
   
   // Crear un array con las palabras clave extraídas de videoTitle en progressData, favoritos y watchlater
   const progressTitleWords = progressData.flatMap(item => normalizeTitle(item.videoTitle).split(' '));
@@ -47,7 +47,7 @@ const filterExistingVideos = (
   const watchLaterTitleWords = watchLaterData.flatMap(item => normalizeTitle(item.videoTitle).split(' '));
 
   const titleWordsSet = new Set([...progressTitleWords, ...favoriteTitleWords, ...watchLaterTitleWords]);
-  console.log('Title words from progress, favorites, and watchlater:', titleWordsSet);
+  // console.log('Title words from progress, favorites, and watchlater:', titleWordsSet);
 
   // Filtrar videos existentes según las palabras clave de los títulos
   const filteredVideos = videos.filter(video => {
@@ -60,7 +60,7 @@ const filterExistingVideos = (
     );
   });
 
-  console.log('Filtered videos:', filteredVideos);
+  // console.log('Filtered videos:', filteredVideos);
   return filteredVideos;
 };
 
@@ -88,7 +88,7 @@ const removeExistingTitles = (
     );
   });
 
-  console.log('Filtered recommended videos:', filteredRecommendations);
+  // console.log('Filtered recommended videos:', filteredRecommendations);
   return filteredRecommendations.slice(0, 10); // Obtener los primeros 10 registros
 };
 
@@ -103,7 +103,7 @@ export const getRecommendedVideos = async (
     // Obtener todos los videos
     const response = await axios.get<Video[]>(API_BASE_URL);
     const allVideos = response.data;
-    console.log('All videos:', allVideos);
+    // console.log('All videos:', allVideos);
 
     // Filtrar videos que ya han sido vistos, favoritos o están en "ver más tarde"
     const filteredVideos = filterExistingVideos(allVideos, progressData, favoritesData, watchLaterData);
@@ -111,7 +111,7 @@ export const getRecommendedVideos = async (
     // Eliminar los videos que ya existen en watchLater o favorites
     const finalRecommendedVideos = removeExistingTitles(filteredVideos, favoritesData, watchLaterData);
 
-    console.log('Final recommended videos:', finalRecommendedVideos);
+    // console.log('Final recommended videos:', finalRecommendedVideos);
     return finalRecommendedVideos;
   } catch (error) {
     console.error('Error fetching recommended videos:', error);
@@ -129,7 +129,7 @@ export const getMostViewedVideos = async (
     // Obtener todos los videos
     const response = await axios.get<Video[]>(API_BASE_URL);
     const allVideos = response.data;
-    console.log('All videos:', allVideos);
+    // console.log('All videos:', allVideos);
 
     // Ordenar todos los videos por número de visitas de mayor a menor
     const mostViewedVideos = allVideos
@@ -141,7 +141,7 @@ export const getMostViewedVideos = async (
     // Tomar los primeros 10 registros
     const top10MostViewedVideos = filteredVideos.slice(0, 10);
 
-    console.log('Top 10 most viewed videos:', top10MostViewedVideos);
+    // console.log('Top 10 most viewed videos:', top10MostViewedVideos);
     return top10MostViewedVideos;
   } catch (error) {
     console.error('Error fetching most viewed videos:', error);
