@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './circleMenu.module.css';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -114,18 +114,19 @@ const CircleMenuMobile = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Manejo del cambio en breadcrumb
   useEffect(() => {
     if (breadcrumb.length === 0) {
       setActiveItems(items); // Volver al menú principal si no hay breadcrumb
     }
-  }, [breadcrumb]);
+  }, [breadcrumb, items]);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
+  const toggleMenu = useCallback(() => {
+    setIsOpen(prevIsOpen => !prevIsOpen);
     setActiveItems(items);
-  };
+  }, [items]);
 
-  const handleItemClick = (item: MenuItem) => {
+  const handleItemClick = useCallback((item: MenuItem) => {
     if (item.subItems) {
       console.log(`Clicked on item with subitems: ${item.text}`);
       setActiveItems(item.subItems); // Actualiza el estado con los subItems
@@ -140,10 +141,10 @@ const CircleMenuMobile = () => {
       });
       router.push(`/portal/categorias?${params.toString()}`);
     }
-  };
+  }, [breadcrumb, items, router]);
 
-  const handleBackClick = () => {
-    setBreadcrumb((prev) => {
+  const handleBackClick = useCallback(() => {
+    setBreadcrumb(prev => {
       const newBreadcrumb = [...prev];
       newBreadcrumb.pop(); // Remover el último elemento para retroceder
       return newBreadcrumb;
@@ -163,10 +164,10 @@ const CircleMenuMobile = () => {
 
     setActiveItems(findItemByBreadcrumb(items, breadcrumb.slice(0, -1)));
     setCentralTitle(breadcrumb[breadcrumb.length - 2] || 'Escuela de Shivaismo de Cachemira');
-  };
+  }, [breadcrumb, items]);
 
   const circleDivStyle = isOpen
-    ? { transform: 'translate(-110%, -53%)', textAlign: 'center' as 'center'}
+    ? { transform: 'translate(-110%, -53%)', textAlign: 'center' as 'center' }
     : {};
 
   return (
@@ -208,16 +209,17 @@ const CircleMenuMobile = () => {
         </div>
       )}
       {isOpen && activeItems.map((item, index) => (
-        <div key={index} 
-          style={{ 
-            position: 'absolute', 
-            top: item.position.top, 
+        <div key={index}
+          style={{
+            position: 'absolute',
+            top: item.position.top,
             left: item.position.left,
             width: '120px',
             height: '120px',
-            borderRadius: '50%' }} 
-            onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
-            className={styles.secondSphere}
+            borderRadius: '50%'
+          }}
+          onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
+          className={styles.secondSphere}
         >
           {item.text}
         </div>

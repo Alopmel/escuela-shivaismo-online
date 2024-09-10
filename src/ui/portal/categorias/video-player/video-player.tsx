@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
@@ -30,7 +29,7 @@ const VideoPlayer: React.FC = () => {
     if (videoUrl) {
       fetchComments(videoUrl); 
     }
-  }, [videoUrl]);
+  }, [videoUrl, fetchComments]); // Se agrega `fetchComments` a las dependencias
 
   const handleCommentSubmit = async () => {
     const trimmedComment = newComment.trim();
@@ -68,7 +67,6 @@ const VideoPlayer: React.FC = () => {
     await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
   }, 5000);
 
-  // Ajustar el tamaño del textarea al contenido
   const adjustTextareaHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = '1rem';
@@ -88,31 +86,31 @@ const VideoPlayer: React.FC = () => {
         {videoTitle}
       </h1>
       <div className="flex flex-col items-center w-full max-w-screen-lg">
-      <div className="w-full p-2">
-        {isClient && (
-          <div className="rounded-lg overflow-hidden"> {/* Agregamos rounded-lg y overflow-hidden */}
-            <ReactPlayer
-              url={videoUrl}
-              controls
-              width="100%"
-              height="100%"
-              playing={false}
-              onPlay={() => {
-                handlePlay(key);
-              }}
-              onProgress={({ played }) => {
-                throttledHandleVideoProgress(played, 0, [{ url: videoUrl, title: videoTitle, key }], progress, setProgress, userId);
-              }}
-            />
-          </div>
-        )}
-      </div>
+        <div className="w-full p-2">
+          {isClient && (
+            <div className="rounded-lg overflow-hidden"> {/* Agregamos rounded-lg y overflow-hidden */}
+              <ReactPlayer
+                url={videoUrl}
+                controls
+                width="100%"
+                height="100%"
+                playing={false}
+                onPlay={() => {
+                  handlePlay(key);
+                }}
+                onProgress={({ played }) => {
+                  throttledHandleVideoProgress(played, 0, [{ url: videoUrl, title: videoTitle, key }], progress, setProgress, userId);
+                }}
+              />
+            </div>
+          )}
+        </div>
         <div className="w-full p-2">
           <div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-lg shadow-lg p-4 flex flex-col">
             <div className="flex items-center">
-            <p className={`text-lg text-white mr-4 mb-4 ${roboto.className}`}>
-              ¿Quieres comentar algo?
-            </p>
+              <p className={`text-lg text-white mr-4 mb-4 ${roboto.className}`}>
+                ¿Quieres comentar algo?
+              </p>
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
