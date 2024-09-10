@@ -1,9 +1,8 @@
-'use client'
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import CardComponent from './card-component';
+import { roboto } from '@/app/fonts';
 
 interface CategoryProps {
   userId: string;
@@ -30,26 +29,20 @@ const pageTransition = {
 const Category: React.FC<CategoryProps> = ({ userId }) => {
   const [hoveredItems, setHoveredItems] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(false);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const params = new URLSearchParams(searchParams.toString());
-
   const item = params.get('item') || '';
-  console.log('Item cicleMenu' + item);
-  let items: string[] = [];
-  if (params.has('breadcrumb')) {
-    items = JSON.parse(params.get('breadcrumb') || '[]') as string[];
-    console.log(items);
-  } else {
-    items = [
-      params.get('firstClickedContent') || '',
-      params.get('secondClickedContent') || '',
-      params.get('thirdClickedContent') || '',
-      params.get('fourthClickedContent') || '',
-    ].filter(Boolean) as string[];
-  }
+   // Obtenemos el breadcrumb y removemos el último ítem
+   let breadcrumb = params.get('breadcrumb')?.split(',') || [];
+   if (breadcrumb.length > 0) {
+     breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
+   }
+   
+   // Agregamos "Escuela de Shivaismo de Cachemira" como el primer ítem
+   const fullBreadcrumb = ['Escuela de Shivaismo de Cachemira', ...breadcrumb];
 
   useEffect(() => {
     const handleResize = () => {
@@ -72,12 +65,16 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
     setHoveredItems(prevItems => prevItems.filter(i => i !== item));
   };
 
-  const handleGoTo = (item: string) => {
-    const params = new URLSearchParams({
-      item: item,
-    });
+  const handleGoTo = (index: number) => {
+    if (index === 0) {
+      // Si se hace clic en el primer ítem, redirigimos a la página principal
+      router.push('/portal');
+    } else {
+      const previousItem = fullBreadcrumb[index - 1];
+      const newBreadcrumb = fullBreadcrumb.slice(0, index).join(',');
 
-    router.push(`/portal?${params.toString()}`);
+      router.push(`/portal?item=${previousItem}&breadcrumb=${newBreadcrumb}`);
+    }
   };
 
   return (
@@ -86,26 +83,32 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       animate="show"
       exit="exit"
       variants={pageTransition}
+      className='m-4 p-4 pt-20 md:m-10 md:p-20'
     >
-      <h1 className="mt-28 md:mt-32 text-[31px] md:text-[41px] ml-4 md:ml-20 text-white">
-        {item}
-      </h1>
-      
-      <nav className="mb-5 ml-4 md:ml-20 whitespace-nowrap flex flex-wrap pointer-events-auto">        
-        {items.map((item, index) => (
-          <span key={item}>
-            <span
-              className="transition duration-300 mr-5 mb-3 md:mb-0 text-[#cfcdcd]"
-              onMouseEnter={() => handleMouseEnter(item)}
-              onMouseLeave={() => handleMouseLeave(item)}
-              onClick={() => handleGoTo(item)}
-            >
-              {item}
-              {index < items.length - 1 && <span style={{ color: '#c6c6c6' }}> / </span>}
+      <div 
+        // className='mt-28 md:mt-36 ml-4 md:ml-24'
+      >
+        <h1 className=" text-[31px] md:text-[41px]  text-white">
+          {item}
+        </h1>
+        
+        <nav className={`mb-5 whitespace-nowrap flex flex-wrap ${roboto.className}`}>        
+          {fullBreadcrumb.map((breadcrumbItem, index) => (
+            <span key={breadcrumbItem}>
+              <span
+                className="transition duration-300 mr-3 mb-3 md:mb-0  text-[#e5e5e5] text-[1.1rem]"
+                onMouseEnter={() => handleMouseEnter(breadcrumbItem)}
+                onMouseLeave={() => handleMouseLeave(breadcrumbItem)}
+                onClick={() => handleGoTo(index)}
+              >
+                {breadcrumbItem}
+                {index < fullBreadcrumb.length - 1 && <span style={{ color: '#c6c6c6' }}> / </span>}
+              </span>
             </span>
-          </span>
-        ))}
-      </nav>
+          ))}
+        </nav>
+      </div>
+      
 
       <CardComponent 
         userId={userId} 

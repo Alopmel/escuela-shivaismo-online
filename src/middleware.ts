@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
 
   if (isOnProfile) {
     if (!user)
-      return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+      return NextResponse.redirect(new URL("/home", request.nextUrl));
     if (isOnAdminArea && !user.isAdmin)
       return NextResponse.redirect(new URL("/portal/dashboard/profile", request.nextUrl));
     return response;

@@ -20,6 +20,14 @@ const normalizeTitle = (title: string): string => {
     .trim();                      // Elimina espacios en los extremos
 };
 
+// Función para verificar si alguna palabra del videoTitle está presente en el videoId o category
+const doesTitleMatch = (titleWords: string[], video: Video): boolean => {
+  const videoIdLower = video.videoId.toLowerCase();
+  const categoryLower = video.category.toLowerCase();
+
+  return titleWords.some(word => videoIdLower.includes(word) || categoryLower.includes(word));
+};
+
 // Función auxiliar para filtrar videos existentes
 const filterExistingVideos = (
   videos: Video[], 
@@ -27,10 +35,42 @@ const filterExistingVideos = (
   favoritesData: Favorite[], 
   watchLaterData: WatchLater[]
 ): Video[] => {
-  // Normalizar los títulos en progressData, favoritesData, y watchLaterData
+  // Normalizar los títulos en progressData
   const normalizedViewedTitles = new Set(
     progressData.map(item => normalizeTitle(item.videoTitle))
   );
+  console.log('normalizedViewedTitles -->', normalizedViewedTitles);
+  
+  // Crear un array con las palabras clave extraídas de videoTitle en progressData, favoritos y watchlater
+  const progressTitleWords = progressData.flatMap(item => normalizeTitle(item.videoTitle).split(' '));
+  const favoriteTitleWords = favoritesData.flatMap(item => normalizeTitle(item.videoTitle).split(' '));
+  const watchLaterTitleWords = watchLaterData.flatMap(item => normalizeTitle(item.videoTitle).split(' '));
+
+  const titleWordsSet = new Set([...progressTitleWords, ...favoriteTitleWords, ...watchLaterTitleWords]);
+  console.log('Title words from progress, favorites, and watchlater:', titleWordsSet);
+
+  // Filtrar videos existentes según las palabras clave de los títulos
+  const filteredVideos = videos.filter(video => {
+    const normalizedTitle = normalizeTitle(video.title);
+    const wordsArray = Array.from(titleWordsSet);
+
+    return (
+      !normalizedViewedTitles.has(normalizedTitle) && 
+      doesTitleMatch(wordsArray, video)
+    );
+  });
+
+  console.log('Filtered videos:', filteredVideos);
+  return filteredVideos;
+};
+
+// Función para eliminar los videos que ya existen en watchLater o favorites de recommendedVideos
+const removeExistingTitles = (
+  recommendedVideos: Video[], 
+  favoritesData: Favorite[], 
+  watchLaterData: WatchLater[]
+): Video[] => {
+  // Crear un conjunto de títulos normalizados de watchLater y favorites
   const normalizedFavoritesTitles = new Set(
     favoritesData.map(item => normalizeTitle(item.videoTitle))
   );
@@ -38,18 +78,18 @@ const filterExistingVideos = (
     watchLaterData.map(item => normalizeTitle(item.videoTitle))
   );
 
-  // Filtrar videos existentes
-  const filteredVideos = videos.filter(video => {
+  // Filtrar los recommendedVideos para eliminar aquellos que coinciden con títulos en watchLater o favorites
+  const filteredRecommendations = recommendedVideos.filter(video => {
     const normalizedTitle = normalizeTitle(video.title);
+
     return (
-      !normalizedViewedTitles.has(normalizedTitle) && 
       !normalizedFavoritesTitles.has(normalizedTitle) && 
       !normalizedWatchLaterTitles.has(normalizedTitle)
     );
   });
 
-  console.log('Filtered videos:', filteredVideos);
-  return filteredVideos;
+  console.log('Filtered recommended videos:', filteredRecommendations);
+  return filteredRecommendations.slice(0, 10); // Obtener los primeros 10 registros
 };
 
 // Función para obtener videos recomendados
@@ -69,7 +109,7 @@ export const getRecommendedVideos = async (
     const filteredVideos = filterExistingVideos(allVideos, progressData, favoritesData, watchLaterData);
 
     // Eliminar los videos que ya existen en watchLater o favorites
-    const finalRecommendedVideos = filteredVideos.slice(0, 10); // Obtener los primeros 10 registros
+    const finalRecommendedVideos = removeExistingTitles(filteredVideos, favoritesData, watchLaterData);
 
     console.log('Final recommended videos:', finalRecommendedVideos);
     return finalRecommendedVideos;
@@ -79,7 +119,6 @@ export const getRecommendedVideos = async (
   }
 };
 
-// Función para obtener los 10 videos más vistos
 // Función para obtener los 10 videos más vistos
 export const getMostViewedVideos = async (
   progressData: Progress[],
@@ -93,13 +132,13 @@ export const getMostViewedVideos = async (
     console.log('All videos:', allVideos);
 
     // Ordenar todos los videos por número de visitas de mayor a menor
-    const sortedVideos = allVideos
+    const mostViewedVideos = allVideos
       .sort((a, b) => b.totalViews - a.totalViews);
 
-    // Filtrar videos que ya han sido vistos, favoritos o están en "ver más tarde"
-    const filteredVideos = filterExistingVideos(sortedVideos, progressData, favoritesData, watchLaterData);
+    // Filtrar los videos que ya han sido vistos, favoritos o están en "ver más tarde"
+    const filteredVideos = filterExistingVideos(mostViewedVideos, progressData, favoritesData, watchLaterData);
 
-    // Tomar los primeros 10 videos
+    // Tomar los primeros 10 registros
     const top10MostViewedVideos = filteredVideos.slice(0, 10);
 
     console.log('Top 10 most viewed videos:', top10MostViewedVideos);

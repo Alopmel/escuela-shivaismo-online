@@ -25,7 +25,7 @@ export const ProgressProvider: React.FC<ProgressProviderProps> = ({ children }) 
       return;
     }
 
-    console.log('User ID from useUser:', userId); // Asumiendo que `userId` es el ID del usuario
+    // console.log('User ID from useUser:', userId); // Asumiendo que `userId` es el ID del usuario
 
     const fetchProgress = async (userId: string) => {
       try {

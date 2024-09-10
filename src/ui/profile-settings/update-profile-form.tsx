@@ -6,7 +6,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { handleUpdateUserAttribute } from "@/lib/cognitoActions";
 import { useUser } from "@/app/context/UserContext"; // Importa el hook del contexto
 import styles from './userProfile.module.css'; // Importar estilos CSS
-
+import { roboto } from "@/app/fonts";
 export default function UpdateProfileForm() {
   const { user } = useUser(); // Obtén el usuario del contexto
 
@@ -14,7 +14,7 @@ export default function UpdateProfileForm() {
 
   return (
     <form action={dispatch} className={styles.formContainer}>
-      <div className={`${styles.formBox} ${styles.glasmorphism}`}>
+      <div className={`${styles.formBox} ${styles.glasmorphism} ${roboto.className}`}>
         <div className="mb-4">
           <label htmlFor="name" className="mb-2 block text-sm text-white font-medium">
             Nombre
@@ -69,5 +69,10 @@ export default function UpdateProfileForm() {
 function UpdateButton() {
   const { pending } = useFormStatus();
 
-  return <Button aria-disabled={pending}>Actualizar nombre</Button>;
+  return <Button 
+            aria-disabled={pending}
+            className="py-1 px-6 mt-4 mb-3 text-lg text-[#00d1d1] border-2 rounded-full border-sky-200 shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_4px_#00d1d1,0_0_8px_#00d1d1,0_0_12px_#00d1d1] hover:bg-[#00d1d1] hover:text-white transition-colors bg-transparent"
+          >
+            Actualizar nombre
+          </Button>;
 }

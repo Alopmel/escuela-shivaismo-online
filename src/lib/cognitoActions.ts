@@ -74,7 +74,7 @@ export async function handleConfirmSignUp(
   } catch (error) {
     return getErrorMessage(error);
   }
-  redirect("/auth/login");
+  redirect("/home");
 }
 
 export async function handleSignIn(
@@ -107,7 +107,7 @@ export async function handleSignOut() {
   } catch (error) {
     console.log(getErrorMessage(error));
   }
-  redirect("/auth/login");
+  redirect("/home");
 }
 
 export async function handleUpdateUserAttribute(
@@ -151,7 +151,7 @@ function handleUpdateUserAttributeNextSteps(output: UpdateUserAttributeOutput) {
   switch (nextStep.updateAttributeStep) {
     case "CONFIRM_ATTRIBUTE_WITH_CODE":
       const codeDeliveryDetails = nextStep.codeDeliveryDetails;
-      return `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`;
+      return `El código de confirmación se ha enviado a tu ${codeDeliveryDetails?.deliveryMedium}.`;
     case "DONE":
       return "success";
   }
@@ -229,5 +229,5 @@ export async function handleConfirmResetPassword(
   } catch (error) {
     return getErrorMessage(error);
   }
-  redirect("/auth/login");
+  redirect("/home");
 }

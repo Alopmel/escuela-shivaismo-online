@@ -1,154 +1,162 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .tabs {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
-  }
-  
-  .tab {
-    cursor: pointer;
-    margin: 0 10px;
-    padding: 10px 20px;
-    color: white;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: background 0.3s;
-  }
-  
-  .tab:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  .activeTab {
-    cursor: pointer;
-    margin: 0 10px;
-    padding: 10px 20px;
-    color: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.3);
-  }
-  
-  .videoGrid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-    width: 100%;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.tab {
+  cursor: pointer;
+  margin: 0 12px; /* Reducido el espacio entre tabs */
+  padding: 10px 20px; /* Reducido el tamaño de las tabs */
+  color: white;
+  border-radius: 20px; /* Reducido el redondeo */
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: background 0.3s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.activeTab {
+  cursor: pointer;
+  margin: 0 12px; /* Reducido el espacio entre tabs */
+  padding: 10px 20px; /* Reducido el tamaño de las tabs */
+  color: white;
+  border-radius: 20px; /* Reducido el redondeo */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.videoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.cardContainer {
+  position: relative;
+  width: 360px; /* Reducido el ancho del contenedor de la tarjeta */
+  margin-top: 20px;
+  margin-left: 30px; /* Reducido el espacio entre tarjetas */
+  margin-right: 30px;
+}
+
+/* Aplicar separación de 40px en pantallas grandes */
+@media (min-width: 1024px) {
   .cardContainer {
-    position: relative;
-    width: 316px;
-    margin: 12px 13px;
+    margin-bottom: 30px; /* Reducido margen inferior */
   }
-  
+}
+
+.cardContainer_01 {
+  border-radius: 8px; /* Reducido el redondeo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid #9393931c; /* Ajustado grosor del borde */
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2); /* Reducido tamaño de la sombra */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.cardContainer_01:hover {
+  transform: scale(1.1); /* Reducido el escalado en hover */
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.4); /* Reducido tamaño de la sombra en hover */
+}
+
+.cardPlayer {
+  width: 100%;
+  height: 100%;
+  margin-bottom: -10px; /* Ajustado para un mejor ajuste */
+  border-radius: 12px; /* Reducido el redondeo */
+}
+
+.cardIcons {
+  position: absolute;
+  top: 10px; /* Reducido espacio desde la parte superior */
+  right: 10px; /* Reducido espacio desde el borde derecho */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px; /* Reducido el espacio entre iconos */
+}
+
+.cardIcon {
+  cursor: pointer;
+  color: white;
+  padding: 4px; /* Reducido el área de clic */
+  border-radius: 50%;
+}
+
+.title {
+  color: #fbfbfb;
+  font-weight: bold;
+  font-size: 18px; /* Reducido el tamaño del texto del título */
+  margin-left: 15px; /* Reducido espacio al lado izquierdo */
+}
+
+.ptitle {
+  font-size: 14px; /* Reducido el tamaño del texto del subtítulo */
+  margin-top: -14px; /* Ajustado espaciado */
+  color: #cfcece;
+  font-weight: 500;
+  margin-left: 15px; /* Reducido espacio al lado izquierdo */
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    justify-content: flex-start; /* Alinear las tabs hacia la izquierda */
+    overflow-x: auto; /* Permitir scroll horizontal */
+    padding-bottom: 10px; /* Espacio adicional al final para scroll */
+    margin-bottom: 10px; /* Margen inferior */
+  }
+
+  .tab {
+    margin: 0 8px; /* Reducido espacio entre tabs en móviles */
+    white-space: nowrap; /* Asegurar que el texto no se divida */
+    min-width: 120px; /* Ajustado ancho mínimo para tabs en móviles */
+  }
+
+  .cardContainer {
+    width: calc(100% - 20px); /* Ajustado ancho en móviles */
+    margin: 12px; /* Reducido espacio entre tarjetas en móviles */
+  }
+
   .cardContainer_01 {
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 3px solid #9393931c;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border-radius: 8px; /* Ajustado redondeo en móviles */
+    border: 2px solid #9393931c; /* Ajustado grosor del borde en móviles */
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2); /* Reducido tamaño de la sombra en móviles */
   }
-  
-  .cardContainer_01:hover {
-    transform: scale(1.15);
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
-  }
-  
+
   .cardPlayer {
-    width: 100%;
-    height: 100%;
-    margin-bottom: -15px;
-    border-radius: 15px;
+    margin-bottom: -10px; /* Ajustado para mejor ajuste en móviles */
+    border-radius: 10px; /* Ajustado redondeo en móviles */
   }
-  
-  .cardIcons {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .cardIcon {
-    cursor: pointer;
-    color: white;
-    padding: 4px;
-    border-radius: 50%;
-  }
-  
+
   .title {
-    color: #fbfbfb;
-    font-weight: bold;
-    margin-left: 15px;
+    font-size: 16px; /* Ajustado tamaño del texto del título en móviles */
+    margin-left: 10px; /* Ajustado espacio al lado izquierdo en móviles */
   }
-  
+
   .ptitle {
-    font-size: 14px;
-    margin-top: -14px;
-    color: #cfcece;
-    font-weight: 500;
-    margin-left: 15px;
+    font-size: 12px; /* Ajustado tamaño del texto del subtítulo en móviles */
+    margin-left: 10px; /* Ajustado espacio al lado izquierdo en móviles */
   }
-  
-  @media (max-width: 768px) {
-    .tabs {
-      justify-content: flex-start; /* Alinear las tabs hacia la izquierda */
-      overflow-x: auto; /* Permitir scroll horizontal */
-      padding-bottom: 10px; /* Espacio adicional al final para scroll */
-      margin-bottom: 10px; /* Margen inferior */
-    }
-  
-    .tab {
-      margin: 0 5px; /* Espacio entre las tabs reducido */
-      white-space: nowrap; /* Asegurar que el texto no se divida */
-      min-width: 120px; /* Ancho mínimo para las tabs */
-    }
-  
-    .cardContainer {
-      width: calc(100% - 20px);
-      margin: 10px;
-    }
-  
-    .cardContainer_01 {
-      border-radius: 8px;
-      border: 2px solid #9393931c;
-      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-    }
-  
-    .cardPlayer {
-      margin-bottom: -10px;
-      border-radius: 10px;
-    }
-  
-    .title {
-      font-size: 16px;
-      margin-left: 10px;
-    }
-  
-    .ptitle {
-      font-size: 12px;
-      margin-left: 10px;
-    }
-  }
-  
-  
+}

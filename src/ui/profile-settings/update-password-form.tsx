@@ -5,13 +5,13 @@ import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleUpdatePassword } from "@/lib/cognitoActions";
 import styles from './userProfile.module.css'; // Importar estilos CSS
-
+import { roboto } from "@/app/fonts";
 export default function UpdatePasswordForm() {
   const [status, dispatch] = useFormState(handleUpdatePassword, undefined);
 
   return (
     <form action={dispatch} className={styles.formContainer}>
-      <div className={`${styles.formBox} ${styles.glasmorphism}`}>
+      <div className={`${styles.formBox} ${styles.glasmorphism} ${roboto.className}`}>
         <div className="mb-4">
           <label htmlFor="current_password" className="mb-2 block text-sm text-white font-medium">
             Contraseña actual
@@ -76,5 +76,9 @@ export default function UpdatePasswordForm() {
 function UpdateButton() {
   const { pending } = useFormStatus();
 
-  return <Button aria-disabled={pending}>Actualizar contraseña</Button>;
+  return <Button aria-disabled={pending}
+            className="py-1 px-6 mt-4 mb-3 text-lg text-[#00d1d1] border-2 rounded-full border-sky-200 shadow-[0_0_2px_#fff,inset_0_0_2px_#fff,0_0_4px_#00d1d1,0_0_8px_#00d1d1,0_0_12px_#00d1d1] hover:bg-[#00d1d1] hover:text-white transition-colors bg-transparent"
+         >
+            Actualizar contraseña
+          </Button>;
 }

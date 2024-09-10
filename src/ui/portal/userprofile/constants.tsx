@@ -1,45 +1,29 @@
-import { IoHome,
-         IoVideocam,
-         IoNotifications,
-         IoSettingsSharp,
-         IoLogOut,
-         IoStar,
-         IoEye,
-         IoCloudUpload 
-        } from "react-icons/io5";
-
-
+import { IoVideocam, IoStar, IoCloudUpload, IoSettingsSharp } from "react-icons/io5";
 import { SideNavItem } from './types';
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: 'Clases guardadas',
     path: '/portal/userprofile/videos',
-    icon: <IoVideocam  size={20} />,
+    position: { top: 'calc(50% + 342px)', left: 'calc(50% + 80px)' },
+    icon: <IoVideocam size={20} />,
   },
   {
     title: 'Recomendadas',
     path: '/portal/userprofile/recommended',
+    position: { top: 'calc(50% + 378px)', left: 'calc(50% - 9px)' },
     icon: <IoStar size={20} />,
   },
-  {
-    title: 'Más vistas',
-    path: '/portal/userprofile/more-view',
-    icon: <IoEye size={20} />,
-  },
-  {
-    title: 'Últimas subidas',
-    path: '/portal/userprofile/last-updated',
-    icon: <IoCloudUpload size={20} />,
-  },
-  {
-    title: 'Notificaciones',
-    path: '/portal/userprofile/notification',
-    icon: <IoNotifications size={20} />,
-  },
+  // {
+  //   title: 'Últimas subidas',
+  //   path: '/portal/userprofile/last-updated',
+  //   position: { top: 'calc(50% + 100px)', left: 'calc(50% - 180px)' },
+  //   icon: <IoCloudUpload size={20} />,
+  // },
   {
     title: 'Perfil',
     path: '/portal/userprofile/setting',
-    icon: <IoSettingsSharp  size={20} />,
+    position: { top: 'calc(50% + 461px)', left: 'calc(50% - 64px)' },
+    icon: <IoSettingsSharp size={20} />,
   }
 ];

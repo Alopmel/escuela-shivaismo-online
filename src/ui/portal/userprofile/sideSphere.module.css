@@ -1,0 +1,132 @@
+/* Sombra de la esfera */
+.shadow {
+  position: absolute;
+  top: 10px;
+  left: 20px; /* Mueve la sombra más hacia la derecha */
+  width: 44px;
+  height: 6px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  filter: blur(2.2px);
+}
+
+
+/* SIDESPHERE */
+.sideSphere {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f75afa, #ce16bb, #930f8a 70%);
+  position: fixed; /* Cambio a fixed para que permanezca fijo al hacer scroll */
+  display: flex;
+  flex-direction: center;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.5s ease-in-out;
+  box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), 
+              0 5px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.symbol {
+  font-size: 24px; /* Tamaño del símbolo */
+  transition: transform 0.5s ease;
+}
+
+.sideSphere::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.sideSphere::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), 
+              0 10px 20px rgba(0, 0, 0, 0.5);
+  filter: blur(5px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Oscurecer ligeramente el fondo */
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  z-index: 10; /* Asegurarse de que esté por encima de otros elementos */
+  transition: opacity 0.5s ease-in-out; /* Transición suave */
+  opacity: 0;
+}
+
+.overlay.show {
+  opacity: 1; /* Mostrar el overlay cuando se active */
+}
+
+.menu {
+  z-index: 20; /* Asegurarse de que el menú esté por delante del overlay */
+}
+/* SIDESPHERE */
+.subSphere {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #4ac2c2, #219ba6, #0e4043 70%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 10px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  font-size: 15px;
+}
+
+.subSphere::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px); /* Mantiene un desenfoque suave para los brillos */
+}
+
+.subSphere::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
+              0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  filter: blur(5px); /* Difumina ligeramente el borde */
+  z-index: 1;
+  pointer-events: none;
+}

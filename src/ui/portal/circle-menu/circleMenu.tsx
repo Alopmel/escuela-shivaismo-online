@@ -190,7 +190,8 @@ const CircleMenu: React.FC = () => {
         <div style={{ display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center', 
-          position: 'relative' }}>
+          position: 'relative' ,
+          perspective: '1000px' }}>
             <motion.div
               className={styles['nav-item']}
               style={{

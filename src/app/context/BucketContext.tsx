@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
 import axios from 'axios';
 
-type KeyItem = {
+export type KeyItem = {
   Key: string;
   LastModified?: string;
   // Incluir aquí otras propiedades si las hay

@@ -1,4 +1,3 @@
-// src/iu/portal/categorias/video-player/card-component.tsx
 import React, { useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
 import ReactPlayer from 'react-player';
@@ -7,13 +6,18 @@ import { motion } from 'framer-motion';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useRouter } from 'next/navigation';
-import { extractNumberFromTitle, getTitleWithoutExtension, handleFavoriteToggle, handleWatchLaterToggle, 
-  // handlePlay 
-} from '@/utils/videoUtils';
+import { handleFavoriteToggle, handleWatchLaterToggle, getTitleWithoutExtension } from '@/utils/videoUtils';
 import styles from '../userprofile/cardComponent.module.css';
+import { Roboto } from 'next/font/google';
+
+// Importar la fuente Roboto
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
 
 interface CardComponentProps {
-  videoData: { url: string; title: string; key: KeyItem }[]; // Cambiado a videoData como prop
+  videoData: { url: string; title: string; key: KeyItem }[]; 
   userId: string;
 }
 
@@ -33,7 +37,6 @@ const pageTransition = {
   },
 };
 
-
 const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const { favorites, setFavorites } = useFavorites();
@@ -46,6 +49,11 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
     const videoId = videoFileName ? getTitleWithoutExtension(videoFileName) : '';
     const params = new URLSearchParams({ videoUrl: videoId });
     router.push(`/portal/categorias/video-player?${params.toString()}`);
+  };
+
+  // Función para remover el número y punto del título
+  const cleanTitle = (title: string) => {
+    return title.replace(/^\d+\.\s*/, ''); // Elimina números seguidos de un punto
   };
 
   return (
@@ -76,7 +84,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
                 height="100%"
                 className={styles.cardPlayer}
                 playing={false}
-                // onPlay={() => {handlePlay(key);}}
                 config={{
                   file: {
                     attributes: {
@@ -97,7 +104,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
               </div>
             )}
             <div>
-              <p className={styles.title}>{title}</p>
+              <p className={`${styles.title} ${roboto.className}`}>{cleanTitle(title)}</p>
             </div>
           </div>
         );

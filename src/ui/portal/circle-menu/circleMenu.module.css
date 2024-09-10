@@ -1,86 +1,268 @@
-.navbar {
-  position: absolute;
-  cursor: pointer;
+/* circleMenu.module.css */
+/* CSS SPHERE */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-.nav-item {
-  position: absolute;
-  cursor: pointer;
-  width: 150px; 
-  height: 150px; 
+.ball {
+  width: 400px;
+  height: 400px;
   border-radius: 50%;
-  background: #9b51e0bc;
+  background: radial-gradient(circle at 30% 30%, #8e0f8f, #5d0b6c, #2b0638 70%);
+  position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
+  0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  z-index: 1;
+}
+
+.ball::before {
+  content: "";
+  position: absolute;
   top: 0;
   left: 0;
-  transform: translate(50%, 50%);
-  color: white;
-  font-size: 14px;
-  text-align: center;
-  font-weight: 500
-}
-
-.linkCentral{
-  text-decoration: none;
-  color: white;
-  text-align: center;
-  font-weight: 600;
-}
-
-.pTittle{
-  font-size: 16px;
-  color: white;
-} 
-
-/* Navbar.module.css */
-.circleDiv {
-  width: 160px;
-  height: 160px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: #f0f0f0;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
-  background: #9b51e0bc;
-  color: white;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px); /* Mantiene un desenfoque suave para los brillos */
 }
 
-.menuItem {
+.ball::after {
+  content: "";
   position: absolute;
-  width: 150px;
-  height: 150px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: all 0.3s ease;
-  background: #9b51e0bc;
-  color: white;
-  opacity: 1;
-  transition: opacity 0.3s;  
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
+              0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra externa para profundidad */
+  filter: blur(5px); /* Difumina ligeramente el borde */
+  z-index: 1;
+  pointer-events: none;
 }
 
-.menuItemM{
+.shadow {
   position: absolute;
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
+  transform: rotateX(90deg) translateZ(-150px);
+  z-index: -1; 
+}
+
+.text {
+  text-align: center;
+  /* font-weight: bold; */
+  color: white;
+  overflow: hidden; 
+  pointer-events: none;
+}
+
+.clickHere {
+  margin-top: 20px;
+  color: white; /* Asegura que el texto sea visible */
+  text-align: center;
+  text-decoration: underline;
+  z-index: 10;
+}
+
+.text, .clickHere {
+  outline: none;
+  border: none;
+}
+
+/* BLUE SPHERE */
+.secondSphere {
+  width: 400px;
+  height: 400px;
   border-radius: 50%;
-  background: #f0f0f0;
+  background: radial-gradient(circle at 30% 30%, #4ac2c2, #219ba6, #0e4043 70%);
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  transition: all 0.3s ease;
-  background: #9b51e0bc;
-  color: white;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 10px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.secondSphere::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px); /* Mantiene un desenfoque suave para los brillos */
+}
+
+.secondSphere::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
+              0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  filter: blur(5px); /* Difumina ligeramente el borde */
+  z-index: 1;
+  pointer-events: none;
+}
+
+
+/* MAGENT SPHERE */ 
+.thirdSphere {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #F648F8, #9D108F, #690b63 70%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
+  0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  z-index: 1;
+}
+
+.thirdSphere::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px); /* Mantiene un desenfoque suave para los brillos */
+}
+
+.thirdSphere::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
+              0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra externa para profundidad */
+  filter: blur(5px); /* Difumina ligeramente el borde */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* BLUE SPHERE */
+.fourthSphere {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #5DEFF0, #28B5C3, #156065 70%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 10px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.fourthSphere::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px); /* Mantiene un desenfoque suave para los brillos */
+}
+
+.fourthSphere::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
+              0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  filter: blur(5px); /* Difumina ligeramente el borde */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* MAGENT SPHERE */ 
+.fifthSphere {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f75afa, #ce16bb, #930f8a 70%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
+  0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  z-index: 1;
+}
+
+.fifthSphere::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%);
+  z-index: -1;
+  filter: blur(8px); /* Mantiene un desenfoque suave para los brillos */
+}
+
+.fifthSphere::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
+              0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra externa para profundidad */
+  filter: blur(5px); /* Difumina ligeramente el borde */
+  z-index: 1;
+  pointer-events: none;
 }

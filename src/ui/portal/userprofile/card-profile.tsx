@@ -7,7 +7,8 @@ import { useWatchLater } from '@/app/context/WatchLaterContext';
 import useAuthUser from '@/app/hooks/use-auth-user';
 import VideoRender from '../categorias/video-Render';
 import styles from './cardComponent.module.css';
-
+import { formatTitle } from '@/utils/videoUtils'; // Asegúrate de ajustar la ruta según tu estructura
+import { roboto } from '@/app/fonts';
 
 const pageTransition = {
   hidden: { opacity: 0 },
@@ -30,13 +31,13 @@ const CardProfile: React.FC = () => {
     <motion.div initial="hidden" animate="show" exit="exit" variants={pageTransition} className={styles.container}>
       <div className={styles.tabs}>
         <div
-          className={activeTab === 'favorites' ? styles.activeTab : styles.tab}
+          className={`${activeTab === 'favorites' ? styles.activeTab : styles.tab} ${roboto.className}`}
           onClick={() => handleTabChange('favorites')}
         >
           Favoritos
         </div>
         <div
-          className={activeTab === 'watchLater' ? styles.activeTab : styles.tab}
+          className={`${activeTab === 'watchLater' ? styles.activeTab : styles.tab} ${roboto.className}`}
           onClick={() => handleTabChange('watchLater')}
         >
           Ver más tarde
@@ -46,7 +47,7 @@ const CardProfile: React.FC = () => {
         <VideoRender 
           videoData={favorites.map(({ url, videoTitle , key}) => ({
             url,
-            title: videoTitle, 
+            title:  formatTitle(videoTitle) , 
             key: { Key: key }
           }))} 
           userId={userId} 
@@ -55,7 +56,7 @@ const CardProfile: React.FC = () => {
         <VideoRender 
           videoData={watchLater.map(({ url, videoTitle, key }) => ({
             url, 
-            title: videoTitle, 
+            title: formatTitle(videoTitle), 
             key: { Key: key }
           }))} 
           userId={userId} 

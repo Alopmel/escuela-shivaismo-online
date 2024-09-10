@@ -2,7 +2,7 @@
 'use client'
 import { useEffect, useState, useCallback } from "react";
 import SideNav from "@/ui/portal/userprofile/side-nav";
-import Navbar from "@/ui/portal/navbar/navbar";
+import SideNavbarMobile from '@/ui/portal/userprofile/side-nav-mov'
 import Search from "@/ui/portal/search/search";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -29,11 +29,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [checkWindowSize]);
 
   return (
-    <div className="flex">
+    <div className="flex auth-background">
               <Search /> {/* Agrega el componente de búsqueda */}
-      {isDesktop ? (<SideNav />) : (<Navbar />)}
+      {isDesktop ? (<SideNav />) : (<SideNavbarMobile /> )}
       <main className="flex-1">
-
         {children}
       </main>
     </div>

@@ -1,7 +1,7 @@
-import { Suspense } from 'react'; // Importa Suspense
+import { Suspense, useState, useEffect } from 'react'; // Importa useState y useEffect
 import type { Metadata } from "next";
 import "./globals.css";
-import { inter } from "@/ui/fonts";
+import { antonio } from './fonts';
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { UserProvider } from './context/UserContext'; // Importa el UserProvider
 import { FavoritesProvider } from './context/FavoritesContext';
@@ -13,7 +13,6 @@ import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estr
 import Image from "next/image";
 import Link from 'next/link';
 
-
 export const metadata: Metadata = {
   title: "Tantra Shivaismo de Cachemira ",
   description: "Escuela online",
@@ -24,6 +23,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <UserProvider>
       <FavoritesProvider>
@@ -32,13 +32,19 @@ export default function RootLayout({
             <ProgressProvider>
               <BucketProvider>
                 <html lang="es">
-                  <body className={`${inter.className} antialiased`}>
+                  <body className={`${antonio.className} antialiased`}>
                     <>
                       <ConfigureAmplifyClientSide />
                       <ErrorBoundary>
                         <Suspense fallback={<div>Loading...</div>}>
                           <Link href={'/portal'}>
-                            <Image src="/logo_login.png" alt="Logo" width={100} height={100} className="mt-1 absolute" />      
+                            <Image 
+                              src="/logo_login.png"
+                              alt="Logo"
+                              width={90} 
+                              height={90} 
+                              className="mt-8 ml-8 absolute logo-white logo-size" 
+                            />
                           </Link>
                           {children}
                         </Suspense>

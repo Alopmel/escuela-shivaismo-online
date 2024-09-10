@@ -8,6 +8,7 @@ import {
   XMarkIcon, // Importa el ícono de la cruz
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { IoEyeOff, IoEye } from 'react-icons/io5'; // Importar iconos de react-icons
 import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleConfirmResetPassword } from "@/lib/cognitoActions";
@@ -68,6 +69,7 @@ export default function ConfirmResetPasswordForm() {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
   const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false); // Estado para gestionar la visibilidad de la contraseña
 
   const handlePasswordFocus = (e: FocusEvent<HTMLInputElement>) => {
     setShowPasswordRequirements(true);
@@ -114,7 +116,7 @@ export default function ConfirmResetPasswordForm() {
         return false;
     }
   };
-
+  
   const getLogoSrc = (criteria: string): JSX.Element => {
     return (
       <Image
@@ -128,25 +130,24 @@ export default function ConfirmResetPasswordForm() {
 
   const containerStyle: CSSProperties = {
     borderRadius: '50%',
-    background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    boxShadow: '0 0 30px rgba(0,0,0,0.4)',
-    width: isDesktop ? '400px' : '345px',
-    height: isDesktop ? '400px' : '345px'
+    justifyContent: 'center', // Centra el contenido horizontalmente
+    alignItems: 'center', // Centra el contenido verticalmente
+    width: isDesktop ? '450px' : '345px',
+    height: isDesktop ? '450px' : '345px',
+    position: 'relative', // Necesario para el posicionamiento absoluto de la sombra
   };
 
   const imageStyle: CSSProperties = {
-    marginBottom: isDesktop ? '30px' : '15px',
-    marginTop: isDesktop ? '50px' : '25px'
+    marginBottom: isDesktop ? '27px' : '15px',
+    marginTop: isDesktop ? '-30px' : '-25px'
   };
+
 
   return (
     <motion.div 
-      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', overflow: 'hidden'}}
       initial="hidden"
       animate="show"
       exit="exit"
@@ -170,42 +171,69 @@ export default function ConfirmResetPasswordForm() {
           </div>
         </div>
       )}
-      <form action={dispatch} className="space-y-3">
+      <form action={dispatch} className="space-y-3 stageF">
         <motion.div
+        className="ballF"
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
         >
-          <Image src="/logo_login.png" alt="Logo" width={isDesktop ? 100 : 90} height={isDesktop ? 100 : 90} priority style={imageStyle} />
-          <div className="w-full flex flex-col items-center mt-[-12px]">
+          <div style={{ position: 'absolute', bottom: '-50px', left: '50%', transform: 'translateX(-50%)', zIndex: -1 }}>
+            <motion.div 
+              style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
+              variants={shadowAnimation}
+              animate={isAnimating ? "animate" : ""}
+            />
+          </div>
+          <Image src="/logo.svg" alt="Logo" className="logo-white"  width={isDesktop ? 100 : 50} height={isDesktop ? 100 : 50} priority style={imageStyle} />
+          <div className="w-full flex flex-col items-center">
             <div className="relative w-full flex justify-center">
                 <input
-                  className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500 mb-[-7px]"
+                className="peer block w-3/5 h-[1.2rem] rounded-full border py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc]"
                   id="email"
                   type="email"
                   name="email"
                   placeholder="Email"
                   required
-                  style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
-                />
-                <AtSymbolIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
+                  style={{ 
+                    fontSize: isDesktop ? '1rem' : '0.75rem',
+                    borderColor: '#BB42CE', // Borde del color neón
+                    boxShadow: '0 0 8px #BB42CE, 0 0 15px #BB42CE', // Estilo de neón
+                    color: '#422147', // Color del texto del input
+                  }}                />
+                <AtSymbolIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#c7aacc] peer-focus:text-[#c7aacc]" />
+              </div>
             <div className="mt-4 relative w-full flex justify-center">
               <input
-                className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500 mb-[-7px]"
+                className="peer block w-3/5 h-[1.2rem] rounded-full border py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc]"
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Enter password"
+                placeholder="Introduce tu contraseña"
                 required
                 minLength={8}
                 onFocus={handlePasswordFocus}
                 onBlur={handlePasswordBlur}
                 onChange={handlePasswordChange}
-                style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
-              />
-              <KeyIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"  />
-              {showPasswordRequirements && (
+                style={{ 
+                  fontSize: isDesktop ? '1rem' : '0.75rem',
+                  borderColor: '#BB42CE', // Borde del color neón
+                  boxShadow: '0 0 8px #BB42CE, 0 0 15px #BB42CE', // Estilo de neón
+                  color: '#422147', // Color del texto del input
+                }}               />
+                <KeyIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#c7aacc] peer-focus:text-[#c7aacc]" />
+                {showPassword ? (
+                  <IoEye
+                    className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-[#c7aacc]"
+                    onClick={() => setShowPassword(false)}
+                  />
+                ) : (
+                  <IoEyeOff
+                    className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-[#c7aacc]"
+                    onClick={() => setShowPassword(true)}
+                  />
+                )}
+                {showPasswordRequirements && (
                 <div className="absolute top-[2.5rem] left-1/2 transform -translate-x-1/2 w-3/5 p-3 bg-white border border-gray-300 rounded-lg shadow-lg text-sm z-40">
                   <div className="flex items-center mb-2">
                     {getLogoSrc('minLength')}
@@ -242,26 +270,25 @@ export default function ConfirmResetPasswordForm() {
             </div>
             <div className="mt-4 relative w-full flex justify-center">
                 <input
-                  className="peer block w-[52%] h-[1rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500"
+                  className="peer block w-3/5 h-[1.2rem] rounded-full border py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc]"
                   id="code"
                   type="text"
                   name="code"
                   placeholder="Código de confirmación"
                   required
                   minLength={6}
-                  style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
-                />
-                <KeyIcon className="pointer-events-none absolute left-[5.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"  />
-            </div>
+                  style={{ 
+                    fontSize: isDesktop ? '1rem' : '0.75rem',
+                    borderColor: '#BB42CE', // Borde del color neón
+                    boxShadow: '0 0 8px #BB42CE, 0 0 15px #BB42CE', // Estilo de neón
+                    color: '#422147', // Color del texto del input
+                  }}                 />
+                <KeyIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#c7aacc] peer-focus:text-[#c7aacc]" />
+                </div>
           </div>
           <ResetPasswordButton isDesktop={isDesktop} />
         </motion.div>
-      </form>
-      <motion.div 
-        style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
-        variants={shadowAnimation}
-        animate={isAnimating ? "animate" : ""}
-      />          
+      </form>        
     </motion.div>
   );
 }
@@ -270,8 +297,20 @@ function ResetPasswordButton({ isDesktop }: { isDesktop: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="w-[65%] h-8 mt-4 rounded-full" aria-disabled={pending} style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}>
-      Resetear contraseña <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button 
+    className={`w-[74%] h-8 mt-4 rounded-full relative overflow-hidden flex items-center justify-end`} // Añadido flex y justify-end para alinear texto a la derecha
+    aria-disabled={pending} 
+    style={{
+      fontSize: isDesktop ? '1rem' : '1rem',
+      width: '50%',
+      backgroundColor: 'white', // Fondo blanco
+      border: '2px solid #dfdddf', // Borde con color específico
+      boxShadow: '0 0 8px #BB42CE, 0 0 15px #BB42CE', // Estilo de neón
+      color: '#BB42CE', // Texto del botón
+    }}    
+    >
+      <span className="mr-2">Resetear contraseña</span> {/* Añadido margen a la derecha */}
+      <ArrowRightIcon className="h-5 w-5 text-[#BB42CE]" />
     </Button>
   );
 }

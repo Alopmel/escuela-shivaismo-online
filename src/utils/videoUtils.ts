@@ -12,6 +12,18 @@ interface Video {
   videoId: string;
   // Otros atributos del video si son necesarios
 }
+
+export const formatTitle = (title: string): string => {
+  // Extraer la parte después del '/'
+  const partAfterSlash = title.split('/').pop() || '';
+
+  // Eliminar el número y el '.' al principio, y la extensión al final
+  const formattedTitle = partAfterSlash
+    .replace(/^\d+\./, '') // Quitar número y '.'
+    .replace(/\.(mp4|mov)$/, ''); // Quitar extensión de archivo
+
+  return formattedTitle.trim(); // Eliminar espacios en blanco alrededor
+};
 // Utilidad para extraer número de título
 export const extractNumberFromTitle = (title: string): number => {
   const match = title.match(/\d+/g);

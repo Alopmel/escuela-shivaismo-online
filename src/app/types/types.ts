@@ -42,3 +42,20 @@ export interface Comment {
   text: string;
   creationDate: string;
 }
+
+// types.ts
+export interface MenuItem {
+  text: string;
+  position: {
+    top: string;
+    left: string;
+  };
+  subItems?: MenuItem[];
+}
+
+export type MenuState = {
+  item: MenuItem | null;
+  secondItem: MenuItem | null;
+  thirdItem: MenuItem | null;
+  fourthItem: MenuItem | null;
+};

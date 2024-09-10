@@ -20,7 +20,7 @@ const translateErrorMessage = (message: string): string => {
     "User is not confirmed.": "El usuario no está confirmado",
     "Password does not conform to policy.": "La contraseña no cumple con la política",
     "Invalid verification code provided.": "Código de verificación proporcionado inválido",
-    "Username cannot be empt.y": "El nombre de usuario no puede estar vacío",
+    "Username cannot be empty.": "El nombre de usuario no puede estar vacío",
     "Password did not conform with policy: Password must have uppercase characters.": "La contraseña debe contener un carácter en mayúscula"
     // Agrega más mapeos según sea necesario
   };
@@ -95,20 +95,18 @@ export default function LoginForm() {
 
   const containerStyle: CSSProperties = {
     borderRadius: '50%',
-    background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    boxShadow: '0 0 30px rgba(0,0,0,0.4)',
-    width: isDesktop ? '400px' : '345px',
-    height: isDesktop ? '400px' : '345px'
+    justifyContent: 'center', // Centra el contenido horizontalmente
+    alignItems: 'center', // Centra el contenido verticalmente
+    width: isDesktop ? '450px' : '345px',
+    height: isDesktop ? '450px' : '345px',
+    position: 'relative', // Necesario para el posicionamiento absoluto de la sombra
   };
 
   const imageStyle: CSSProperties = {
     marginBottom: isDesktop ? '30px' : '15px',
-    marginTop: isDesktop ? '50px' : '25px'
+    marginTop: isDesktop ? '-30px' : '-25px'
   };
 
   const closeError = () => {
@@ -117,7 +115,7 @@ export default function LoginForm() {
 
   return (
     <motion.div 
-      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' , overflow: 'hidden' }}
       initial="hidden"
       animate="show"
       exit="exit"
@@ -136,47 +134,65 @@ export default function LoginForm() {
         </div>
       )}
 
-      <form action={dispatch} className="space-y-3">
+      <form action={dispatch} className="space-y-3 stageF">
         <motion.div
+          className="ballF"
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
         >
-          <Image src="/logo_login.png" alt="Logo" width={isDesktop ? 100 : 90} height={isDesktop ? 100 : 90} priority style={imageStyle} />
+          <div style={{ position: 'absolute', bottom: '-30px', left: '50%', transform: 'translateX(-50%)', zIndex: -1 }}>
+            <motion.div 
+              style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
+              variants={shadowAnimation}
+              animate={isAnimating ? "animate" : ""}
+            />
+          </div>
+          <Image src="/logo.svg" alt="Logo" className='logo-white' width={isDesktop ? 100 : 90} height={isDesktop ? 100 : 90} priority style={imageStyle} />
 
           <div className="w-full flex flex-col items-center">
             <div className="relative w-full flex justify-center">
               <input
-                className="peer block w-3/5 h-[1.2rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500"                  
+                className="peer block w-3/5 h-[1.2rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc] placeholder:peer-focus:text-[#c7aacc]"                  
                 id="email"
                 type="email"
                 name="email"
                 placeholder="Introduce tu email"
                 required
-                style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
+                style={{ 
+                  fontSize: isDesktop ? '1rem' : '0.75rem',
+                  borderColor: '#BB42CE', // Borde del color neón
+                  boxShadow: '0 0 6px #BB42CE, 0 0 12px #BB42CE', // Estilo de neón ajustado
+                  color: '#422147', // Color del texto del input 
+                }}
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <AtSymbolIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#c7aacc] peer-focus:text-[#c7aacc]" />
             </div>
             <div className="mt-4 relative w-full flex justify-center">
               <input
-                className="peer block w-3/5 h-[1.2rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-gray-500"                  
+                className="peer block w-3/5 h-[1.2rem] rounded-full border border-gray-200 py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc] placeholder:peer-focus:text-[#c7aacc]"                  
                 id="password"
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Introduce tu contraseña"
                 required
                 minLength={6}
-                style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
+                style={{ 
+                  fontSize: isDesktop ? '1rem' : '0.75rem',
+                  borderColor: '#BB42CE', // Borde del color neón
+                  boxShadow: '0 0 6px #BB42CE, 0 0 12px #BB42CE', // Estilo de neón ajustado
+                  color: '#422147', // Color del texto del input 
+                }}
               />
-              <KeyIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <KeyIcon className="pointer-events-none absolute left-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#c7aacc] peer-focus:text-[#c7aacc]" />
               {showPassword ? (
                 <IoEye
-                  className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500"
+                  className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-[#c7aacc]"
                   onClick={() => setShowPassword(false)}
                 />
               ) : (
                 <IoEyeOff
-                  className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500"
+                  className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-[#c7aacc]"
                   onClick={() => setShowPassword(true)}
                 />
               )}
@@ -187,19 +203,13 @@ export default function LoginForm() {
             <Link
               href="/auth/reset-password/submit"
               className="mt-2 cursor-pointer text-white"
-              style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}
+              style={{ fontSize: isDesktop ? '1.2rem' : '0.75rem' , marginTop: '28px' }}
             >
               Olvidaste la contraseña?
             </Link>
           </div>
         </motion.div>
       </form>
-
-      <motion.div 
-        style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
-        variants={shadowAnimation}
-        animate={isAnimating ? "animate" : ""}
-      />          
     </motion.div>
   );
 }
@@ -208,9 +218,21 @@ function LoginButton({ isDesktop }: { isDesktop: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="w-[71%] h-8 mt-4 rounded-full" aria-disabled={pending} style={{ fontSize: isDesktop ? '1rem' : '0.75rem' }}>      
+    <Button 
+      className={`w-[75%] h-8 mt-4 rounded-full`} // Botón con borde redondeado
+      aria-disabled={pending} 
+      style={{ 
+        fontSize: isDesktop ? '1.1rem' : '0.75rem',
+        backgroundColor: 'transparent', // Fondo transparente
+        border: 'none', // Sin borde
+        color: 'white', // Color de texto neón
+        display: 'flex', // Alinea los elementos en fila
+        alignItems: 'center', // Alinea verticalmente
+        justifyContent: 'flex-end' // Alinea horizontalmente a la derecha
+      }}
+    >      
       Acceder 
-      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      <ArrowRightIcon className="ml-2 h-5 w-5 text-[white]" /> {/* Flecha a la derecha del texto */}
     </Button>
   );
 }

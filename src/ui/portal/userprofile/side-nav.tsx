@@ -7,6 +7,7 @@ import { SideNavItem } from './types';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { handleSignOut } from "@/lib/cognitoActions";
 import { IoLogOut } from "react-icons/io5";
+import { roboto } from '@/app/fonts';
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 200 });
@@ -102,7 +103,7 @@ const MenuItem = ({ item, isOpen }: { item: SideNavItem, isOpen: boolean }) => {
   return (
     <Link
       href={item.path}
-      className={`flex flex-row items-center p-2 rounded-lg hover:bg-white/20 ${item.path === pathname ? 'bg-white/20' : ''} text-white font-semibold no-underline`}
+      className={`flex flex-row items-center p-2 rounded-lg hover:bg-white/20 ${roboto.className} ${item.path === pathname ? 'bg-white/20' : ''} text-white font-semibold no-underline`}
     >
       <div className={`flex items-center ${isOpen ? 'space-x-4' : 'justify-center'} w-full`}>
         <span style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

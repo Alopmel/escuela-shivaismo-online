@@ -1,4 +1,3 @@
-// src/ui/components/VideoRender.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -18,6 +17,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import styles from './VideoRender.module.css';
+import { roboto } from '@/app/fonts';
+import CheckNeon from '../../../../public/check_neon.svg';
 
 interface VideoRenderProps {
     videoData: { url: string; title: string; key: { Key: string } }[];
@@ -38,7 +39,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
             const params = new URLSearchParams({
                 videoUrl: video.url,
                 videoTitle: video.title,
-                key: JSON.stringify(video.key) // Enviar key como cadena JSON
+                key: JSON.stringify(video.key)
             });
             router.push(`/portal/categorias/video-player?${params.toString()}`);
         }
@@ -46,10 +47,10 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
 
     const throttledHandleVideoProgress = throttle(
         async (played: number, index: number) => {
-          await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
+            await handleVideoProgress(played, index, videoData, progress, setProgress, userId);
         },
-        5000 // Ajusta el tiempo de throttling según sea necesario
-      );
+        5000
+    );
 
     const pageTransition = {
         hidden: { opacity: 0 },
@@ -88,7 +89,6 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                 className={styles.cardPlayer}
                                 playing={isPlaying}
                                 onPlay={() => {
-                                    // Pasar key como parte del estado actual
                                     handlePlay(key);
                                     setPlayingVideoIndex(index);
                                 }}
@@ -107,7 +107,8 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                             />
                             {isViewed && !isPlaying && hoveredVideo !== index && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
-                                    <span className="text-white text-4xl font-bold">Visto</span>
+                                    {/* Mostrar imagen en vez del texto */}
+                                    <img src={CheckNeon.src} alt="Visto" className="w-32 h-32" /> {/* Tamaño reducido de la imagen */}
                                 </div>
                             )}
                         </div>
@@ -117,18 +118,18 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                     className={styles.cardIcon}
                                     onClick={() => handleFavoriteToggle(index, videoData, favorites, setFavorites, userId)}
                                 >
-                                    {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+                                    {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />} {/* Tamaño reducido de iconos */}
                                 </div>
                                 <div
                                     className={styles.cardIcon}
                                     onClick={() => handleWatchLaterToggle(index, videoData, watchLater, setWatchLater, userId)}
                                 >
-                                    {isWatchLater ? <FaClock size={24} /> : <FaRegClock size={24} />}
+                                    {isWatchLater ? <FaClock size={24} /> : <FaRegClock size={24} />} {/* Tamaño reducido de iconos */}
                                 </div>
                             </div>
                         )}
                         <div>
-                            <p className={styles.title}>{title}</p>
+                            <p className={`text-[#fbfbfb] ml-[1rem] font-bold ${roboto.className} ${styles.title}`}>{title}</p>
                         </div>
                     </div>
                 );

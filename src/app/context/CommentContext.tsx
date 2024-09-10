@@ -1,6 +1,6 @@
 // src/app/context/CommentContext.tsx
 'use client';
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { getCommentVideo } from '@/lib/commentData';
 import { Comment } from '../types/types';
 
@@ -22,7 +22,6 @@ export const CommentProvider: React.FC<CommentProviderProps> = ({ children }) =>
   const fetchComments = async (videoId: string) => {
     try {
       const fetchedComments = await getCommentVideo();
-      console.log('Fetched comments: ', fetchedComments)
       setComments(fetchedComments);
     } catch (error) {
       console.error('Error fetching comments:', error);

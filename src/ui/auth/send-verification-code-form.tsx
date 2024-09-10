@@ -10,7 +10,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "../button";
 import { useState, useEffect } from "react";
 
-export default function SendVerificationCode() {
+export default function SendVerificationCode({ isDesktop }: { isDesktop: boolean }) {
   const [response, dispatch] = useFormState(handleSendEmailVerificationCode, {
     message: "",
     errorMessage: "",
@@ -55,12 +55,22 @@ export default function SendVerificationCode() {
       )}
 
       <Button
-        className="w-[71%] h-8 mt-3 rounded-full"
+        className={`w-[74%] h-8 mt-4 rounded-full relative overflow-hidden flex items-center justify-end`} // Añadido flex y justify-end para alinear texto a la derecha
         aria-disabled={pending}
+        style={{
+          fontSize: isDesktop ? '1rem' : '1rem',
+          width: '50%',
+          backgroundColor: 'white', // Fondo blanco
+          border: '2px solid #dfdddf', // Borde con color específico
+          boxShadow: '0 0 8px #BB42CE, 0 0 15px #BB42CE', // Estilo de neón
+          color: '#BB42CE', // Texto del botón
+        }}
         formAction={dispatch}
       >
-        Reenviar código de verificación{" "}
-        <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      <span className="mr-2">Reenviar código{" "}</span> {/* Añadido margen a la derecha */}
+      {/* <ArrowRightIcon className="h-5 w-5 text-white"
+      // text-[#BB42CE]" 
+      /> */}
       </Button>
     </>
   );

@@ -16,8 +16,84 @@
   }
 }
 
+/* global.css */
+* {
+  outline: none;
+  border: none;
+}
+
 body {
-  background-image: url(/fondo_1.png);
+
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+
+}
+
+
+/* Barra de desplazamiento para navegadores WebKit (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 12px; /* Ancho de la barra de desplazamiento vertical */
+  height: 12px; /* Altura de la barra de desplazamiento horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color de fondo de la pista de la barra de desplazamiento */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00d1d1; /* Color del "thumb" de la barra de desplazamiento */
+  border-radius: 10px;
+  border: 2px solid #d8feff; /* Borde que simula un efecto neón */
+  box-shadow: 0 0 2px #d8feff, 
+              inset 0 0 2px #b2e8f1, 
+              0 0 4px #00d1d1, 
+              0 0 8px #00d1d1, 
+              0 0 12px #00d1d1; /* Efecto de neón en la sombra del thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00b2b2; /* Color del "thumb" cuando se pasa el cursor sobre él */
+  box-shadow: 0 0 2px #d8feff, 
+              inset 0 0 2px #b2e8f1, 
+              0 0 4px #00d1d1, 
+              0 0 8px #00d1d1, 
+              0 0 12px #00d1d1; /* Mantener el efecto neón en hover */
+}
+
+/* ROOTLAYOUT */ 
+.logo-size {
+  width: 90px;
+  height: 90px;
+}
+
+@media (max-width: 768px) {
+  .logo-size {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* FONDO HOME */
+.home-background {
+  background-image: url('/shiva_home.png');
+  background-size: cover;
+  background-position: center;
+  background-position-y: 1%;
+  min-height: 100vh;
+  width: 100%;
+  position: relative; /* Cambiado a relative para que los elementos internos se centren correctamente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+/* FONDO TODO */
+.auth-background {
+  background-image: url('/FONDO.png');
   background-position: center;
   background-size: cover;
   background-repeat: repeat;
@@ -31,210 +107,212 @@ body {
   }
 }
 
-/*
-ul{
-  list-style: none;
-  line-height: 1.8;
-  font-weight: 400;
+.no-select {
+  user-select: none;
+}
+.logo-white {
+  filter: brightness(0) invert(1);
+  z-index: 10;
 }
 
-.linkTo{
-  text-decoration: none;
-  vertical-align: middle;
-  color: #8E3C6D;
-}
-
-.site{
-  display: flex;
-  align-items: center;
-  justify-content: center ;
-  height: 100vh;
-}
-
-.container{
-  max-width: 480px;
-  width: 100%;
-  padding: 0 2rem;
-}
-
-.nav{
-  position: relative;
-  display:flex;
-  justify-content: flex-end;
-  max-width: 480px;
-  width: 100%;
-  height: 500px;
-}
-
-nav .link{
-  width: 40px;
-  height: 40px;
+/* 3D BALL HOME*/
+.stage {
+  width: 300px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1000px;
+  position: relative;
+}
+
+.ball {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgb(59 87 164 / 90%), rgb(47 11 68 / 50%) 40%, rgb(0 225 243 / 30%) 60%, rgb(176 10 196 / 20%) 80%, #000 100%);
   position: absolute;
-  top: 50%;
-  margin-right: -20px;  
-  right: 0;
+  top: 90px;
+  left: 212px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  z-index: 99;
 }
 
-nav .link::before{
-  content: '';
+.ball:before {
+  content: "";
   position: absolute;
-  width: inherit;
-  height: inherit;
-  /* background-image: linear-gradient(to right, #8E3C6D, transparent); */
- /* background-image: linear-gradient(to left, transparent 25%, #8E3C6D);
+  width: 60%;
+  height: 60%;
+  top: 15%;
+  left: 15%;
   border-radius: 50%;
-  transform: scale(2);
-  z-index: -2;
-
+  background: radial-gradient(circle at 30% 30%, rgba(252, 254, 255, 0.8), rgba(252, 254, 255, 0) 70%);
+  filter: blur(10px);
+  opacity: 0.9;
 }
 
-nav .link::after{
-  content: '';
+.ball:after {
+  content: "";
   position: absolute;
-  width: calc(100% - 4px);
-  height: calc(100% - 4px);
-  /* background: linear-gradient(to right, #8E3C6D, transparent); */
- /* background-color: #AD8BBE;
+  width: 40%;
+  height: 40%;
+  top: 10%;
+  left: 10%;
   border-radius: 50%;
-  transform: scale(2);
-  z-index: -1;
-  opacity: .3;
-  transition: background-color .3s;
+  background: radial-gradient(circle at 30% 30%, rgba(252, 254, 255, 0.5), rgba(252, 254, 255, 0) 60%);
+  filter: blur(5px);
+  opacity: 0.8;
 }
-
-.link:hover::after{
-  opacity: .9;
-}
-
-
-nav ul.submenu{
-  position: absolute;
-  top: 0;
-  right: 4em;
-  width: 350px;
-  height: 500px;
-  transform: rotate(90deg);
-  visibility: hidden;
-  transition: visibility .1s;
-}
-
-nav > input:checked ~ ul {
-  visibility: inherit;
-}
-nav > input:checked ~ ul li{
-  transform: rotate(calc((-180deg / 6) * var(--item))) translateX(0);
-  opacity: 1;
-}
-
-nav ul.submenu li{
-  --item: 1;
-  position: absolute;
-  width: 175px;
-  height: 60px;
-  transform: rotate(calc((-180deg / 6) * var(--item))) translateX(157px);
-  transform-origin: right center;
+/* 3D BALL FORM*/
+/* global.css */
+.stageF {
   display: flex;
   align-items: center;
-  opacity: 0;
-  transition: transform .7s, opacity .2s;
+  justify-content: center;
+  perspective: 1200px;
+  position: relative;
+  margin: 20px;
+
 }
 
-.linkTo{
+.ballF {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #5d0b6c, #4e0a63);
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3); /* Sombra interna para un efecto más profundo */
+  /* overflow: hidden; Asegura que cualquier contenido desbordado sea recortado */
+  z-index: -1; /* Asegura que este contenedor esté detrás de cualquier contenido adicional */
 }
 
-nav ul li:nth-child(2){
-  --item: 2;
-}
-nav ul li:nth-child(3){
-  --item: 3;
-}
-nav ul li:nth-child(4){
-  --item: 4;
-}
-nav ul li:nth-child(5){
-  --item: 5;
-}
-
-.menuIcon{
-  font-size:  20px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  background-color: #8E3C6D;
-  color: white;
-  border: 2px solid transparent;
-  transition: border .3s, background-color .3s;
-}
-
-.menuIcon:hover{
-  background-color: transparent;
-  border-color: #8E3C6D;
-}
-
-nav ul li span{
+.ballF::before {
+  content: "";
   position: absolute;
-  right: calc(100% + 1rem);
-  width: 150px;
-  text-align:  right;
-  font-size: 13px;
-  padding: 0 10px;
-  border-radius: 25px;
-  background-image: linear-gradient(to right, transparent 25%, #8E3C6D);
-  z-index: -1;
-  transform: translateX(50px);
-  opacity: 0;
-  transition: color .3s, transform .3s .4s, opacity .2s 4.s;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 26% 35%, rgba(159, 42, 186, 1), rgba(245, 171, 228, 0) 38%),
+              radial-gradient(circle at 54% 17%, rgba(159, 42, 186, 1), rgba(245, 171, 228, 0) 21%),
+              radial-gradient(circle at 37% 23%, rgb(225, 192, 236), rgba(245, 171, 228, 0) 28%),
+              radial-gradient(circle at 49% 81%, rgba(159, 42, 186, 1), rgba(235, 172, 220, 0) 15%),
+              radial-gradient(circle at 84% 62%, rgba(159, 42, 186, 1), rgba(235, 172, 220, 0) 13%),
+              radial-gradient(circle at 68% 75%, rgb(213, 156, 232), rgba(235, 172, 220, 0) 21%);
+  background-blend-mode: overlay;
+  filter: blur(31px); /* Aumenta el desenfoque para un brillo más suave */
+  z-index: -1; /* Asegura que el contenido quede detrás de otros elementos */
 }
 
-nav > input:checked ~ul li .linkTo span{
-  transform: translateX(0);
-  opacity: 1;
+.ballF::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+  width: 200%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 60%);
+  transform: translateX(-50%) rotateX(90deg);
+  z-index: -1; /* Asegura que la sombra quede debajo del contenido */
 }
-nav ul li span::before{
+
+.shadowF {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
+  transform: rotateX(90deg) translateZ(-150px);
+  z-index: -1; /* Coloca la sombra detrás de la esfera */
+}
+
+/* SPACEBAR */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --primary: 24 9.8% 10%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 20 14.3% 4.1%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 60 9.1% 97.8%;
+    --card: 20 14.3% 4.1%;
+    --card-foreground: 60 9.1% 97.8%;
+    --popover: 20 14.3% 4.1%;
+    --popover-foreground: 60 9.1% 97.8%;
+    --primary: 60 9.1% 97.8%;
+    --primary-foreground: 24 9.8% 10%;
+    --secondary: 12 6.5% 15.1%;
+    --secondary-foreground: 60 9.1% 97.8%;
+    --muted: 12 6.5% 15.1%;
+    --muted-foreground: 24 5.4% 63.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 60 9.1% 97.8%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 12 6.5% 15.1%;
+    --input: 12 6.5% 15.1%;
+    --ring: 24 5.7% 82.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    border: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+}
+
+/* Estilo de neón para el ícono */
+.neon-effects {
+  position: relative;
+  color: #00d1d1;
+}
+
+.neon-effects::before {
   content: '';
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: calc(100% - 4px);
-  height: calc(100% - 4px);
-  border-radius: 25px;
-  background-color: #AD8BBE;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 209, 209, 0.5);
+  filter: blur(10px);
   z-index: -1;
-  transform: background-color .3s;
+  transform: scale(1.1);
 }
-
-.linkTo:hover span::before{
-  background-color: transparent;
-}
-
-.linkTo:hover span{
-  color: white;
-} */
-/* Rotación de los iconos del menu */
-
-/* 
-li:nth-child(1) .linkTo .menuIcon{
-  transform: rotate(292deg);
-}
-
-li:nth-child(2) .linkTo .menuIcon{
-  transform: rotate(315deg);
-}
-
-li:nth-child(4) .linkTo .menuIcon{
-  transform: rotate(22deg);
-}
-
-li:nth-child(5) .linkTo .menuIcon{
-  transform: rotate(45deg);
-} */

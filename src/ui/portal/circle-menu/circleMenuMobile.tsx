@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './circleMenu.module.css';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 interface MenuItem {
   text: string;
@@ -14,7 +15,7 @@ interface MenuItem {
 
 const CircleMenuMobile = () => {
   const items: MenuItem[] = [
-    { text: 'Empieza por aquí', position: { top: 'calc(50% - 257px)', left: 'calc(50% - 49px)' }, 
+    { text: 'Empieza por aquí', position: { top: 'calc(50% - 257px)', left: 'calc(50% - 62px)' }, 
       subItems: [
         { text: 'Fechas conferencias y recursos', position: { top: 'calc(50% - 145.622px)', left: 'calc(50% + 69px)' } },
         { text: 'Conceptos importantes y practicas basicas', position: { top: 'calc(50% + 36.378px)', left: 'calc(50% + 70px)' } }
@@ -101,8 +102,8 @@ const CircleMenuMobile = () => {
         }
       ]
     },
-    { text: 'Chamanismo', position: { top: 'calc(50% + 112.6218px)', left: 'calc(50% + 72px)' } },
-    { text: 'Últimos videos subidos', position: { top: 'calc(142% + 0px)', left: 'calc(50% - 50px)' } },
+    { text: 'Chamanismo', position: { top: 'calc(50% + 112.6218px)', left: 'calc(50% + 64px)' } },
+    { text: 'Últimos videos subidos', position: { top: 'calc(142% + 0px)', left: 'calc(50% - 62px)' } },
   ];
 
   const [isOpen, setIsOpen] = useState(false);
@@ -111,42 +112,17 @@ const CircleMenuMobile = () => {
   const [centralTitle, setCentralTitle] = useState<string>('Escuela de Shivaismo de Cachemira');
 
   const router = useRouter();
-  const searchParams = useSearchParams(); // Obtener los parámetros de búsqueda usando useSearchParams
-  const params = new URLSearchParams(searchParams.toString());
-  const breadcrumbItem = params.get('item') || '';
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (breadcrumbItem) {
-      // Buscar el item correspondiente en la lista de items
-      const findItem = (items: MenuItem[], text: string): MenuItem | undefined => {
-        for (const item of items) {
-          if (item.text === text) {
-            return item;
-          }
-          if (item.subItems) {
-            const found = findItem(item.subItems, text);
-            if (found) {
-              return found;
-            }
-          }
-        }
-        return undefined;
-      };
-
-      const item = findItem(items, breadcrumbItem);
-      if (item) {
-        toggleMenu();
-        handleItemClick(item);
-      }
+    if (breadcrumb.length === 0) {
+      setActiveItems(items); // Volver al menú principal si no hay breadcrumb
     }
-  }, [breadcrumbItem]);
+  }, [breadcrumb]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     setActiveItems(items);
-    setCentralTitle('Escuela de Shivaismo de Cachemira');
-    setBreadcrumb([centralTitle]);
-    console.log(breadcrumb)
   };
 
   const handleItemClick = (item: MenuItem) => {
@@ -160,10 +136,33 @@ const CircleMenuMobile = () => {
       // No hay subItems, ir a /Category
       const params = new URLSearchParams({
         item: item.text,
-        breadcrumb: JSON.stringify([...breadcrumb, item.text])
+        breadcrumb: [...breadcrumb, item.text].join()
       });
       router.push(`/portal/categorias?${params.toString()}`);
     }
+  };
+
+  const handleBackClick = () => {
+    setBreadcrumb((prev) => {
+      const newBreadcrumb = [...prev];
+      newBreadcrumb.pop(); // Remover el último elemento para retroceder
+      return newBreadcrumb;
+    });
+
+    // Buscar el nuevo menú en base al breadcrumb restante
+    const findItemByBreadcrumb = (items: MenuItem[], breadcrumb: string[]): MenuItem[] => {
+      let currentItems = items;
+      breadcrumb.forEach(crumb => {
+        const foundItem = currentItems.find(item => item.text === crumb);
+        if (foundItem && foundItem.subItems) {
+          currentItems = foundItem.subItems;
+        }
+      });
+      return currentItems;
+    };
+
+    setActiveItems(findItemByBreadcrumb(items, breadcrumb.slice(0, -1)));
+    setCentralTitle(breadcrumb[breadcrumb.length - 2] || 'Escuela de Shivaismo de Cachemira');
   };
 
   const circleDivStyle = isOpen
@@ -173,6 +172,7 @@ const CircleMenuMobile = () => {
   return (
     <div
       onClick={(e) => { e.stopPropagation(); toggleMenu(); }}
+      className={styles.ball}
       style={{
         width: '160px',
         height: '160px',
@@ -186,14 +186,39 @@ const CircleMenuMobile = () => {
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        background: 'radial-gradient(circle at 50% 50%, #cc8cc3, #ca1eb3)',
         color: 'white',
         ...circleDivStyle
       }}
     >
       {centralTitle}
+      {breadcrumb.length > 0 && (
+        <div
+          onClick={(e) => { e.stopPropagation(); handleBackClick(); }}
+          style={{
+            position: 'absolute',
+            top: 'calc(100% - 62px)', // Posiciona la flecha debajo del título central
+            left: '50%',
+            transform: 'translateX(-50%)',
+            cursor: 'pointer',
+            fontSize: '20px',
+            color: 'white'
+          }}
+        >
+          <ArrowLeftIcon className="h-6 w-6" /> {/* Icono de flecha */}
+        </div>
+      )}
       {isOpen && activeItems.map((item, index) => (
-        <div key={index} className={styles.menuItemM} style={{ position: 'absolute', top: item.position.top, left: item.position.left }} onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}>
+        <div key={index} 
+          style={{ 
+            position: 'absolute', 
+            top: item.position.top, 
+            left: item.position.left,
+            width: '120px',
+            height: '120px',
+            borderRadius: '50%' }} 
+            onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
+            className={styles.secondSphere}
+        >
           {item.text}
         </div>
       ))}
