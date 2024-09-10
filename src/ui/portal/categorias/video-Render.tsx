@@ -99,7 +99,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                             />
                             {isViewed && !isPlaying && hoveredVideo !== index && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
-                                    <Image src="/check_neon.svg" alt="Visto" width={128} height={128} /> {/* Tamaño ajustado de la imagen */}
+                                    <Image src="/check_neon1.svg" alt="Visto" width={128} height={128} /> {/* Tamaño ajustado de la imagen */}
                                 </div>
                             )}
                         </div>

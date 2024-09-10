@@ -1,4 +1,4 @@
-import React, { useState , useEffect , useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PrincipalSphere from './principalSphere';
 import SecondSphere from './secondSphere';
@@ -23,19 +23,25 @@ const CircleMenuDesktop: React.FC = () => {
   const [selectedThirdItem, setSelectedThirdItem] = useState<MenuItem | null>(null);
   const [selectedFourthItem, setSelectedFourthItem] = useState<MenuItem | null>(null);
 
-  const audioRef = useRef()
+  const audioRef = useRef();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const params = new URLSearchParams(searchParams.toString());
   const itemFromParams = params.get('item') || '';
-
+  const [hasInitialized, setHasInitialized] = useState(false);
   // Convertimos el breadcrumb en un array
   const breadcrumbString = params.get('breadcrumb') || '';
   const breadcrumb = breadcrumbString.split(',').filter((item) => item);  // Convertir a array y eliminar valores vacíos
   console.log('breadcrumb', breadcrumb);
+  const firstItemB = breadcrumb[0]
+  console.log('firstItemB', firstItemB)
+  const secondtItemB = breadcrumb[1]
+  console.log('secondtItemB', secondtItemB);
+  const thirdItemB = breadcrumb[2]
+  console.log('thirdItemB', thirdItemB);
 
-    const items: MenuItem[] = [
+  const items: MenuItem[] = [
     { text: 'Empieza por aquí', position: { top: 'calc(50% - 256px)', left: 'calc(50% + 32px)' }, 
       subItems: [
         { text: 'Fechas conferencias y recursos', position: { top: 'calc(50% - 350px)', left: 'calc(50% + 148px)' } },
@@ -127,208 +133,214 @@ const CircleMenuDesktop: React.FC = () => {
     { text: 'Últimos videos subidos', position: { top: 'calc(50% - 256px)', left: 'calc(50% - 180px)' } },
   ];
 
- // Función para encontrar un item por texto
- const findItem = (items: MenuItem[], text: string): MenuItem | null => {
-  for (const item of items) {
-    if (item.text === text) return item;
-    if (item.subItems) {
-      const result = findItem(item.subItems, text);
-      if (result) return result;
-    }
-  }
-  return null;
-};
+  const menuBreadcrumb = ['Empieza por aquí','Enseñanza de la vía','Aplicación en tu vida','Prácticas en diferido','Chamanismo','Últimos videos subidos']
 
-// // Inicializar los estados basados en el breadcrumb
-//   useEffect(() => {
-//     if (breadcrumb.length > 0) {
-//       setIsClicked(true);
-//       const firstItem = findItem(items, breadcrumb[0]);
-//       if (firstItem) setSelectedItem(firstItem);
-
-//       if (breadcrumb.length > 1) {
-//         const secondItem = findItem(firstItem?.subItems || [], breadcrumb[1]);
-//         if (secondItem) setSelectedSecondItem(secondItem);
-
-//         if (breadcrumb.length > 2) {
-//           const thirdItem = findItem(secondItem?.subItems || [], breadcrumb[2]);
-//           if (thirdItem) setSelectedThirdItem(thirdItem);
-//         }
-//       }
-//     }
-//   }, [breadcrumb]);  
- // Función para encontrar el camino del breadcrumb
-  const findItemPath = (items: MenuItem[], text: string, path: string[] = []): string[] | null => {
-    for (const item of items) {
-      if (item.text === text) return [...path, text];
-      if (item.subItems) {
-        const result = findItemPath(item.subItems, text, [...path, item.text]);
-        if (result) return result;
+    // Función para encontrar el camino del breadcrumb
+    const findItemPath = (items: MenuItem[], text: string, path: string[] = []): string[] | null => {
+      for (const item of items) {
+        if (item.text === text) return [...path, text];
+        if (item.subItems) {
+          const result = findItemPath(item.subItems, text, [...path, item.text]);
+          if (result) return result;
+        }
       }
-    }
-    return null;
-  };
-
-  const handleNavigation = (item: MenuItem) => {
-    const breadcrumbPath = findItemPath(items, item.text);
-    if (breadcrumbPath) {
-      console.log("Breadcrumb Path:", breadcrumbPath);
-      const params = new URLSearchParams({
-        item: item.text,
-        breadcrumb: breadcrumbPath.join(','),
-      });
-      router.push(`/portal/categorias?${params.toString()}`);
-    }
-  };
-
-  const handlePrincipalSphereClick = () => {
-    if (isClicked) {
-      setSelectedItem(null);
-      setSelectedSecondItem(null);
-      setSelectedThirdItem(null);
-      setSelectedFourthItem(null);
-      setIsClicked(false);
-    } else {
-      setSelectedItem(items[0]);
-      console.log('setSelectedItem', setSelectedItem)
-      setIsClicked(true);
-    }
-  };
-
-  const handleSecondSphereClick = (item: MenuItem) => {
-    if (item.subItems) {
-      if (selectedSecondItem?.text === item.text) {
+      return null;
+    };
+    const findItem = (items: MenuItem[], text: string): MenuItem | null => {
+      for (const item of items) {
+        if (item.text === text) return item;
+        if (item.subItems) {
+          const result = findItem(item.subItems, text);
+          if (result) return result;
+        }
+      }
+      return null;
+    };
+  
+    useEffect(() => {
+      if (hasInitialized) return;
+    
+      if (breadcrumb.length === 1) {
+        setIsClicked(true);    
+      } else if (breadcrumb.length === 2) {
+        setIsClicked(true);
+        const [firstItemB, secondItemB] = breadcrumb;
+        const secondItem = findItem(items, secondItemB);    
+        if (secondItem) {
+          handleSecondSphereClick(secondItem);
+        }
+      } else if (breadcrumb.length === 3) {
+        setIsClicked(true);
+        const [firstItemB, secondItemB, thirdItemB] = breadcrumb;
+        const secondItem = findItem(items, secondItemB);
+        setSelectedSecondItem(secondItem);
+    
+        const thirdItem = findItem(secondItem?.subItems || [], thirdItemB);
+        setSelectedThirdItem(thirdItem);
+        setSelectedFourthItem(null);
+      }
+    
+      setHasInitialized(true);
+    }, [breadcrumb, items, hasInitialized]);
+    
+  
+    const handleNavigation = (item: MenuItem) => {
+      const breadcrumbPath = findItemPath(items, item.text);
+      if (breadcrumbPath) {
+        const params = new URLSearchParams({
+          item: item.text,
+          breadcrumb: breadcrumbPath.join(','),
+        });
+        router.push(`/portal/categorias?${params.toString()}`);
+      }
+    };
+  
+    const handlePrincipalSphereClick = () => {
+      if (isClicked) {
+        setSelectedItem(null);
         setSelectedSecondItem(null);
         setSelectedThirdItem(null);
         setSelectedFourthItem(null);
+        setIsClicked(false);
       } else {
-        setSelectedSecondItem(item);
-        console.log('selectedSecondItem', selectedSecondItem)
-        setSelectedThirdItem(null);
-        setSelectedFourthItem(null);
+        setSelectedItem(items[0]);
+        setIsClicked(true);
       }
-    } else {
-      handleNavigation(item);
-    }
-  };
-
-  const handleThirdSphereClick = (item: MenuItem) => {
-    if (item.subItems) {
-      if (selectedThirdItem?.text === item.text) {
-        setSelectedThirdItem(null);
-        setSelectedFourthItem(null);
+    };
+  
+    const handleSecondSphereClick = (item: MenuItem) => {
+      if (item.subItems) {
+        if (selectedSecondItem?.text === item.text) {
+          setSelectedSecondItem(null);
+          setSelectedThirdItem(null);
+          setSelectedFourthItem(null);
+        } else {
+          setSelectedSecondItem(item);
+          setSelectedThirdItem(null);
+          setSelectedFourthItem(null);
+        }
       } else {
-        setSelectedThirdItem(item);
-        setSelectedFourthItem(null);
+        handleNavigation(item);
       }
-    } else {
-      handleNavigation(item);
-    }
-  };
-
-  const handleFourthSphereClick = (item: MenuItem) => {
-    if (item.subItems) {
-      if (selectedFourthItem?.text === item.text) {
-        // setSelectedFourthItem(null); // Comentado para evitar el cierre al hacer clic en el mismo ítem
+    };
+  
+    const handleThirdSphereClick = (item: MenuItem) => {
+      if (item.subItems) {
+        if (selectedThirdItem?.text === item.text) {
+          setSelectedThirdItem(null);
+          setSelectedFourthItem(null);
+        } else {
+          setSelectedThirdItem(item);
+          setSelectedFourthItem(null);
+        }
       } else {
-        setSelectedFourthItem(item);
+        handleNavigation(item);
       }
-    } else {
-      handleNavigation(item);
-    }
+    };
+  
+    const handleFourthSphereClick = (item: MenuItem) => {
+      if (item.subItems) {
+        if (selectedFourthItem?.text === item.text) {
+          // No se hace nada si el ítem ya está seleccionado
+        } else {
+          setSelectedFourthItem(item);
+        }
+      } else {
+        handleNavigation(item);
+      }
+    };
+  
+    return (
+      <div>
+        <PrincipalSphere onClick={handlePrincipalSphereClick} isClicked={isClicked} />
+        <AnimatePresence>
+          {isClicked && (
+            items.map((item) => (
+              <motion.div
+                key={item.text}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                style={{
+                  top: item.position.top,
+                  left: item.position.left,
+                }}
+              >
+                <SecondSphere
+                  text={item.text}
+                  position={item.position}
+                  onClick={() => handleSecondSphereClick(item)}
+                />
+              </motion.div>
+            ))
+          )}
+          {selectedSecondItem && selectedSecondItem.subItems && (
+            selectedSecondItem.subItems.map((subItem) => (
+              <motion.div
+                key={subItem.text}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                style={{
+                  top: subItem.position.top,
+                  left: subItem.position.left,
+                }}
+              >
+                <ThirdSphere
+                  text={subItem.text}
+                  position={subItem.position}
+                  onClick={() => handleThirdSphereClick(subItem)}
+                />
+              </motion.div>
+            ))
+          )}
+          {selectedThirdItem && selectedThirdItem.subItems && (
+            selectedThirdItem.subItems.map((subItem) => (
+              <motion.div
+                key={subItem.text}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                style={{
+                  top: subItem.position.top,
+                  left: subItem.position.left,
+                }}
+              >
+                <FourthSphere
+                  text={subItem.text}
+                  position={subItem.position}
+                  onClick={() => handleFourthSphereClick(subItem)}
+                />
+              </motion.div>
+            ))
+          )}
+          {selectedFourthItem && selectedFourthItem.subItems && (
+            selectedFourthItem.subItems.map((subItem) => (
+              <motion.div
+                key={subItem.text}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                style={{
+                  top: subItem.position.top,
+                  left: subItem.position.left,
+                }}
+              >
+                <FifthSphere
+                  text={subItem.text}
+                  position={subItem.position}
+                  onClick={() => handleFourthSphereClick(subItem)}
+                />
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
+      </div>
+    );
   };
-
-  return (
-    <div>
-      <PrincipalSphere onClick={handlePrincipalSphereClick} />
-      <AnimatePresence>
-        {isClicked && selectedItem && (
-          items.map((item) => (
-            <motion.div
-              key={item.text}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              style={{
-                top: item.position.top,
-                left: item.position.left,
-              }}
-            >
-              <SecondSphere
-                text={item.text}
-                position={item.position}
-                onClick={() => handleSecondSphereClick(item)}
-              />
-            </motion.div>
-          ))
-        )}
-        {selectedSecondItem && selectedSecondItem.subItems && (
-          selectedSecondItem.subItems.map((subItem) => (
-            <motion.div
-              key={subItem.text}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              style={{
-                top: subItem.position.top,
-                left: subItem.position.left,
-              }}
-            >
-              <ThirdSphere
-                text={subItem.text}
-                position={subItem.position}
-                onClick={() => handleThirdSphereClick(subItem)}
-              />
-            </motion.div>
-          ))
-        )}
-        {selectedThirdItem && selectedThirdItem.subItems && (
-          selectedThirdItem.subItems.map((subItem) => (
-            <motion.div
-              key={subItem.text}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              style={{
-                top: subItem.position.top,
-                left: subItem.position.left,
-              }}
-            >
-              <FourthSphere
-                text={subItem.text}
-                position={subItem.position}
-                onClick={() => handleFourthSphereClick(subItem)}
-              />
-            </motion.div>
-          ))
-        )}
-        {selectedFourthItem && selectedFourthItem.subItems && (
-          selectedFourthItem.subItems.map((subItem) => (
-            <motion.div
-              key={subItem.text}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              style={{
-                top: subItem.position.top,
-                left: subItem.position.left,
-              }}
-            >
-              <FifthSphere
-                text={subItem.text}
-                position={subItem.position}
-                onClick={() => handleFourthSphereClick(subItem)}
-              />
-            </motion.div>
-          ))
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-export default CircleMenuDesktop;
+  
+  export default CircleMenuDesktop;
