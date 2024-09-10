@@ -25,7 +25,7 @@ const AvailableResources: React.FC = () => {
           Además de las conferencias en directo y el contenido del portal, al acceder a este Grupo de Prácticas tienes acceso a otros recursos que te ayudarán a profundizar en la enseñanza. Abajo los resumo:
         </p>
         <ul className="list-none pl-0 md:pl-6 mb-6">
-        <li className="mb-6 flex items-start">
+          <li className="mb-6 flex items-start">
             <Image
               src="/logo_red.png"
               alt="Logo"
@@ -35,7 +35,7 @@ const AvailableResources: React.FC = () => {
               style={{ filter: 'invert(1)' }}
             />
             <p className="text-white">
-              <strong>Glosario de términos en Sanscrito:</strong> Aquí os podéis descargar el PDF con los términos sánscritos básicos para comenzar a entender el Shivaismo
+              <strong>Glosario de términos en Sánscrito:</strong> Aquí os podéis descargar el PDF con los términos sánscritos básicos para comenzar a entender el Shivaismo.
             </p>
           </li>
           <li className="mb-6 flex items-start">
@@ -48,7 +48,7 @@ const AvailableResources: React.FC = () => {
               style={{ filter: 'invert(1)' }}
             />
             <p className="text-white">
-              <strong>Una App gratuita:</strong> Con un reto de 14 días para comenzar a entender el Shivaismo, y las prácticas del Vijñana Bhairava resumidas y explicadas por Mar en videos de menos de 3 minutos. Busca "Tantra Shivaita Aplicado" en tu tienda de aplicaciones.
+              <strong>Una App gratuita:</strong> Con un reto de 14 días para comenzar a entender el Shivaismo, y las prácticas del Vijñana Bhairava resumidas y explicadas por Mar en videos de menos de 3 minutos. Busca &quot;Tantra Shivaita Aplicado&quot; en tu tienda de aplicaciones.
             </p>
           </li>
 
@@ -62,7 +62,7 @@ const AvailableResources: React.FC = () => {
               style={{ filter: 'invert(1)' }}
             />
             <p className="text-white">
-              <strong>Un Podcast:</strong> Con el nombre <i>"Tantra Shivaita Aplicado"</i> donde Mar comparte reflexiones y resuelve dudas sobre la enseñanza. Disponible en Spotify, Apple Podcasts y iVoox.
+              <strong>Un Podcast:</strong> Con el nombre &quot;Tantra Shivaita Aplicado&quot; donde Mar comparte reflexiones y resuelve dudas sobre la enseñanza. Disponible en Spotify, Apple Podcasts y iVoox.
             </p>
           </li>
 

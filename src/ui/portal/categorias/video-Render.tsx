@@ -1,24 +1,16 @@
-'use client';
-
-import React, { useState } from 'react';
+'use client'
+import React ,{ useState} from 'react';
 import ReactPlayer from 'react-player';
 import { FaRegHeart, FaHeart, FaRegClock, FaClock } from 'react-icons/fa';
 import { useFavorites } from '@/app/context/FavoritesContext';
 import { useWatchLater } from '@/app/context/WatchLaterContext';
 import { useProgress } from '@/app/context/ProgressContext';
-import {
-    throttle,
-    handleVideoProgress,
-    handleWatchLaterToggle,
-    handleFavoriteToggle,
-    handlePlay,
-    cleanVideoId
-} from '@/utils/videoUtils';
+import { throttle, handleVideoProgress, handleWatchLaterToggle, handleFavoriteToggle, handlePlay, cleanVideoId } from '@/utils/videoUtils';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import styles from './VideoRender.module.css';
 import { roboto } from '@/app/fonts';
-import CheckNeon from '../../../../public/check_neon.svg';
+import Image from 'next/image'; // Importar Image
 
 interface VideoRenderProps {
     videoData: { url: string; title: string; key: { Key: string } }[];
@@ -107,8 +99,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                             />
                             {isViewed && !isPlaying && hoveredVideo !== index && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md rounded-md">
-                                    {/* Mostrar imagen en vez del texto */}
-                                    <img src={CheckNeon.src} alt="Visto" className="w-32 h-32" /> {/* Tamaño reducido de la imagen */}
+                                    <Image src="/check_neon.svg" alt="Visto" width={128} height={128} /> {/* Tamaño ajustado de la imagen */}
                                 </div>
                             )}
                         </div>
