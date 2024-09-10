@@ -60,14 +60,14 @@ export const handleFavoriteToggle = async (
   userId: string
 ) => {
   const { title, url, key } = videoData[index];
-  console.log('handleFavoriteToggle called with:', {
-    index,
-    title,
-    url,
-    key,
-    favorites,
-    userId,
-  });
+  // console.log('handleFavoriteToggle called with:', {
+  //   index,
+  //   title,
+  //   url,
+  //   key,
+  //   favorites,
+  //   userId,
+  // });
 
   const favorite = favorites.find((fav) => fav.url === url);
 
@@ -76,7 +76,7 @@ export const handleFavoriteToggle = async (
     try {
       await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${favorite.videoId}`);
       setFavorites((prevFavorites) => prevFavorites.filter((fav) => fav.videoId !== favorite.videoId));
-      console.log(`Removed from favorites: ${url}`);
+      // console.log(`Removed from favorites: ${url}`);
     } catch (error) {
       console.error('Error removing video from favorites:', error);
     }
@@ -97,7 +97,7 @@ export const handleFavoriteToggle = async (
     try {
       await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newFavorite);
       setFavorites((prevFavorites) => [...prevFavorites, newFavorite]);
-      console.log(`Added to favorites: ${url}`);
+      // console.log(`Added to favorites: ${url}`);
     } catch (error) {
       console.error('Error adding video to favorites:', error);
     }
@@ -113,24 +113,24 @@ export const handleWatchLaterToggle = async (
   userId: string
 ) => {
   const { title, url, key } = videoData[index];
-  console.log('handleWatchLaterToggle called with:', {
-    index,
-    title,
-    url,
-    key,
-    watchLater,
-    userId,
-  });
+  // console.log('handleWatchLaterToggle called with:', {
+  //   index,
+  //   title,
+  //   url,
+  //   key,
+  //   watchLater,
+  //   userId,
+  // });
 
   const watchLaterItem = watchLater.find((wl) => wl.url === url);
-  console.log('watchLater' ,watchLater)
+  // console.log('watchLater' ,watchLater)
 
   if (watchLaterItem) {
     // Remove from watch later
     try {
       await axios.delete(`https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites/${watchLaterItem.videoId}`);
       setWatchLater((prevWatchLater) => prevWatchLater.filter((watch) => watch.videoId !== watchLaterItem.videoId));
-      console.log(`Removed from watch later: ${url}`);
+      // console.log(`Removed from watch later: ${url}`);
     } catch (error) {
       console.error('Error removing video from "Watch Later":', error);
     }
@@ -151,7 +151,7 @@ export const handleWatchLaterToggle = async (
     try {
       await axios.put('https://f7zj4mts9l.execute-api.eu-west-2.amazonaws.com/favorites', newWatchLater);
       setWatchLater((prevWatchLater) => [...prevWatchLater, newWatchLater]);
-      console.log(`Added to watch later: ${url}`);
+      // console.log(`Added to watch later: ${url}`);
     } catch (error) {
       console.error('Error adding video to "Watch Later":', error);
     }
@@ -182,7 +182,7 @@ export const handlePlay = async (key: { Key: string }) => {
     // Paso 3: Hacer la actualización del video
     const updateResponse = await axios.put(`https://n8rv8ni618.execute-api.eu-west-2.amazonaws.com/clases/${videoId}`);
 
-    console.log(`Updated video views for: ${videoId}`, updateResponse.data);
+    // console.log(`Updated video views for: ${videoId}`, updateResponse.data);
   } catch (error) {
     console.error('Error updating video views:', error);
     throw error;
@@ -203,19 +203,19 @@ export const handleVideoProgress = debounce(
     const progressPercentage = played * 100;
     const { title, url } = videoData[index];
 
-    console.log('handleProgressToggle called with:', {
-      index,
-      title,
-      url,
-      progress,
-      userId,
-    });
+    // console.log('handleProgressToggle called with:', {
+    //   index,
+    //   title,
+    //   url,
+    //   progress,
+    //   userId,
+    // });
 
     if (progressPercentage >= 90) {
       // Verificar si el progreso ya existe
-      console.log('progress', progress)
+      // console.log('progress', progress)
       const progressItem = progress.find((pg) => pg.url === url);
-      console.log('progressItem-->', progressItem);
+      // console.log('progressItem-->', progressItem);
 
       if (!progressItem) {
         // Si no existe, añadir progreso
@@ -231,12 +231,12 @@ export const handleVideoProgress = debounce(
         try {
           await axios.put('https://kqyeh8sa4j.execute-api.eu-west-2.amazonaws.com/progress', newProgress);
           setProgress((prevProgress) => [...prevProgress, newProgress]);
-          console.log(`Added to progress: ${url}`);
+          // console.log(`Added to progress: ${url}`);
         } catch (error) {
           console.error('Error adding video to "Progress":', error);
         }
       } else {
-        console.log(`Progress already exists for videoId ${progressItem.videoId}, no action taken.`);
+        // console.log(`Progress already exists for videoId ${progressItem.videoId}, no action taken.`);
       }
     }
   },
@@ -270,7 +270,7 @@ export const putComment = async (videoId: string, videoTitle: string, userId: st
 
   try {
     const response = await axios.put('https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment', newComment);
-    console.log('Comment added:', response.data);
+    // console.log('Comment added:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error adding comment:', error);
@@ -282,10 +282,10 @@ export const putComment = async (videoId: string, videoTitle: string, userId: st
 export const getComments = async (videoId: string) => {
   try {
     const videoIdC = encodeURIComponent(videoId);
-    console.log('videoIdC--', videoIdC);
+    // console.log('videoIdC--', videoIdC);
 
     const response = await axios.get(`https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment/${videoIdC}`);
-    console.log('Fetched comments:', response.data);
+    // console.log('Fetched comments:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching comments:', error);
@@ -297,7 +297,7 @@ export const getComments = async (videoId: string) => {
 export const getRecommendedVideos = async (videoId: string) => {
   try {
     const response = await axios.get(`https://ac0msttmkc.execute-api.eu-west-2.amazonaws.com/comment/${videoId}`);
-    console.log('Recommended videos:', response.data);
+    // console.log('Recommended videos:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching recommended videos:', error);

@@ -35,23 +35,7 @@ const CircleMenuDesktop: React.FC = () => {
   const breadcrumb = breadcrumbString.split(',').filter((item) => item);  // Convertir a array y eliminar valores vacíos
   console.log('breadcrumb', breadcrumb);
 
-  useEffect(() => {
-    if (breadcrumb.length > 0) {
-      const item = breadcrumb[0];
-      setSelectedItem(findItem(items, item) || null);
-    }
-    if (breadcrumb.length > 1) {
-      const secondItem = breadcrumb[1];
-      setSelectedSecondItem(findItem(items, secondItem) || null);
-    }
-    if (breadcrumb.length > 2) {
-      const thirdItem = breadcrumb[2];
-      setSelectedThirdItem(findItem(items, thirdItem) || null);
-    }
-    setIsClicked(breadcrumb.length > 0);
-  }, [breadcrumb]);
-
-  const items: MenuItem[] = [
+    const items: MenuItem[] = [
     { text: 'Empieza por aquí', position: { top: 'calc(50% - 256px)', left: 'calc(50% + 32px)' }, 
       subItems: [
         { text: 'Fechas conferencias y recursos', position: { top: 'calc(50% - 350px)', left: 'calc(50% + 148px)' } },
@@ -143,20 +127,37 @@ const CircleMenuDesktop: React.FC = () => {
     { text: 'Últimos videos subidos', position: { top: 'calc(50% - 256px)', left: 'calc(50% - 180px)' } },
   ];
 
-   
-  // Función para encontrar el ítem en el menú
-  const findItem = (items: MenuItem[], text: string): MenuItem | null => {
-    for (const item of items) {
-      if (item.text === text) return item;
-      if (item.subItems) {
-        const result = findItem(item.subItems, text);
-        if (result) return result;
-      }
+ // Función para encontrar un item por texto
+ const findItem = (items: MenuItem[], text: string): MenuItem | null => {
+  for (const item of items) {
+    if (item.text === text) return item;
+    if (item.subItems) {
+      const result = findItem(item.subItems, text);
+      if (result) return result;
     }
-    return null;
-  };
+  }
+  return null;
+};
 
-  // Función para encontrar el camino del breadcrumb
+// // Inicializar los estados basados en el breadcrumb
+//   useEffect(() => {
+//     if (breadcrumb.length > 0) {
+//       setIsClicked(true);
+//       const firstItem = findItem(items, breadcrumb[0]);
+//       if (firstItem) setSelectedItem(firstItem);
+
+//       if (breadcrumb.length > 1) {
+//         const secondItem = findItem(firstItem?.subItems || [], breadcrumb[1]);
+//         if (secondItem) setSelectedSecondItem(secondItem);
+
+//         if (breadcrumb.length > 2) {
+//           const thirdItem = findItem(secondItem?.subItems || [], breadcrumb[2]);
+//           if (thirdItem) setSelectedThirdItem(thirdItem);
+//         }
+//       }
+//     }
+//   }, [breadcrumb]);  
+ // Función para encontrar el camino del breadcrumb
   const findItemPath = (items: MenuItem[], text: string, path: string[] = []): string[] | null => {
     for (const item of items) {
       if (item.text === text) return [...path, text];
@@ -189,6 +190,7 @@ const CircleMenuDesktop: React.FC = () => {
       setIsClicked(false);
     } else {
       setSelectedItem(items[0]);
+      console.log('setSelectedItem', setSelectedItem)
       setIsClicked(true);
     }
   };
@@ -201,6 +203,7 @@ const CircleMenuDesktop: React.FC = () => {
         setSelectedFourthItem(null);
       } else {
         setSelectedSecondItem(item);
+        console.log('selectedSecondItem', selectedSecondItem)
         setSelectedThirdItem(null);
         setSelectedFourthItem(null);
       }

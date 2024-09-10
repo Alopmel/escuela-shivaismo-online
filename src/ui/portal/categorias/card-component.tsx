@@ -47,9 +47,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
 
     const fetchVideoData = () => {
       try {
-        console.log('Item:', item); // Verificar que el item es correcto
+        // console.log('Item:', item); // Verificar que el item es correcto
         const upperCaseItem = item.toUpperCase();
-        console.log('UpperCase Item:', upperCaseItem); // Verificar la conversión a mayúsculas
+        // console.log('UpperCase Item:', upperCaseItem); // Verificar la conversión a mayúsculas
 
         const filteredKeys = keys.filter((keyItem: KeyItem) => {
           const parts = keyItem.Key.split('/'); // Separa la categoría del resto
