@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './circleMenu.module.css';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface MenuItem {
   text: string;
@@ -13,6 +14,25 @@ interface MenuItem {
   subItems?: MenuItem[];
 }
 
+// Animación para la esfera levitando
+const levitateAnimation = {
+  y: ["0%", "-3%", "0%"],
+  transition: {
+    duration: 3,
+    repeat: Infinity,
+    ease: "easeInOut"
+  }
+};
+
+// Animación para la sombra que se alarga y encoje
+const shadowAnimation = {
+  scaleY: [1, 1.5, 1], // La sombra se alarga y se encoje verticalmente
+  transition: {
+    duration: 3, // Mismo tiempo que la esfera para estar sincronizados
+    repeat: Infinity,
+    ease: "easeInOut"
+  }
+};
 const CircleMenuMobile = () => {
   
   const items: MenuItem[] = [
@@ -111,11 +131,11 @@ const CircleMenuMobile = () => {
   const [activeItems, setActiveItems] = useState<MenuItem[]>(items);
   const [breadcrumb, setBreadcrumb] = useState<string[]>([]);
   const [centralTitle, setCentralTitle] = useState<string>('Escuela de Shivaismo de Cachemira');
+  const [isAnimating, setIsAnimating] = useState<boolean>(true);
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  
   const params = new URLSearchParams(searchParams.toString());
   const itemFromParams = params.get('breadcrumbItem') || '';
   console.log('itemFromParams --->> ', itemFromParams)
@@ -123,24 +143,22 @@ const CircleMenuMobile = () => {
   // Manejo del cambio en breadcrumb
   useEffect(() => {
     if (breadcrumb.length === 0) {
-      setActiveItems(items); // Volver al menú principal si no hay breadcrumb
+      setActiveItems(items);
     }
   }, [breadcrumb]);
 
   const toggleMenu = useCallback(() => {
     setIsOpen(prevIsOpen => !prevIsOpen);
+    setIsAnimating(!isAnimating);
     setActiveItems(items);
   }, [items]);
 
   const handleItemClick = useCallback((item: MenuItem) => {
     if (item.subItems) {
-      console.log(`Clicked on item with subitems: ${item.text}`);
-      setActiveItems(item.subItems); // Actualiza el estado con los subItems
+      setActiveItems(item.subItems);
       setCentralTitle(item.text);
-      // Agregar al breadcrumb
       setBreadcrumb(prev => [...prev, item.text]);
     } else {
-      // No hay subItems, ir a /Category
       const params = new URLSearchParams({
         item: item.text,
         breadcrumb: [...breadcrumb, item.text].join()
@@ -152,11 +170,10 @@ const CircleMenuMobile = () => {
   const handleBackClick = useCallback(() => {
     setBreadcrumb(prev => {
       const newBreadcrumb = [...prev];
-      newBreadcrumb.pop(); // Remover el último elemento para retroceder
+      newBreadcrumb.pop();
       return newBreadcrumb;
     });
 
-    // Buscar el nuevo menú en base al breadcrumb restante
     const findItemByBreadcrumb = (items: MenuItem[], breadcrumb: string[]): MenuItem[] => {
       let currentItems = items;
       breadcrumb.forEach(crumb => {
@@ -173,40 +190,60 @@ const CircleMenuMobile = () => {
     setCentralTitle(updatedBreadcrumb[updatedBreadcrumb.length - 1] || 'Escuela de Shivaismo de Cachemira');
   }, [breadcrumb, items]);
 
+  // Estilo y animación para mover la esfera hacia la izquierda
   const circleDivStyle = isOpen
-    ? { transform: 'translate(-110%, -53%)', textAlign: 'center' as 'center' }
+    ? { transform: 'translate(-150%, -53%)', textAlign: 'center' as 'center' } // Desplaza más hacia la izquierda
     : {};
 
   return (
-    <div
-      onClick={(e) => { e.stopPropagation(); toggleMenu(); }}
-      className={`${styles.ball}`}
-      style={{
-        width: '160px',
-        height: '160px',
-        borderRadius: '50%',
-        position: 'fixed',
-        left: '50%',
-        top: '50%',
-        textAlign: 'center',
-        transform: 'translate(-50%, -50%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        color: 'white',
-        userSelect: 'none',
-        outline: 'none',  // Asegurarse de que no se muestre el borde azul
-        ...circleDivStyle
-      }}
-    >
-      {centralTitle}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.5 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className={styles.ball}
+          onClick={(e) => { e.stopPropagation(); toggleMenu(); }}
+          animate={levitateAnimation}
+          style={{
+            width: '160px',
+            height: '160px',
+            borderRadius: '50%',
+            position: 'fixed',
+            left: '28%',
+            top: '41%',
+            textAlign: 'center',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'white',
+            userSelect: 'none',
+            outline: 'none',
+            ...circleDivStyle
+          }}>
+          {centralTitle}
+        </motion.div>
+      </motion.div>
+      
       {breadcrumb.length > 0 && (
-        <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.5 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
           onClick={(e) => { e.stopPropagation(); handleBackClick(); }}
+          animate={levitateAnimation}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
           style={{
             position: 'absolute',
-            top: 'calc(100% - 62px)', // Posiciona la flecha debajo del título central
+            top: 'calc(100% - 62px)',
             left: '50%',
             transform: 'translateX(-50%)',
             cursor: 'pointer',
@@ -214,26 +251,43 @@ const CircleMenuMobile = () => {
             color: 'white'
           }}
         >
-          <ArrowLeftIcon className="h-6 w-6" /> {/* Icono de flecha */}
-        </div>
-      )}
+          <ArrowLeftIcon className="h-6 w-6" />
+        </motion.div>
+      </motion.div>        
+      )}      
       {isOpen && activeItems.map((item, index) => (
-        <div key={index}
-          style={{
-            position: 'absolute',
-            top: item.position.top,
-            left: item.position.left,
-            width: '120px',
-            height: '120px',
-            borderRadius: '50%'
-          }}
-          onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
-          className={styles.secondSphere}
-        >
-          {item.text}
-        </div>
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        > 
+          <motion.div 
+            key={index}
+            animate={{
+              ...isAnimating ? levitateAnimation : {},
+              opacity: 1,
+            }}
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            style={{
+              position: 'absolute',
+              top: item.position.top,
+              left: item.position.left,
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%'
+            }}
+            onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
+            className={styles.secondSphere}
+          >
+            {item.text}
+          </motion.div>
+        </motion.div>
       ))}
-    </div>
+    </AnimatePresence>
   );
 };
 

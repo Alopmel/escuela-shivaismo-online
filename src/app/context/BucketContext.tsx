@@ -31,8 +31,8 @@ export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
       try {
         const response = await axios.get<BucketResponse>('/api/video'); // Ajustar el endpoint API según tu configuración real
         setKeys(response.data.Contents);
-        console.log('Keys from bucket:', response.data.Contents);
-        console.log('Keys from bucket data:', response);
+        // console.log('Keys from bucket:', response.data.Contents);
+        // console.log('Keys from bucket data:', response);
 
       } catch (error) {
         console.error('Error fetching bucket data:', error);

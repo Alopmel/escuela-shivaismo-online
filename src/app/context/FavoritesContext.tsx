@@ -25,7 +25,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
       return;
     }
 
-    // console.log('User ID from useUser:', userId); // Asumiendo que `userId` es el ID del usuario
+    console.log('User ID from useUser:', userId); // Asumiendo que `userId` es el ID del usuario
 
     const fetchFavorites = async (userId: string) => {
       try {

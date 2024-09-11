@@ -1,3 +1,4 @@
+// /src/app/hook/use-auth-user.ts
 'use client'
 import { useEffect, useState } from "react";
 import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";

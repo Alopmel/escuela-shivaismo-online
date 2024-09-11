@@ -71,7 +71,7 @@ const translateErrorMessage = (message: string): string => {
     // Agrega más mapeos según sea necesario
   };
 
-  return errorMessages[message] || "Error desconocido";
+  return errorMessages[message] || message;
 };
 
 export default function SignUpForm() {
