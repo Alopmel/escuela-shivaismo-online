@@ -53,6 +53,7 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
           height: isClicked ? '50px' : '60px',
           transition: 'top 0.5s ease, left 0.5s ease',
           outline: 'none'  // Eliminar borde azul
+          tabIndex={-1}
         }}
         animate={{
           rotate: isClicked ? 45 : 0,

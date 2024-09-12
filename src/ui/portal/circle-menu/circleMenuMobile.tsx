@@ -197,7 +197,7 @@ const CircleMenuMobile = () => {
   return (
     <motion.div
       animate={{ 
-        x: isOpen ? '-58%' : '0%',
+        x: isOpen ? '-12%' : '0%',
         transition: { duration: 0.5, ease: 'easeInOut' }
       }}
       initial={{ opacity: 1 }}
@@ -220,29 +220,40 @@ const CircleMenuMobile = () => {
           cursor: 'pointer',
           color: 'white',
           userSelect: 'none',
-          position: 'relative' // Asegura que los hijos se alineen correctamente
         }}
         animate={{ 
           y: ["0%", "-3%", "0%"],
+          x: isOpen ? ["-60%"] : ["0%"],
+          transition: {
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
         }}
       > 
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           {centralTitle}
-        </div>
+        </div>      
         {breadcrumb.length > 0 && (
           <motion.div
+            animate={{ 
+              opacity: isOpen ? 1 : 0,
+              transition: { duration: 0.5, ease: 'easeInOut' }
+            }}
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={(e) => {
               e.stopPropagation();
               handleBackClick();
             }}
             style={{
+              position: 'absolute',
+              top: 'calc(100% - 62px)',
+              left: '93px',
+              // transform: 'translateX(-50%)',
               cursor: 'pointer',
               fontSize: '20px',
               color: 'white',
-              position: 'absolute', // Asegura que la flecha se posicione sobre el texto
-              bottom: '10px', // Ajusta según sea necesario
-              left: '50%',
-              transform: 'translateX(-50%)',
             }}
           >
             <ArrowLeftIcon className="h-6 w-6" />
@@ -263,7 +274,7 @@ const CircleMenuMobile = () => {
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.5 }}
-                  transition={{ duration: 0.5, ease: "easeInOut", delay: index * 0.1 }}
+                  transition={{ duration: 0.5, ease: "easeInOut", delay: index * 0.1 }} // Añade un retraso incremental para cada elemento
                   style={{
                     position: 'absolute',
                     top: item.position.top,
