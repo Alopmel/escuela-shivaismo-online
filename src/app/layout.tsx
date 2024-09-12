@@ -27,38 +27,37 @@ export default function RootLayout({
 
   return (
     <UserProvider>
-      <BucketProvider>
-        <FavoritesProvider>
-          <WatchLaterProvider>
-            <CommentProvider>
-              <ProgressProvider>
-
-                  <html lang="es">
-                    <body className={`${antonio.className} antialiased`}>
-                      <>
-                        <ConfigureAmplifyClientSide />
-                        <ErrorBoundary>
-                          <Suspense fallback={<NeonSpinner />}>
-                            <Link href={'/portal'}>
-                              <Image 
-                                src="/logo_login.png"
-                                alt="Logo"
-                                width={90} 
-                                height={90} 
-                                className="mt-8 ml-8 absolute logo-white logo-size" 
-                              />
-                            </Link>
-                            {children}
-                          </Suspense>
-                        </ErrorBoundary>
-                      </>
-                    </body>
-                  </html>
-              </ProgressProvider>          
-            </CommentProvider>
-          </WatchLaterProvider>
-        </FavoritesProvider>
-      </BucketProvider>
+      <FavoritesProvider>
+        <WatchLaterProvider>
+          <CommentProvider>
+            <ProgressProvider>
+              <BucketProvider>
+                <html lang="es">
+                  <body className={`${antonio.className} antialiased`}>
+                    <>
+                      <ConfigureAmplifyClientSide />
+                      <ErrorBoundary>
+                        <Suspense fallback={<NeonSpinner />}>
+                          <Link href={'/portal'}>
+                            <Image 
+                              src="/logo_login.png"
+                              alt="Logo"
+                              width={90} 
+                              height={90} 
+                              className="mt-8 ml-8 absolute logo-white logo-size" 
+                            />
+                          </Link>
+                          {children}
+                        </Suspense>
+                      </ErrorBoundary>
+                    </>
+                  </body>
+                </html>
+              </BucketProvider>
+            </ProgressProvider>          
+          </CommentProvider>
+        </WatchLaterProvider>
+      </FavoritesProvider>
     </UserProvider>
   );
 }

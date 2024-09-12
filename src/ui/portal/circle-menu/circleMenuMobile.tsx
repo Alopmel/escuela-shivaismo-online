@@ -149,6 +149,7 @@ const CircleMenuMobile = () => {
 
   const toggleMenu = useCallback(() => {
     setIsOpen(prevIsOpen => !prevIsOpen);
+    console.log('isOpen: ', isOpen)
     setActiveItems(items);
   }, [items]);
 
@@ -193,85 +194,113 @@ const CircleMenuMobile = () => {
     setCentralTitle(updatedBreadcrumb[updatedBreadcrumb.length - 1] || 'Escuela de Shivaismo de Cachemira');
   }, [breadcrumb, items]);
 
-  const circleDivStyle = {
-    transform: isOpen ? 'translateX(-150%)' : 'translateX(0)',
-    transition: 'transform 0.5s ease-in-out'
-  };
-
   return (
     <motion.div
-      onClick={(e) => {
-        e.stopPropagation();
-        toggleMenu();
-      }}
-      className={`${styles.ball}`}
-      style={{
-        width: '160px',
-        height: '160px',
-        borderRadius: '50%',
-        textAlign: 'center',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        color: 'white',
-        userSelect: 'none',
-        outline: 'none',
-      }}
       animate={{ 
-        left: isOpen ? '-27%' : '0%',
+        x: isOpen ? '-58%' : '0%',
         transition: { duration: 0.5, ease: 'easeInOut' }
       }}
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {centralTitle}
-      {breadcrumb.length > 0 && (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            handleBackClick();
-          }}
-          style={{
-            position: 'absolute',
-            top: 'calc(100% - 62px)',
-            left: '93px',
-            transform: 'translateX(-50%)',
-            cursor: 'pointer',
-            fontSize: '20px',
-            color: 'white',
-          }}
-        >
-          <ArrowLeftIcon className="h-6 w-6" />
+      <motion.div
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleMenu();
+        }}
+        className={`${styles.ball}`}
+        style={{
+          width: '160px',
+          height: '160px',
+          borderRadius: '50%',
+          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          color: 'white',
+          userSelect: 'none',
+          position: 'relative' // Asegura que los hijos se alineen correctamente
+        }}
+        animate={{ 
+          y: ["0%", "-3%", "0%"],
+        }}
+      > 
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+          {centralTitle}
         </div>
-      )}
-      <AnimatePresence>
-        {isOpen &&
-          activeItems.map((item, index) => (
+        {breadcrumb.length > 0 && (
+          <motion.div
+            onClick={(e) => {
+              e.stopPropagation();
+              handleBackClick();
+            }}
+            style={{
+              cursor: 'pointer',
+              fontSize: '20px',
+              color: 'white',
+              position: 'absolute', // Asegura que la flecha se posicione sobre el texto
+              bottom: '10px', // Ajusta según sea necesario
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <ArrowLeftIcon className="h-6 w-6" />
+          </motion.div>
+        )}
+        <AnimatePresence>
+          {isOpen && (
             <motion.div
-              key={index}
-              style={{
-                position: 'absolute',
-                top: item.position.top,
-                left: item.position.left,
-                width: '120px',
-                height: '120px',
-                borderRadius: '50%',
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleItemClick(item);
-              }}
-              className={styles.secondSphere}
-              initial={{ opacity: 0, scale: 0, x: '0%', y: '0%' }}
+              initial={{ opacity: 0, scale: 0.5, x: '0%', y: '0%' }}
               animate={{ opacity: 1, scale: 1, x: '0%', y: '0%' }}
-              exit={{ opacity: 0, scale: 0, x: '0%', y: '0%' }}
+              exit={{ opacity: 0, scale: 0.5, x: '0%', y: '0%' }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
+              style={{ position: 'relative', width: '100%', height: '100%' }}
             >
-              {item.text}
+              {activeItems.map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.5, ease: "easeInOut", delay: index * 0.1 }}
+                  style={{
+                    position: 'absolute',
+                    top: item.position.top,
+                    left: item.position.left,
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleItemClick(item);
+                  }}
+                  className={styles.secondSphere}
+                >
+                  <motion.div
+                    animate={levitateAnimation}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      height: '100%'
+                    }}
+                  >
+                    {item.text}
+                  </motion.div>
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.div>
   );
 };
