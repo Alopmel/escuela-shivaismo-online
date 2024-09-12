@@ -21,11 +21,14 @@ export const WatchLaterProvider: React.FC<WatchLaterProviderProps> = ({ children
   const { user, userId, loading } = useUser();
 
   useEffect(() => {
-    if (loading || !userId) {
-      return;
+    if (loading) {
+      return; // Espera a que termine de cargar el usuario
     }
 
-    // console.log('User ID from useUser:', userId); // Asumiendo que `username` es el ID del usuario
+    if (!userId) {
+      setWatchLater([]); // Opcional: Limpiar los datos si no hay usuario
+      return;
+    }
 
     const fetchWatchLater = async (userId: string) => {
       try {

@@ -249,9 +249,9 @@ const CircleMenuDesktop: React.FC = () => {
     };
   
     return (
-      <div>
-        <PrincipalSphere onClick={handlePrincipalSphereClick} isClicked={isClicked} />
+    
         <AnimatePresence>
+        <PrincipalSphere onClick={handlePrincipalSphereClick} isClicked={isClicked} />
           {isClicked && (
             items.map((item) => (
               <motion.div
@@ -337,7 +337,6 @@ const CircleMenuDesktop: React.FC = () => {
             ))
           )}
         </AnimatePresence>
-      </div>
     );
   };
   
