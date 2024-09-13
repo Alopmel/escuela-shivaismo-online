@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const { user, userId, name, email, loading } = useAuthUser();
 
-  console.log('User in Layout:', user); // Verifica que el usuario esté disponible
+  // console.log('User in Layout:', user); // Verifica que el usuario esté disponible
 
   const checkWindowSize = useCallback(() => {
     let windowWidth = 0;

@@ -98,7 +98,7 @@ export default function SignUpForm() {
 
   useEffect(() => {
     if (errorMessage) {
-      console.log("Error de Cognito:", errorMessage); // Añadido console.log para ver errores de Cognito
+      // console.log("Error de Cognito:", errorMessage); // Añadido console.log para ver errores de Cognito
       setShowError(true);
     } else {
       setShowError(false);

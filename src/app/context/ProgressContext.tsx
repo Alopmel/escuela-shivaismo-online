@@ -40,7 +40,7 @@ export const ProgressProvider: React.FC<ProgressProviderProps> = ({ children }) 
   }, [loading, userId]);
 
   useEffect(() => {
-    console.log('Progress updated in context:', progress);
+    // console.log('Progress updated in context:', progress);
   }, [progress]);
 
   return (

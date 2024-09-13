@@ -6,6 +6,7 @@ import ThirdSphere from './thirdSphere';
 import FourthSphere from './fourthSphere';
 import FifthSphere from './fifthSphere';
 import { motion, AnimatePresence } from 'framer-motion';
+import useAuthUser from '@/app/hooks/use-auth-user'; // Importar el hook
 
 interface MenuItem {
   text: string;
@@ -22,7 +23,7 @@ const CircleMenuDesktop: React.FC = () => {
   const [selectedSecondItem, setSelectedSecondItem] = useState<MenuItem | null>(null);
   const [selectedThirdItem, setSelectedThirdItem] = useState<MenuItem | null>(null);
   const [selectedFourthItem, setSelectedFourthItem] = useState<MenuItem | null>(null);
-
+  const {user, userId} = useAuthUser(); // Obtener el nombre del usuario logeado
   const audioRef = useRef();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,16 +31,17 @@ const CircleMenuDesktop: React.FC = () => {
   const params = new URLSearchParams(searchParams.toString());
   const itemFromParams = params.get('item') || '';
   const [hasInitialized, setHasInitialized] = useState(false);
+
   // Convertimos el breadcrumb en un array
   const breadcrumbString = params.get('breadcrumb') || '';
   const breadcrumb = breadcrumbString.split(',').filter((item) => item);  // Convertir a array y eliminar valores vacíos
-  console.log('breadcrumb', breadcrumb);
+  // console.log('breadcrumb', breadcrumb);
   const firstItemB = breadcrumb[0]
-  console.log('firstItemB', firstItemB)
+  // console.log('firstItemB', firstItemB)
   const secondtItemB = breadcrumb[1]
-  console.log('secondtItemB', secondtItemB);
+  // console.log('secondtItemB', secondtItemB);
   const thirdItemB = breadcrumb[2]
-  console.log('thirdItemB', thirdItemB);
+  // console.log('thirdItemB', thirdItemB);
 
   const items: MenuItem[] = [
     { text: 'Empieza por aquí', position: { top: 'calc(50% - 256px)', left: 'calc(50% + 32px)' }, 

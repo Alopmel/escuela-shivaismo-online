@@ -102,7 +102,26 @@ body {
   justify-content: center;
 }
 
+/* QUITAR FONDO AZUL */ 
+.no-outline:focus {
+  outline: none !important;
+}
+/* Eliminar contorno de enfoque en todos los elementos */
+:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
 
+/* Eliminar borde azul del enfoque para elementos con tabindex y archivos */
+*[tabindex]:focus-visible, input[type="file"]:focus-visible {
+  outline: none !important;
+  outline-offset: 0rem !important;
+}
+
+/* Alternativamente, para eliminar el borde de todos los elementos enfocados */
+*[tabindex]:focus, input[type="file"]:focus {
+  outline: none !important;
+}
 /* FONDO TODO */
 .auth-background {
   background-image: url('/FONDO.png');

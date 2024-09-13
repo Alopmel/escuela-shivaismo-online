@@ -19,7 +19,7 @@ export default function useAuthUser() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        console.log('Fetching user data...');
+        // console.log('Fetching user data...');
         const session = await fetchAuthSession();
         if (!session.tokens) {
           setLoading(false);
@@ -38,12 +38,12 @@ export default function useAuthUser() {
           isAdmin: (session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined)?.includes("Admins") ?? false,
         };
 
-        console.log('User data fetched:', userData);
+        // console.log('User data fetched:', userData);
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user:', error);
       } finally {
-        console.log('Loading complete.');
+        // console.log('Loading complete.');
         setLoading(false);
       }
     };
@@ -51,7 +51,7 @@ export default function useAuthUser() {
     getUser();
   }, []);
 
-  console.log('Returning from useAuthUser:', { user, loading });
+  // console.log('Returning from useAuthUser:', { user, loading });
 
   return { 
     user: user ? {

@@ -21,7 +21,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { user, userId, name, email, loading } = useAuthUser();
   
   useEffect(() => {
-    console.log('User updated in context:', user);
+    // console.log('User updated in context:', user);
   }, [user]);
   
   return (

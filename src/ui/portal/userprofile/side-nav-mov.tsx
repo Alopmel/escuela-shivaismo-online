@@ -6,7 +6,6 @@ import SideSubSphere from './sideSubSphere';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { handleSignOut } from "@/lib/cognitoActions";
-import { antonio } from '@/app/fonts';
 const SideNavbarMobile = () => {
   const [isClicked, setIsClicked] = useState(false);
   const [selectedItem, setSelectedItem] = useState<SideNavItem | null>(null);
@@ -34,10 +33,9 @@ const SideNavbarMobile = () => {
         />
       )}
 
-      <nav className="absolute left-[177px] top-[20px] flex justify-between bg-transparent z-20">
+      <nav className="absolute left-[177px] top-[20px] flex justify-between bg-transparent z-20 no-outline">
         {/* SideSphere para abrir el menú */}
         <SideSphere onClick={handleClick} />
-
         {/* Renderizar los sub-items si se hizo click */}
         {isClicked && selectedItem && (
           SIDENAV_ITEMS.map((item) => (

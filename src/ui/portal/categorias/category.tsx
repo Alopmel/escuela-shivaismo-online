@@ -71,7 +71,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
 
     if (isMobile) {
       // En móvil, enviamos solo el breadcrumbItem
-      console.log('breadcrumbItem', breadcrumbItem);
+      // console.log('breadcrumbItem', breadcrumbItem);
       router.push(`/portal?breadcrumbItem=${breadcrumbItem}`);
     } else {
       // En escritorio, lógica existente

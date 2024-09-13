@@ -138,7 +138,7 @@ const CircleMenuMobile = () => {
   
   const params = new URLSearchParams(searchParams.toString());
   const itemFromParams = params.get('breadcrumbItem') || '';
-  console.log('itemFromParams --->> ', itemFromParams)
+  // console.log('itemFromParams --->> ', itemFromParams)
 
   // Manejo del cambio en breadcrumb
   useEffect(() => {
@@ -149,13 +149,13 @@ const CircleMenuMobile = () => {
 
   const toggleMenu = useCallback(() => {
     setIsOpen(prevIsOpen => !prevIsOpen);
-    console.log('isOpen: ', isOpen)
+    // console.log('isOpen: ', isOpen)
     setActiveItems(items);
   }, [items]);
 
   const handleItemClick = useCallback((item: MenuItem) => {
     if (item.subItems) {
-      console.log(`Clicked on item with subitems: ${item.text}`);
+      // console.log(`Clicked on item with subitems: ${item.text}`);
       setActiveItems(item.subItems); // Actualiza el estado con los subItems
       setCentralTitle(item.text);
       // Agregar al breadcrumb

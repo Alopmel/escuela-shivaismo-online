@@ -44,7 +44,7 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
       />
       {/* Esfera con el símbolo de +/x */}
       <motion.div
-        className={styles.sideSphere}
+        className={styles.sideSphere} /* Asegúrate de que 'sideSphere' esté en el archivo CSS importado */
         onClick={handleClick}
         style={{
           top: isClicked ? '524px' : '614px',
@@ -52,16 +52,18 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
           width: isClicked ? '50px' : '60px',
           height: isClicked ? '50px' : '60px',
           transition: 'top 0.5s ease, left 0.5s ease',
-          outline: 'none'  // Eliminar borde azul
+          outline: 'none', /* Eliminar borde de enfoque */
+          boxShadow: 'none',
+          /* Eliminar sombra de enfoque */
         }}
         animate={{
           rotate: isClicked ? 45 : 0,
           scale: isClicked ? 1.2 : 1,
           transition: { duration: 0.5, ease: "easeInOut" }
         }}
-        tabIndex={-1}  // Aplicar tabIndex directamente dentro del componente
+        tabIndex={-1} /* Asegúrate de que el div no sea enfocable */
       >
-        <span className={styles.symbol}><TiPlus /></span>
+        <span className={styles.symbol} tabIndex={-1}><TiPlus /></span>
       </motion.div>
     </>
   );
