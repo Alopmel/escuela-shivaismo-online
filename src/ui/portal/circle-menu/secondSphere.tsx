@@ -51,7 +51,7 @@ const SecondSphere: React.FC<SecondSphereProps> = ({ text, position, onClick }) 
       onClick={handleClick} // Añadir el evento onClick aquí
     >
       {/* Sombra animada */}
-      <motion.div
+      {/* <motion.div
         style={{
           position: 'absolute',
           top: '102%',
@@ -65,7 +65,7 @@ const SecondSphere: React.FC<SecondSphereProps> = ({ text, position, onClick }) 
 
         }}
         animate={isAnimating ? shadowAnimation : {}} // Solo anima si isAnimating es true
-      />
+      /> */}
 
       {/* Esfera animada */}
       <motion.div
@@ -79,6 +79,8 @@ const SecondSphere: React.FC<SecondSphereProps> = ({ text, position, onClick }) 
           justifyContent: 'center',
           textAlign: 'center',
           color:'#361072',
+          fontSize: '1.2rem',
+          // fontWeight: 'bold',
           userSelect: 'none',
           cursor: 'pointer',
           position: 'relative',

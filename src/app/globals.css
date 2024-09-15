@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -14,7 +14,7 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
-}
+} */
 
 /* global.css */
 * {
@@ -23,12 +23,10 @@
 }
 
 body {
-
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-
 }
 
 
@@ -47,23 +45,23 @@ body {
   background: #00d1d1; /* Color del "thumb" de la barra de desplazamiento */
   border-radius: 10px;
   border: 2px solid #d8feff; /* Borde que simula un efecto neón */
-  box-shadow: 0 0 2px #d8feff, 
-              inset 0 0 2px #b2e8f1, 
-              0 0 4px #00d1d1, 
-              0 0 8px #00d1d1, 
+  box-shadow: 0 0 2px #d8feff,
+              inset 0 0 2px #b2e8f1,
+              0 0 4px #00d1d1,
+              0 0 8px #00d1d1,
               0 0 12px #00d1d1; /* Efecto de neón en la sombra del thumb */
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #00b2b2; /* Color del "thumb" cuando se pasa el cursor sobre él */
-  box-shadow: 0 0 2px #d8feff, 
-              inset 0 0 2px #b2e8f1, 
-              0 0 4px #00d1d1, 
-              0 0 8px #00d1d1, 
+  box-shadow: 0 0 2px #d8feff,
+              inset 0 0 2px #b2e8f1,
+              0 0 4px #00d1d1,
+              0 0 8px #00d1d1,
               0 0 12px #00d1d1; /* Mantener el efecto neón en hover */
 }
 
-/* ROOTLAYOUT */ 
+/* ROOTLAYOUT */
 .logo-size {
   width: 90px;
   height: 90px;
@@ -102,7 +100,7 @@ body {
   justify-content: center;
 }
 
-/* QUITAR FONDO AZUL */ 
+/* QUITAR FONDO AZUL */
 .no-outline:focus {
   outline: none !important;
 }
@@ -130,23 +128,6 @@ body {
   background-repeat: repeat;
   background-attachment: fixed;
   min-height: 100vh;
-}
-
-.auth-background::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/FONDO.png');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  transform: translateZ(0);
-  z-index: -1;
-  filter: blur(2px); /* Ajusta según necesites */
-  opacity: 0.8; /* Para mejorar la suavidad */
 }
 
 @layer utilities {
@@ -223,74 +204,6 @@ body {
   filter: blur(5px);
   opacity: 0.8;
 }
-/* 3D BALL FORM*/
-/* global.css */
-.stageF {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  perspective: 1200px;
-  position: relative;
-  margin: 20px;
-
-}
-
-.ballF {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, #5d0b6c, #4e0a63);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3); /* Sombra interna para un efecto más profundo */
-  /* overflow: hidden; Asegura que cualquier contenido desbordado sea recortado */
-  z-index: -1; /* Asegura que este contenedor esté detrás de cualquier contenido adicional */
-}
-
-.ballF::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 26% 35%, rgba(159, 42, 186, 1), rgba(245, 171, 228, 0) 38%),
-              radial-gradient(circle at 54% 17%, rgba(159, 42, 186, 1), rgba(245, 171, 228, 0) 21%),
-              radial-gradient(circle at 37% 23%, rgb(225, 192, 236), rgba(245, 171, 228, 0) 28%),
-              radial-gradient(circle at 49% 81%, rgba(159, 42, 186, 1), rgba(235, 172, 220, 0) 15%),
-              radial-gradient(circle at 84% 62%, rgba(159, 42, 186, 1), rgba(235, 172, 220, 0) 13%),
-              radial-gradient(circle at 68% 75%, rgb(213, 156, 232), rgba(235, 172, 220, 0) 21%);
-  background-blend-mode: overlay;
-  filter: blur(31px); /* Aumenta el desenfoque para un brillo más suave */
-  z-index: -1; /* Asegura que el contenido quede detrás de otros elementos */
-}
-
-.ballF::after {
-  content: "";
-  position: absolute;
-  bottom: -10%;
-  left: 50%;
-  width: 200%;
-  height: 50%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 60%);
-  transform: translateX(-50%) rotateX(90deg);
-  z-index: -1; /* Asegura que la sombra quede debajo del contenido */
-}
-
-.shadowF {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
-  transform: rotateX(90deg) translateZ(-150px);
-  z-index: -1; /* Coloca la sombra detrás de la esfera */
-}
-
-/* SPACEBAR */
 
 @layer base {
   :root {

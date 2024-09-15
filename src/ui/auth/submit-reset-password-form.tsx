@@ -12,6 +12,7 @@ import { handleResetPassword } from "@/lib/cognitoActions";
 import { motion } from 'framer-motion';
 import { CSSProperties } from "react";
 import Image from 'next/image';
+import styles from './auth.module.css'
 
 // Animaciones
 const pageTransition = {
@@ -37,17 +38,6 @@ const levitateAnimation = {
     y: ["0%", "3%", "0%"],
     transition: {
       duration: 3,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
-
-const shadowAnimation = {
-  animate: {
-    scale: [1, 1.1, 1],
-    transition: {
-      duration: 2,
       repeat: Infinity,
       ease: "easeInOut"
     }
@@ -118,19 +108,14 @@ export default function SubmitResetPasswordForm() {
         </div>
       )}
 
-      <form action={dispatch} className="space-y-3 stageF">
+      <form action={dispatch} className={`space-y-3 ${styles.stage}`}>
         <motion.div
-          className="ballF"
+          className={styles.ball}
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
         >
           <div style={{ position: 'absolute', bottom: '-50px', left: '50%', transform: 'translateX(-50%)', zIndex: -1 }}>
-            <motion.div 
-              style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
-              variants={shadowAnimation}
-              animate={isAnimating ? "animate" : ""}
-            />
           </div>
           <Image src="/logo.svg" alt="Logo" className='logo-white'  width={isDesktop ? 100 : 50} height={isDesktop ? 100 : 50} priority style={imageStyle} />
           <div className="w-full flex flex-col items-center">

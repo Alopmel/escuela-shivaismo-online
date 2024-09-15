@@ -1,58 +1,59 @@
-/* auth.module.css
+/* auth.module.css */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  position: relative;
+  margin: 20px;
+
+}
 
 .ball {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    border-radius: 50%;
-    position: relative;
-    background: radial-gradient(circle at 50% 120%, #f681ba, #e840c3 10%, #9d029b 80%, #270125 100%);
-  }
-  .ball:before {
-    content: "";
-    position: absolute;
-    top: 1%;
-    left: 5%;
-    width: 90%;
-    height: 90%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 50% 0px, #ffffff, rgba(255, 255, 255, 0) 58%);
-    -webkit-filter: blur(5px);
-    z-index: 2;
-  }
-  
-  .ball .shadow {
-  position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
-  -webkit-transform: rotateX(90deg) translateZ(-150px);
-  -moz-transform: rotateX(90deg) translateZ(-150px);
-  -ms-transform: rotateX(90deg) translateZ(-150px);
-  -o-transform: rotateX(90deg) translateZ(-150px);
-  transform: rotateX(90deg) translateZ(-150px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #8e0f8f, #5d0b6c, #2b0638 70%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
+  0 5px 10px rgba(244, 244, 244, 0.2); /* Sombra externa mucho más leve */
+  /* overflow: hidden; */
   z-index: -1;
-  }
-  .stage {
-    width: 40px;
-    height: 400px;
-    display: inline-block;
-    margin: 20px;
-    -webkit-perspective: 1200px;
-    -moz-perspective: 1200px;
-    -ms-perspective: 1200px;
-    -o-perspective: 1200px;
-    perspective: 1200px;
-    -webkit-perspective-origin: 50% 50%;
-    -moz-perspective-origin: 50% 50%;
-    -ms-perspective-origin: 50% 50%;
-    -o-perspective-origin: 50% 50%;
-    perspective-origin: 50% 50%;
-  }
-  body {
-    width: 300px;
-    margin: 20px auto;
-    background: linear-gradient(to bottom, rgba(100, 100, 100, 0.2) 0%, rgba(255, 255, 255, 0.5) 40%, #ffffff 100%);
-    background-repeat: no-repeat;
-  } */
+}
+
+.ball::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 26% 35%, rgba(159, 42, 186, 1), rgba(245, 171, 228, 0) 38%),
+              radial-gradient(circle at 54% 17%, rgba(159, 42, 186, 1), rgba(245, 171, 228, 0) 21%),
+              radial-gradient(circle at 37% 23%, rgb(225, 192, 236), rgba(245, 171, 228, 0) 28%),
+              radial-gradient(circle at 49% 81%, rgba(159, 42, 186, 1), rgba(235, 172, 220, 0) 15%),
+              radial-gradient(circle at 84% 62%, rgba(159, 42, 186, 1), rgba(235, 172, 220, 0) 13%),
+              radial-gradient(circle at 68% 75%, rgb(213, 156, 232), rgba(235, 172, 220, 0) 21%);
+  background-blend-mode: overlay;
+  filter: blur(31px); /* Aumenta el desenfoque para un brillo más suave */
+  z-index: -1; /* Asegura que el contenido quede detrás de otros elementos */
+}
+
+.ball::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+  width: 200%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 60%);
+  transform: translateX(-50%) rotateX(90deg);
+  z-index: -1; /* Asegura que la sombra quede debajo del contenido */
+}
+

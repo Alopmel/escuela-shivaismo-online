@@ -18,6 +18,7 @@ import { CSSProperties } from "react";
 import Image from 'next/image';
 import logoRed from '../../../public/logo_red.png'; // Asegúrate de que la ruta sea correcta
 import logoGreen from '../../../public/logo_green.png'; // Asegúrate de que la ruta sea correcta
+import styles from './auth.module.css'
 
 const pageTransition = {
   hidden: {
@@ -48,16 +49,6 @@ const levitateAnimation = {
   }
 };
 
-const shadowAnimation = {
-  animate: {
-    scale: [1, 1.1, 1],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
 
 const translateErrorMessage = (message: string): string => {
   const errorMessages: { [key: string]: string } = {
@@ -191,20 +182,13 @@ export default function SignUpForm() {
         </div>
       )}
 
-      <form action={dispatch} className="space-y-3 stageF">
+      <form action={dispatch} className={`space-y-3 ${styles.stage}`}>
         <motion.div
-          className="ballF"
+          className={styles.ball}
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
         >
-          <div style={{ position: 'absolute', bottom: '-50px', left: '50%', transform: 'translateX(-50%)', zIndex: -1 }}>
-            <motion.div 
-              style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
-              variants={shadowAnimation}
-              animate={isAnimating ? "animate" : ""}
-            />
-          </div>
           <Image src="/logo.svg" alt="Logo" className='logo-white'  width={isDesktop ? 100 : 50} height={isDesktop ? 100 : 50} priority style={imageStyle} />
           <div className="w-full flex flex-col items-center">
             <div className="relative w-full flex justify-center">
@@ -315,11 +299,6 @@ export default function SignUpForm() {
           <SignUpButton isDesktop={isDesktop} />
         </motion.div>
       </form>
-      {/* <motion.div 
-        style={{ width: '300px', height: '50px', borderRadius: '50%', marginTop: '65px', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
-        variants={shadowAnimation}
-        animate={isAnimating ? "animate" : ""}
-      />  */}
     </motion.div>
   );
 }

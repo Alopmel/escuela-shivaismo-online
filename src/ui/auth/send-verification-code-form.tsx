@@ -67,10 +67,9 @@ export default function SendVerificationCode({ isDesktop }: { isDesktop: boolean
         }}
         formAction={dispatch}
       >
-      <span className="mr-2">Reenviar código{" "}</span> {/* Añadido margen a la derecha */}
-      {/* <ArrowRightIcon className="h-5 w-5 text-white"
-      // text-[#BB42CE]" 
-      /> */}
+      <span className="mr-2">Reenviar código</span> {/* Añadido margen a la derecha */}
+      <ArrowRightIcon className="h-5 font-bold w-4 text-[#BB42CE]" 
+      />
       </Button>
     </>
   );

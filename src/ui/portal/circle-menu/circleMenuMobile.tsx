@@ -231,7 +231,7 @@ const CircleMenuMobile = () => {
           }
         }}
       > 
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '1.09rem' }}>
           {centralTitle}
         </div>      
         {breadcrumb.length > 0 && (
@@ -287,6 +287,7 @@ const CircleMenuMobile = () => {
                     justifyContent: 'center',
                     cursor: 'pointer',
                     userSelect: 'none',
+                    color:'#361072',
                   }}
                   onClick={(e) => {
                     e.stopPropagation();

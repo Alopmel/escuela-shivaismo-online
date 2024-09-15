@@ -1,7 +1,7 @@
 // src/ui/auth/login-form.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState , FocusEvent , ChangeEvent} from 'react';
 import { motion } from 'framer-motion';
 import { CSSProperties } from "react";
 import Image from 'next/image';
@@ -12,7 +12,9 @@ import { IoEyeOff, IoEye } from 'react-icons/io5'; // Importar iconos de react-i
 import { Button } from '@/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
 import { handleSignIn } from '@/lib/cognitoActions';
-
+import styles from './auth.module.css'
+import logoGreen from '../../../public/logo_green.png'; // Asegúrate de que la ruta sea correcta
+import logoRed from '../../../public/logo_red.png'; 
 // Función para traducir los mensajes de error al español
 const translateErrorMessage = (message: string): string => {
   const errorMessages: { [key: string]: string } = {
@@ -31,13 +33,23 @@ const translateErrorMessage = (message: string): string => {
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
-  const [isAnimating, setIsAnimating] = useState<boolean>(true);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(!!errorMessage);
   const [showPassword, setShowPassword] = useState<boolean>(false); // Estado para gestionar la visibilidad de la contraseña
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const [password, setPassword] = useState<string>('');
 
-  const handleInputFocus = () => {
-    setIsAnimating(false);
+
+  const handlePasswordFocus = (e: FocusEvent<HTMLInputElement>) => {
+    setShowPasswordRequirements(true);
+  };
+
+  const handlePasswordBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setShowPasswordRequirements(false);
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
   };
 
   const checkWindowSize = () => {
@@ -57,6 +69,33 @@ export default function LoginForm() {
     setShowError(!!errorMessage);
   }, [errorMessage]);
 
+  const passwordMeetsCriteria = (criteria: string): boolean => {
+    switch (criteria) {
+      case 'minLength':
+        return password.length >= 8;
+      case 'number':
+        return /\d/.test(password);
+      case 'specialChar':
+        return /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      case 'uppercase':
+        return /[A-Z]/.test(password);
+      case 'lowercase':
+        return /[a-z]/.test(password);
+      default:
+        return false;
+    }
+  };
+
+  const getLogoSrc = (criteria: string): JSX.Element => {
+    return (
+      <Image
+        src={passwordMeetsCriteria(criteria) ? logoGreen : logoRed}
+        alt="Logo"
+        width={11}
+        height={15}
+      />
+    );
+  };
   // Animaciones para el cambio de página
   const pageTransition = {
     hidden: { opacity: 0 },
@@ -135,18 +174,18 @@ export default function LoginForm() {
         </div>
       )}
 
-      <form action={dispatch} className="space-y-3 stageF">
+      <form action={dispatch} className={`space-y-3 ${styles.stage}`}>
         <motion.div
-          className="ballF"
+          className={styles.ball}
           style={containerStyle}
           variants={levitateAnimation}
-          animate={isAnimating ? "animate" : ""}
+          animate={"animate"}
         >
           <div style={{ position: 'absolute', bottom: '-30px', left: '50%', transform: 'translateX(-50%)', zIndex: -1 }}>
             <motion.div 
               style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
               variants={shadowAnimation}
-              animate={isAnimating ? "animate" : ""}
+              animate={"animate"}
             />
           </div>
           <Image src="/logo.svg" alt="Logo" className='logo-white' width={isDesktop ? 100 : 90} height={isDesktop ? 100 : 90} priority style={imageStyle} />
@@ -180,6 +219,9 @@ export default function LoginForm() {
                 required
                 minLength={6}
                 autoComplete="current-password" // Atributo autocomplete añadido
+                onFocus={handlePasswordFocus}
+                onBlur={handlePasswordBlur}
+                onChange={handlePasswordChange}
                 style={{ 
                   fontSize: isDesktop ? '1rem' : '0.75rem',
                   borderColor: '#BB42CE', // Borde del color neón
@@ -198,6 +240,40 @@ export default function LoginForm() {
                   className="absolute right-[4.2rem] top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-[#c7aacc]"
                   onClick={() => setShowPassword(true)}
                 />
+              )}
+              {showPasswordRequirements && (
+                <div className="absolute top-[2.5rem] left-1/2 transform -translate-x-1/2 w-3/5 p-3 bg-white border border-gray-300 rounded-lg shadow-lg text-sm z-40">
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('minLength')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('minLength') ? 'green' : 'red' }}>
+                      Longitud mínima de 8 caracteres
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('number')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('number') ? 'green' : 'red' }}>
+                      Contiene 1 número
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('specialChar')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('specialChar') ? 'green' : 'red' }}>
+                      Contiene 1 carácter especial
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('uppercase')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('uppercase') ? 'green' : 'red' }}>
+                      Contiene 1 letra mayúscula
+                    </p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {getLogoSrc('lowercase')}
+                    <p className="text-left ml-2" style={{ color: passwordMeetsCriteria('lowercase') ? 'green' : 'red' }}>
+                      Contiene 1 letra minúscula
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -225,7 +301,7 @@ function LoginButton({ isDesktop }: { isDesktop: boolean }) {
       className={`w-[75%] h-8 mt-4 rounded-full`} // Botón con borde redondeado
       aria-disabled={pending} 
       style={{ 
-        fontSize: isDesktop ? '1.1rem' : '0.75rem',
+        fontSize: isDesktop ? '1.1rem' : '1rem',
         backgroundColor: 'transparent', // Fondo transparente
         border: 'none', // Sin borde
         color: 'white', // Color de texto neón

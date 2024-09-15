@@ -3,9 +3,6 @@ import Link from 'next/link';
 export default function AdminProfile() {
   return (
     <>
-        <Link  href="/portal">
-            <Image src="/logo_login.png" alt="Logo" width={100} height={100} priority className="mt-1" />
-        </Link>        
         <h1
             style={{
             textAlign: 'center',

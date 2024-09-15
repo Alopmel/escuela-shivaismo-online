@@ -20,19 +20,6 @@ const levitateAnimation = {
   }
 };
 
-// Animación para la sombra que se alarga y encoje
-const shadowAnimation = {
-  animate: {
-    scaleY: [1, 1.5, 1], // La sombra se alarga y se encoje verticalmente
-    transition: {
-      duration: 3, // Mismo tiempo que la esfera para estar sincronizados
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
-
-
 const PrincipalSphere: React.FC<PrincipalSphereProps> = ({ onClick, isClicked }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
  
@@ -84,23 +71,6 @@ const PrincipalSphere: React.FC<PrincipalSphereProps> = ({ onClick, isClicked })
           </motion.figure>
         </motion.section>
       </div>
-      <motion.div
-        style={{ 
-          width: isClicked ? '205px' : '300px', 
-          height: isClicked ? '19px' : '50px', 
-          borderRadius: '50%', 
-          background: isClicked ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.7)', 
-          position: 'absolute', 
-          top: isClicked ? '342px' : '484px', 
-          left: isClicked ? '99px' : '100px',
-          filter: 'blur(9px)', 
-          display: 'flex',
-          pointerEvents: 'none',
-          transition: 'all 0.5s ease'
-        }}
-        variants={shadowAnimation}
-        animate={isAnimating && !isClicked ? "animate" : ""}
-      />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 'use client'
 import CardProfile from "@/ui/portal/userprofile/card-profile";
 import useAuthUser from "@/app/hooks/use-auth-user";
-import FavoritesComponent from "@/ui/portal/categorias/favorites-component";
 export default function Recommended() {
   const user = useAuthUser();
   const userId = user ? user.userId : 'null'
