@@ -1,14 +1,8 @@
 /* styles/fonts.css */
-import { Antonio, Poppins, Roboto } from 'next/font/google';
+import { Roboto, Unica_One} from 'next/font/google';
 
-
-export const antonio = Antonio({
-  subsets: ['latin'],
-  weight: '200',
-});
-
-export const poppins = Poppins({
-  weight: ['400', '700'],
+export const unicaOne = Unica_One({
+  weight: '400',
   subsets: ['latin'],
   display: 'swap',
 });

@@ -12,7 +12,7 @@ import { handleResetPassword } from "@/lib/cognitoActions";
 import { motion } from 'framer-motion';
 import { CSSProperties } from "react";
 import Image from 'next/image';
-
+import styles from './auth.module.css'
 // Animaciones
 const pageTransition = {
   hidden: {
@@ -118,9 +118,9 @@ export default function SubmitResetPasswordForm() {
         </div>
       )}
 
-      <form action={dispatch} className="space-y-3 stageF">
+      <form action={dispatch} className={`space-y-3 ${styles.stage}`}>
         <motion.div
-          className="ballF"
+          className={styles.ball}
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}

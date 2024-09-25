@@ -7,15 +7,8 @@ import FourthSphere from './fourthSphere';
 import FifthSphere from './fifthSphere';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthUser from '@/app/hooks/use-auth-user'; // Importar el hook
+import { items, MenuItem } from '@/utils/menuItems'
 
-interface MenuItem {
-  text: string;
-  position: {
-    top: string;
-    left: string;
-  };
-  subItems?: MenuItem[];
-}
 
 const CircleMenuDesktop: React.FC = () => {
   const [isClicked, setIsClicked] = useState(false);
@@ -43,97 +36,7 @@ const CircleMenuDesktop: React.FC = () => {
   const thirdItemB = breadcrumb[2]
   // console.log('thirdItemB', thirdItemB);
 
-  const items: MenuItem[] = [
-    { text: 'Empieza por aquí', position: { top: 'calc(50% - 256px)', left: 'calc(50% + 32px)' }, 
-      subItems: [
-        { text: 'Fechas conferencias y recursos', position: { top: 'calc(50% - 350px)', left: 'calc(50% + 148px)' } },
-        { text: 'Conceptos importantes y prácticas básicas', position: { top: 'calc(50% - 218px)', left: 'calc(50% + 194px)' } }
-      ]
-    },
-    {
-      text: 'Enseñanza de la vía', position: { top: 'calc(50% - 82px)', left: 'calc(50% + 134px)' },
-      subItems: [
-        {
-          text: 'Comentarios de sutras',
-          position: { top: 'calc(50% - 152px)', left: 'calc(50% + 274px)' },
-          subItems: [
-            {
-              text: 'Shiva Sutras: La Cosmovisión',
-              position: { top: 'calc(50% - 216px)', left: 'calc(50% + 390px)' },
-              subItems: [
-                { text: '1 Despertar', position: { top: 'calc(50% - 326px)', left: 'calc(50% + 394px)' } },
-                { text: '2 Despertar', position: { top: 'calc(50% - 270px)', left: 'calc(50% + 500px)' } },
-                { text: '3 Despertar', position: { top: 'calc(50% - 152px)', left: 'calc(50% + 500px)' } }
-              ]
-            },
-            { text: 'Vijñana Bhairava Tantra: La Práctica', position: { top: 'calc(50% - 274px)', left: 'calc(50% + 264px)' } },
-            { 
-              text: 'Los 36 Tattvas', 
-              position: { top: 'calc(50% - 79px)', left: 'calc(50% + 390px)' },
-              subItems: [
-                { text: 'Spandakarika', position: { top: 'calc(50% - 94px)', left: 'calc(50% + 512px)' } },
-                { text: 'Pratiabhidjaridayam', position: { top: 'calc(50% + 28px)', left: 'calc(50% + 456px)' } }
-              ]
-            }
-          ]
-        },
-        {
-          text: 'Conceptos de apoyo',
-          position: { top: 'calc(50% + 12px)', left: 'calc(50% + 274px)' },
-          subItems: [
-            { text: 'Sat Sang', position: { top: 'calc(50% - 68px)', left: 'calc(50% + 378px)' } },
-            { text: 'Textos en PDF', position: { top: 'calc(50% + 52px)', left: 'calc(50% + 410px)' } },
-            { text: 'Libros Recomendados', position: { top: 'calc(50% + 142px)', left: 'calc(50% + 324px)' } },
-            { text: 'Pruebas', position: { top: 'calc(50% + 120px)', left: 'calc(50% + 203px)' } }
-          ]
-        }
-      ]
-    },
-    {
-      text: 'Aplicación en tu vida', position: { top: 'calc(50% + 100px)', left: 'calc(50% + 32px)' },
-      subItems: [
-        {
-          text: 'Preguntas y respuestas',
-          position: { top: 'calc(50% + 88px)', left: 'calc(50% + 192px)' }
-        },
-        {
-          text: 'War Room',
-          position: { top: 'calc(50% + 235px)', left: 'calc(50% + 129px)' }
-        },
-        {
-          text: 'Conferencias temáticas',
-          position: { top: 'calc(50% + 235px)', left: 'calc(50% - 36px)' }
-        }
-      ]
-    },
-    {
-      text: 'Prácticas en diferido', position: { top: 'calc(50% - 82px)', left: 'calc(50% - 282px)' } ,
-      subItems: [
-        {
-          text: 'Tandava y práctica con Mar y Juanjo',
-          position: { top: 'calc(50% + 4px)', left: 'calc(50% - 421px)' }
-        },
-        {
-          text: 'Yutkis',
-          position: { top: 'calc(50% - 130px)', left: 'calc(50% - 421px)' }
-        },
-        {
-          text: 'Otras prácticas',
-          position: { top: 'calc(50% + 72px)', left: 'calc(50% - 303px)' }
-        },
-        {
-          text: 'Visualizaciones',
-          position: { top: 'calc(50% - 206px)', left: 'calc(50% - 303px)' },
-          subItems: [
-            { text: 'Kali', position: { top: 'calc(50% - 328px)', left: 'calc(50% - 293px)' } },
-            { text: 'Masyendranath', position: { top: 'calc(50% - 266px)', left: 'calc(50% - 408px)' } }
-          ]
-        }
-      ]
-    },
-    { text: 'Chamanismo', position: { top: 'calc(50% + 100px)', left: 'calc(50% - 180px)' }},
-    { text: 'Últimos videos subidos', position: { top: 'calc(50% - 256px)', left: 'calc(50% - 180px)' } },
-  ];
+ 
 
    // Función para encontrar el camino del breadcrumb
     const findItemPath = (items: MenuItem[], text: string, path: string[] = []): string[] | null => {
@@ -263,13 +166,13 @@ const CircleMenuDesktop: React.FC = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
-                  top: item.position.top,
-                  left: item.position.left,
+                  top: item.position.desktop.top,
+                  left: item.position.desktop.left,
                 }}
               >
                 <SecondSphere
                   text={item.text}
-                  position={item.position}
+                  position={item.position.desktop}
                   onClick={() => handleSecondSphereClick(item)}
                 />
               </motion.div>
@@ -284,13 +187,13 @@ const CircleMenuDesktop: React.FC = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
-                  top: subItem.position.top,
-                  left: subItem.position.left,
+                  top: subItem.position.desktop.top,
+                  left: subItem.position.desktop.left,
                 }}
               >
                 <ThirdSphere
                   text={subItem.text}
-                  position={subItem.position}
+                  position={subItem.position.desktop}
                   onClick={() => handleThirdSphereClick(subItem)}
                 />
               </motion.div>
@@ -305,13 +208,13 @@ const CircleMenuDesktop: React.FC = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
-                  top: subItem.position.top,
-                  left: subItem.position.left,
+                  top: subItem.position.desktop.top,
+                  left: subItem.position.desktop.left,
                 }}
               >
                 <FourthSphere
                   text={subItem.text}
-                  position={subItem.position}
+                  position={subItem.position.desktop}
                   onClick={() => handleFourthSphereClick(subItem)}
                 />
               </motion.div>
@@ -326,13 +229,13 @@ const CircleMenuDesktop: React.FC = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
-                  top: subItem.position.top,
-                  left: subItem.position.left,
+                  top: subItem.position.desktop.top,
+                  left: subItem.position.desktop.left,
                 }}
               >
                 <FifthSphere
                   text={subItem.text}
-                  position={subItem.position}
+                  position={subItem.position.desktop}
                   onClick={() => handleFourthSphereClick(subItem)}
                 />
               </motion.div>

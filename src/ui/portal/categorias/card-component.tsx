@@ -11,7 +11,6 @@ import ConferenceSchedule from './conference-schedule'; // Importa el componente
 import AvailableResources from './available-resources';
 import WelcomePlayer from './welcome-player';
 import TextRenderer from './text-render';
-import BookRenderer from './book-render'; // Importa el componente BookRenderer
 
 interface CardComponentProps {
   item: string;
@@ -97,8 +96,6 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
         </>
       ) : item === 'Textos en PDF' ? (
         <TextRenderer /> 
-      ) : item === 'Libros Recomendados' ? (
-        <BookRenderer />
       ) : (
         <VideoRender videoData={videoData} userId={userId} />
       )}

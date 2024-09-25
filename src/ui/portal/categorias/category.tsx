@@ -97,8 +97,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       <div>
         <h1 className="text-[31px] md:text-[41px] text-white" style={{ userSelect: 'none' }}>
           {item}
-        </h1>
-        
+        </h1>        
         <nav className={`mb-5 whitespace-nowrap flex flex-wrap ${roboto.className}`}>
           {fullBreadcrumb.map((breadcrumbItem, index) => (
             <span key={breadcrumbItem}>

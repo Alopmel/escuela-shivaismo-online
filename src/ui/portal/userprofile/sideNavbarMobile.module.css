@@ -1,25 +1,7 @@
-/* Overlay con efecto Glassmorphism */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px); /* Efecto Glassmorphism */
-    z-index: 10;
-    transition: opacity 0.5s ease-in-out;
-    opacity: 0;
-  }
-  
-  .overlay.show {
-    opacity: 1;
-  }
-  
-  .nav {
-    position: absolute;
-    left: 177px;
-    top: 20px;
-    z-index: 20;
-  }
-  
+.textContent {
+  /* Ocupa todo el ancho del contenedor */
+   word-break: break-word; /* Rompe palabras largas */
+   hyphens: auto; /* Permite la división de palabras largas */
+   overflow-wrap: break-word; /* Asegura que las palabras largas se dividan */
+   text-align: center; /* Centra el texto */
+ }

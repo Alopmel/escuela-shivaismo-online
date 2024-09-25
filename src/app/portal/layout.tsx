@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex auth-background">
-      <Search /> {/* Agrega el componente de búsqueda */}
+      <Search />
       {isDesktop ? (<SideNav />) : (<SideNavbarMobile />)}
       <main className="flex-1">
         {children}

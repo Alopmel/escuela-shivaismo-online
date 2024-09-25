@@ -21,16 +21,6 @@ const levitateAnimation = {
   }
 };
 
-// Animación para la sombra que se alarga y encoje
-const shadowAnimation = {
-  scaleY: [1, 1.5, 1], // La sombra se alarga y se encoje verticalmente
-  transition: {
-    duration: 3, // Mismo tiempo que la esfera para estar sincronizados
-    repeat: Infinity,
-    ease: "easeInOut"
-  }
-};
-
 const SecondSphere: React.FC<SecondSphereProps> = ({ text, position, onClick }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
 
@@ -50,23 +40,6 @@ const SecondSphere: React.FC<SecondSphereProps> = ({ text, position, onClick }) 
       }}
       onClick={handleClick} // Añadir el evento onClick aquí
     >
-      {/* Sombra animada */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: '102%',
-          left: '34%',
-          width: '38%',
-          height: '10px', // Ajusta el tamaño de la sombra
-          backgroundColor: 'rgba(0, 0, 0, 0.25)', // Color y opacidad de la sombra
-          borderRadius: '50%',
-          transform: 'translate(-50%, -50%)',
-          filter: 'blur(2.2px)', 
-
-        }}
-        animate={isAnimating ? shadowAnimation : {}} // Solo anima si isAnimating es true
-      />
-
       {/* Esfera animada */}
       <motion.div
         className={styles.secondSphere}
@@ -85,8 +58,11 @@ const SecondSphere: React.FC<SecondSphereProps> = ({ text, position, onClick }) 
           zIndex: 2 // Asegurarse de que la esfera esté por encima de la sombra
         }}
         animate={isAnimating ? levitateAnimation : {}} // Solo anima si isAnimating es true
-      >
-        {text}
+      > 
+        <p className={` text-[1.1rem] pl-2 pr-2 leading-[1.13rem] ${styles.textContent}`}>
+          {text}
+        </p>
+        
       </motion.div>
     </div>
   );

@@ -36,7 +36,7 @@ const Search: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-[1.4rem] sm:top-4 right-4 p-4 flex items-center gap-2 z-50 .no-select">
+    <div className="fixed top-[1.7rem] sm:top-4 right-4 p-4 flex items-center gap-2 z-50 .no-select">
       <div className="relative flex items-center">
         <motion.div
           initial={{ opacity: 1 }}

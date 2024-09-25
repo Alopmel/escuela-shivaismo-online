@@ -1,7 +1,7 @@
 import { Suspense, useState, useEffect } from 'react'; // Importa useState y useEffect
 import type { Metadata } from "next";
 import "./globals.css";
-import { antonio } from './fonts';
+import { unicaOne } from './fonts';
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { UserProvider } from './context/UserContext'; // Importa el UserProvider
 import { FavoritesProvider } from './context/FavoritesContext';
@@ -33,7 +33,7 @@ export default function RootLayout({
             <ProgressProvider>
               <BucketProvider>
                 <html lang="es">
-                  <body className={`${antonio.className} antialiased`}>
+                  <body className={`${unicaOne.className} antialiased`}>
                     <>
                       <ConfigureAmplifyClientSide />
                       <ErrorBoundary>
@@ -45,6 +45,7 @@ export default function RootLayout({
                               width={90} 
                               height={90} 
                               className="mt-8 ml-8 absolute logo-white logo-size" 
+                              priority={true}
                             />
                           </Link>
                           {children}

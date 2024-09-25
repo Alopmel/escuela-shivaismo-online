@@ -17,6 +17,7 @@ import Image from 'next/image';
 import { CSSProperties } from "react";
 import logoGreen from '../../../public/logo_green.png'; // Asegúrate de que la ruta sea correcta
 import logoRed from '../../../public/logo_red.png'; // Asegúrate de que la ruta sea correcta
+import styles from './auth.module.css'
 
 const pageTransition = {
   hidden: {
@@ -47,17 +48,6 @@ const levitateAnimation = {
   }
 };
 
-const shadowAnimation = {
-  animate: {
-    scale: [1, 1.1, 1],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};  
-
 export default function ConfirmResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(
     handleConfirmResetPassword,
@@ -81,10 +71,6 @@ export default function ConfirmResetPasswordForm() {
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-  };
-
-  const handleInputFocus = () => {
-    setIsAnimating(false);
   };
 
   const checkWindowSize = () => {
@@ -140,8 +126,8 @@ export default function ConfirmResetPasswordForm() {
   };
 
   const imageStyle: CSSProperties = {
-    marginBottom: isDesktop ? '27px' : '15px',
-    marginTop: isDesktop ? '-30px' : '-25px'
+    marginBottom: isDesktop ? '27px' : '0px',
+    marginTop: isDesktop ? '-30px' : '-14px'
   };
 
 
@@ -171,25 +157,21 @@ export default function ConfirmResetPasswordForm() {
           </div>
         </div>
       )}
-      <form action={dispatch} className="space-y-3 stageF">
+      <form action={dispatch} className={`space-y-3 ${styles.stage}`}>
         <motion.div
-        className="ballF"
+          className={styles.ball}
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
         >
-          <div style={{ position: 'absolute', bottom: '-50px', left: '50%', transform: 'translateX(-50%)', zIndex: -1 }}>
-            <motion.div 
-              style={{ width: isDesktop ? '300px' : '150px', height: isDesktop ? '50px' : '25px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.2)', filter: 'blur(10px)' }}
-              variants={shadowAnimation}
-              animate={isAnimating ? "animate" : ""}
-            />
-          </div>
           <Image src="/logo.svg" alt="Logo" className="logo-white"  width={isDesktop ? 100 : 50} height={isDesktop ? 100 : 50} priority style={imageStyle} />
           <div className="w-full flex flex-col items-center">
+          <div className="relative w-full flex justify-center">
+              <h2 className="mb-4 mt-[10px] text-white" style={{ fontSize: '1.5rem' }}> Resetea tu contraseña </h2>
+            </div> 
             <div className="relative w-full flex justify-center">
                 <input
-                className="peer block w-3/5 h-[1.2rem] rounded-full border py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc]"
+                  className="peer block w-3/5 h-[1.2rem] rounded-full border py-[9px] pl-14 outline-2 placeholder:text-[#c7aacc]"
                   id="email"
                   type="email"
                   name="email"
@@ -309,7 +291,7 @@ function ResetPasswordButton({ isDesktop }: { isDesktop: boolean }) {
       color: '#BB42CE', // Texto del botón
     }}    
     >
-      <span className="mr-2">Resetear contraseña</span> {/* Añadido margen a la derecha */}
+      <span className="mr-2">Resetear</span> {/* Añadido margen a la derecha */}
       <ArrowRightIcon className="h-5 w-5 text-[#BB42CE]" />
     </Button>
   );

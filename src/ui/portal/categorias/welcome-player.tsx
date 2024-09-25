@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { antonio } from '@/app/fonts';
+import { unicaOne } from '@/app/fonts';
 import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
@@ -19,7 +19,7 @@ const WelcomePlayer = () => {
       variants={pageTransition}
       className="flex flex-wrap justify-center items-center p-2 md:p-4" // Reducido padding
     >
-      <div className={`mt-2 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${antonio.className} w-full sm:w-[500px] md:w-[600px]`}>
+      <div className={`mt-2 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${unicaOne.className} w-full sm:w-[500px] md:w-[600px]`}>
         <ReactPlayer
           url="https://dz9uj6zxn56ls.cloudfront.net/Fechas conferencias y recursos/1.BIENVENIDA AL GRUPO.mp4" // Cambia esta URL por la de tu video
           controls={true}

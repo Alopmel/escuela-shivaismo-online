@@ -52,10 +52,7 @@
 
 .cardContainer {
   position: relative;
-  width: 360px; /* Reducido el ancho del contenedor de la tarjeta */
-  margin-top: 20px;
-  margin-left: 30px; /* Reducido el espacio entre tarjetas */
-  margin-right: 30px;
+  width: 400px; /* Reducido el ancho del contenedor de la tarjeta */
 }
 
 /* Aplicar separación de 40px en pantallas grandes */
@@ -108,8 +105,8 @@
 .title {
   color: #fbfbfb;
   font-weight: bold;
-  font-size: 18px; /* Reducido el tamaño del texto del título */
-  margin-left: 15px; /* Reducido espacio al lado izquierdo */
+  font-size: 20px; /* Reducido el tamaño del texto del título */
+
 }
 
 .ptitle {
@@ -135,8 +132,8 @@
   }
 
   .cardContainer {
-    width: calc(100% - 20px); /* Ajustado ancho en móviles */
-    margin: 12px; /* Reducido espacio entre tarjetas en móviles */
+    width: 100%; /* Ajustado ancho en móviles */
+    margin-bottom: 1rem;
   }
 
   .cardContainer_01 {
@@ -148,6 +145,7 @@
   .cardPlayer {
     margin-bottom: -10px; /* Ajustado para mejor ajuste en móviles */
     border-radius: 10px; /* Ajustado redondeo en móviles */
+    height: auto;
   }
 
   .title {

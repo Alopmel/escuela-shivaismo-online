@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
-  0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  0 0 5px 2px rgba(255, 255, 255, 0.2); /* Sombra externa mucho más leve */
   z-index: 1;
 }
 
@@ -48,19 +48,10 @@
   border-radius: 50%;
   background: none;
   box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
-              0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra externa para profundidad */
+              0 10px 20px rgba(103, 103, 103, 0.5); /* Sombra externa para profundidad */
   filter: blur(5px); /* Difumina ligeramente el borde */
   z-index: 1;
   pointer-events: none;
-}
-
-.shadow {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
-  transform: rotateX(90deg) translateZ(-150px);
-  z-index: -1; 
 }
 
 .text {
@@ -95,7 +86,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 10px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 
+  0 0 5px 2px rgba(255, 255, 255, 0.2); /* Sombra externa mucho más leve */
   z-index: 1;
 }
 
@@ -123,10 +115,31 @@
   border-radius: 50%;
   background: none;
   box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
-              0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+              0 10px 20px rgba(103, 103, 103, 0.5); /* Sombra externa para profundidad */
   filter: blur(5px); /* Difumina ligeramente el borde */
   z-index: 1;
   pointer-events: none;
+}
+.submenu-enter {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.submenu-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.submenu-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.submenu-exit-active {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 
@@ -142,7 +155,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
-  0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  0 0 5px 2px rgba(255, 255, 255, 0.2); /* Sombra externa mucho más leve */
   z-index: 1;
 }
 
@@ -170,7 +183,7 @@
   border-radius: 50%;
   background: none;
   box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
-              0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra externa para profundidad */
+              0 10px 20px rgba(103, 103, 103, 0.5); /* Sombra externa para profundidad */
   filter: blur(5px); /* Difumina ligeramente el borde */
   z-index: 1;
   pointer-events: none;
@@ -187,8 +200,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 10px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 
+  0 0 5px 2px rgba(255, 255, 255, 0.2); /* Sombra externa mucho más leve */
   z-index: 1;
+  overflow: hidden;
 }
 
 .fourthSphere::before {
@@ -215,10 +230,18 @@
   border-radius: 50%;
   background: none;
   box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
-              0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+              0 10px 20px rgba(103, 103, 103, 0.5); /* Sombra externa para profundidad */
   filter: blur(5px); /* Difumina ligeramente el borde */
   z-index: 1;
   pointer-events: none;
+}
+
+.textContent {
+ /* Ocupa todo el ancho del contenedor */
+  word-break: break-word; /* Rompe palabras largas */
+  hyphens: auto; /* Permite la división de palabras largas */
+  overflow-wrap: break-word; /* Asegura que las palabras largas se dividan */
+  text-align: center; /* Centra el texto */
 }
 
 /* MAGENT SPHERE */ 
@@ -233,7 +256,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: inset 2px 4px 15px rgba(101, 21, 78, 0.6), /* Color más cercano al azul oscuro */
-  0 5px 10px rgba(0, 0, 0, 0.2); /* Sombra externa mucho más leve */
+  0 0 5px 2px rgba(255, 255, 255, 0.2); /* Sombra externa mucho más leve */
   z-index: 1;
 }
 
@@ -261,7 +284,7 @@
   border-radius: 50%;
   background: none;
   box-shadow: inset 2px 4px 15px rgba(21, 96, 101, 0.6), /* Color más cercano al azul oscuro */
-              0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra externa para profundidad */
+              0 10px 20px rgba(103, 103, 103, 0.5); /* Sombra externa para profundidad */
   filter: blur(5px); /* Difumina ligeramente el borde */
   z-index: 1;
   pointer-events: none;

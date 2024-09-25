@@ -21,16 +21,6 @@ const levitateAnimation = {
   }
 };
 
-// Animación para la sombra que se alarga y encoje
-const shadowAnimation = {
-  scaleY: [1, 1.5, 1], // La sombra se alarga y se encoje verticalmente
-  transition: {
-    duration: 3, // Mismo tiempo que la esfera para estar sincronizados
-    repeat: Infinity,
-    ease: "easeInOut"
-  }
-};
-
 const ThirdSphere: React.FC<ThirdSphereProps> = ({ text, position, onClick }) => {
   const [isAnimating, setIsAnimating] = useState<boolean>(true);
 
@@ -41,20 +31,6 @@ const ThirdSphere: React.FC<ThirdSphereProps> = ({ text, position, onClick }) =>
 
   return (
     <>
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: `calc(${position.top} + 122px)`, // Coloca la sombra debajo de la esfera
-          left: `calc(${position.left} + 36px)`, // Centra la sombra horizontalmente debajo de la esfera
-          width: '48px', // Ajusta el tamaño de la sombra para que coincida con el ancho de la esfera
-          height: '6px', // Ajusta el tamaño de la sombra
-          backgroundColor: 'rgba(0, 0, 0, 0.25)', // Color y opacidad de la sombra
-          borderRadius: '50%',
-          transform: 'translateX(-50%)', // Asegura que la sombra esté centrada horizontalmente
-          filter: 'blur(2.2px)', 
-        }}
-        animate={isAnimating ? shadowAnimation : {}} // Solo anima si isAnimating es true
-      />
       <motion.div
         className={styles.thirdSphere} // Asegúrate de definir los estilos para thirdSphere
         style={{
@@ -75,7 +51,9 @@ const ThirdSphere: React.FC<ThirdSphereProps> = ({ text, position, onClick }) =>
         onClick={handleClick}
         animate={isAnimating ? levitateAnimation : {}} // Solo anima si isAnimating es true
       >
-        {text}
+        <p className='pl-2 pr-2 leading-[1.13rem] text-[1rem]'>
+          {text}
+        </p>
       </motion.div>
     </>
   );

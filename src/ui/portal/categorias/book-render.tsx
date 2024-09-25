@@ -1,15 +1,14 @@
+// /src/ui/categorias / book-render.tsx
+"use client";
+
 import React from 'react';
-import { Roboto } from 'next/font/google';
+import { unicaOne } from '@/app/fonts';
 import { MdOutlineDownloading } from 'react-icons/md';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { roboto
 
-// Carga la fuente Roboto
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
-
+ } from '@/app/fonts';
 interface BookItem {
   img: string;
   title?: string;
@@ -75,8 +74,8 @@ const BookRenderer: React.FC = () => {
       animate="show"
       exit="exit"
       variants={pageTransition}
-      className={`grid gap-6 ${roboto.className} grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}
-    >
+      className={`grid gap-6 ${unicaOne.className} grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}
+    > 
       {books.map((item, index) => (
         <div
           key={index}
@@ -95,14 +94,14 @@ const BookRenderer: React.FC = () => {
               className="w-[200px] h-auto"
             />
           </div>
-          <div className="text-center">
-            {item.title && <h3 className="text-lg mb-2 italic text-white">{item.title}</h3>}
+          <div className={`text-center ${roboto.className}`}>
+            {item.title && <h3 className="text-lg mb-2 text-white">{item.title}</h3>}
             <p className="mb-4 text-white">{item.description}</p>
             <a
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#d731a5] font-bold flex items-center justify-center no-underline hover:text-[#f78bd7] transition-colors duration-300"
+              className="text-[#361072] font-bold text-[1.2rem] flex items-center justify-center no-underline hover:text-[#00d1d1] transition-colors duration-300"
             >
               Cómpralo ahora
               <MdOutlineDownloading className="ml-2" />

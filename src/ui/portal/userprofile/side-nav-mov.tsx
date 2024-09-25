@@ -6,6 +6,8 @@ import SideSubSphere from './sideSubSphere';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { handleSignOut } from "@/lib/cognitoActions";
+import styles from './sideNavbarMobile.module.css'
+import { unicaOne } from '@/app/fonts';
 const SideNavbarMobile = () => {
   const [isClicked, setIsClicked] = useState(false);
   const [selectedItem, setSelectedItem] = useState<SideNavItem | null>(null);
@@ -52,12 +54,14 @@ const SideNavbarMobile = () => {
               }}
             >
               {/* Usar Link de Next.js */}
-              <Link href={item.path}>
-                  <SideSubSphere
-                    text={item.title}
-                    position={item.position}
-                  />
-              </Link>
+              <div className={`p-4 text-[1rem] ${styles.textContent}`}>
+                <Link href={item.path}>
+                    <SideSubSphere
+                      text={item.title}
+                      position={item.position}
+                    />
+                </Link>
+              </div>  
             </motion.div>
           ))
         )}
@@ -75,9 +79,11 @@ const SideNavbarMobile = () => {
             //   left: 'calc(50% + 80px)',
             }}
           >
+          <div className={`p-4 text-[1rem] ${styles.textContent}`}>
             <form action={handleSignOut} className="mr-2">
               <button
                 type="submit"
+                className= {unicaOne.className}
               >
                 <SideSubSphere
                   text={'Salir'}
@@ -85,6 +91,7 @@ const SideNavbarMobile = () => {
                 />
               </button>
             </form>
+          </div>
           </motion.div>
         )}
       </nav>

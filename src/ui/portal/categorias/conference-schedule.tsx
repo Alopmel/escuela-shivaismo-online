@@ -37,9 +37,9 @@ const ConferenceSchedule: React.FC = () => {
               <Image
                 src="/logo_red.png"
                 alt="Logo"
-                width={24} // Tamaño uniforme para todos los íconos
+                width={20} // Tamaño uniforme para todos los íconos
                 height={24} // Tamaño uniforme para todos los íconos
-                className="w-6 mr-3 rounded-lg"
+                className="mr-3 rounded-lg"
                 style={{ filter: 'invert(1)' }}
               />
               <span>

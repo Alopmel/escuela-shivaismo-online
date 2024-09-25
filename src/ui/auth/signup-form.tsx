@@ -18,6 +18,7 @@ import { CSSProperties } from "react";
 import Image from 'next/image';
 import logoRed from '../../../public/logo_red.png'; // Asegúrate de que la ruta sea correcta
 import logoGreen from '../../../public/logo_green.png'; // Asegúrate de que la ruta sea correcta
+import styles from './auth.module.css'
 
 const pageTransition = {
   hidden: {
@@ -162,8 +163,8 @@ export default function SignUpForm() {
   };
 
   const imageStyle: CSSProperties = {
-    marginBottom: isDesktop ? '0px' : '15px',
-    marginTop: isDesktop ? '-30px' : '-25px'
+    marginBottom: isDesktop ? '0px' : '-13px',
+    marginTop: isDesktop ? '-30px' : '-17px'
   };
 
 
@@ -191,9 +192,9 @@ export default function SignUpForm() {
         </div>
       )}
 
-      <form action={dispatch} className="space-y-3 stageF">
+      <form action={dispatch} className={`space-y-3 ${styles.stage}`}>
         <motion.div
-          className="ballF"
+          className={styles.ball}
           style={containerStyle}
           variants={levitateAnimation}
           animate={isAnimating ? "animate" : ""}
