@@ -51,12 +51,12 @@ const CardProfile: React.FC = () => {
           videoData={activeTab === 'favorites' 
             ? favorites.map(({ url, videoTitle, key }) => ({
                 url,
-                title: formatTitle(videoTitle),
+                title: videoTitle,
                 key: { Key: key }
               }))
             : watchLater.map(({ url, videoTitle, key }) => ({
                 url,
-                title: formatTitle(videoTitle),
+                title: videoTitle,
                 key: { Key: key }
               }))
           }

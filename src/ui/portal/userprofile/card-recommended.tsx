@@ -85,7 +85,7 @@ const CardRecommended: React.FC = () => {
         <VideoRender 
           videoData={videos.map(video => ({
             url: `https://dz9uj6zxn56ls.cloudfront.net/${video.videoId}`,
-            title: formatTitle(video.title),
+            title: video.title,
             key: { Key: video.videoId }
           }))}
           userId={userId}
