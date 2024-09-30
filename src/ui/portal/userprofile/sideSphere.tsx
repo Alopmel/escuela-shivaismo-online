@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import styles from './sideSphere.module.css';
-import { TiPlus } from "react-icons/ti";
+import { ImCross } from "react-icons/im";
 
 interface SideSphereProps {
   onClick: () => void;
@@ -9,15 +9,6 @@ interface SideSphereProps {
 
 const levitateAnimation = {
   y: ["0%", "-3%", "0%"],
-  transition: {
-    duration: 3,
-    repeat: Infinity,
-    ease: "easeInOut"
-  }
-};
-
-const shadowAnimation = {
-  scaleY: [1, 1.5, 1],
   transition: {
     duration: 3,
     repeat: Infinity,
@@ -37,23 +28,33 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
 
   return (
     <>
-      {/* Esfera con el símbolo de +/x */}
       <motion.div
-        className={styles.sideSphere} /* Asegúrate de que 'sideSphere' esté en el archivo CSS importado */
+        className={styles.sideSphere}
         onClick={handleClick}
         style={{
-          top: isClicked ? '536px' : '614px',
+          top: isClicked ? '536px' : '648px',
           left: isClicked ? '255px' : '271px',
           width: isClicked ? '50px' : '60px',
           height: isClicked ? '50px' : '60px',
-          transition: 'top 0.5s ease, left 0.5s ease',
-          outline: 'none', /* Eliminar borde de enfoque */
+          transition: 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease',
+          outline: 'none',
           boxShadow: 'none',
-          /* Eliminar sombra de enfoque */
         }}
-        animate={isAnimating ? levitateAnimation : {}} // Solo anima si isAnimating es true
+
       >
-        <span className={` mt-2 {styles.symbol}`} tabIndex={-1}><TiPlus /></span>
+        <motion.div
+          initial={{ rotate: 45 }}
+          animate={{ rotate: isClicked ? 0 : 45 }}
+          transition={{ duration: 0.3 }}
+          className={`mt-2 ${styles.symbol}`}
+          tabIndex={-1}
+        >
+          <ImCross 
+            style={{
+              marginRight: isClicked ? '0' : '5px',
+            }}
+            />
+        </motion.div>
       </motion.div>
     </>
   );

@@ -92,7 +92,7 @@ const Category: React.FC<CategoryProps> = ({ userId }) => {
       animate="show"
       exit="exit"
       variants={pageTransition}
-      className='m-4 p-4 pt-20 md:m-10 md:p-20'
+  
     >
       <div>
         <h1 className="text-[31px] md:text-[41px] text-white" style={{ userSelect: 'none' }}>

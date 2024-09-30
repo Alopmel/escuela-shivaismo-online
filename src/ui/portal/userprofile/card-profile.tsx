@@ -1,4 +1,3 @@
-// /src/ui/portal/userprofile/CardProfile.tsx
 'use client'
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -7,62 +6,64 @@ import { useWatchLater } from '@/app/context/WatchLaterContext';
 import useAuthUser from '@/app/hooks/use-auth-user';
 import VideoRender from '../categorias/video-Render';
 import styles from './cardComponent.module.css';
-import { formatTitle } from '@/utils/videoUtils'; // Asegúrate de ajustar la ruta según tu estructura
+import { formatTitle } from '@/utils/videoUtils';
 import { roboto } from '@/app/fonts';
-
-const pageTransition = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.5 } },
-  exit: { opacity: 0, transition: { duration: 0.5 } },
-};
 
 const CardProfile: React.FC = () => {
   const { favorites } = useFavorites();
   const { watchLater } = useWatchLater();
   const [activeTab, setActiveTab] = useState<'favorites' | 'watchLater'>('favorites');
   const user = useAuthUser();
-  const userId = user?.userId ?? ''; // Asegúrate de que userId sea un string
+  const userId = user?.userId ?? '';
 
   const handleTabChange = (tab: 'favorites' | 'watchLater') => {
     setActiveTab(tab);
   };
 
   return (
-    <motion.div initial="hidden" animate="show" exit="exit" variants={pageTransition} className={styles.container}>
+    <div className={styles.container}>
       <div className={styles.tabs}>
-        <div
+        <motion.div
           className={`${activeTab === 'favorites' ? styles.activeTab : styles.tab} ${roboto.className}`}
           onClick={() => handleTabChange('favorites')}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           Favoritos
-        </div>
-        <div
+        </motion.div>
+        <motion.div
           className={`${activeTab === 'watchLater' ? styles.activeTab : styles.tab} ${roboto.className}`}
           onClick={() => handleTabChange('watchLater')}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           Ver después
-        </div>
+        </motion.div>
       </div>
-      {activeTab === 'favorites' ? (
+      <motion.div 
+        key={activeTab}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={styles.tabContent}
+      >
         <VideoRender 
-          videoData={favorites.map(({ url, videoTitle , key}) => ({
-            url,
-            title:  formatTitle(videoTitle) , 
-            key: { Key: key }
-          }))} 
-          userId={userId} 
+          videoData={activeTab === 'favorites' 
+            ? favorites.map(({ url, videoTitle, key }) => ({
+                url,
+                title: formatTitle(videoTitle),
+                key: { Key: key }
+              }))
+            : watchLater.map(({ url, videoTitle, key }) => ({
+                url,
+                title: formatTitle(videoTitle),
+                key: { Key: key }
+              }))
+          }
+          userId={userId}
         />
-      ) : (
-        <VideoRender 
-          videoData={watchLater.map(({ url, videoTitle, key }) => ({
-            url, 
-            title: formatTitle(videoTitle), 
-            key: { Key: key }
-          }))} 
-          userId={userId} 
-        />
-      )}
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

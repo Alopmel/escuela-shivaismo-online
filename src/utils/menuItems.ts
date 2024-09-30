@@ -6,7 +6,7 @@ export interface MenuItem {
     };
     subItems?: MenuItem[];
   }
-
+  
 export const items: MenuItem[] = [
     {
       text: 'Empieza por aquí',

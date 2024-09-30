@@ -25,14 +25,10 @@ const SecondarySphereMobile: React.FC<SecondarySphereMobileProps> = ({ item, onC
     left: mainSpherePosition.left,
   };
 
-  // Proporcionar una posición por defecto si no se encuentra en el objeto item
   const finalPosition = {
     top: item.position?.mobile?.top ?? '50%',
     left: item.position?.mobile?.left ?? '50%',
   };
-
-  console.log('Item:', item);
-  console.log('Final Position:', finalPosition);
 
   return (
     <motion.div
@@ -40,19 +36,7 @@ const SecondarySphereMobile: React.FC<SecondarySphereMobileProps> = ({ item, onC
         position: 'absolute',
         width: '120px',
         height: '120px',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        userSelect: 'none',
-        color: '#361072',
       }}
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick(item);
-      }}
-      className={styles.secondSphere}
       initial={{ 
         ...initialPosition,
         opacity: 0,
@@ -71,8 +55,28 @@ const SecondarySphereMobile: React.FC<SecondarySphereMobileProps> = ({ item, onC
         delay: index * 0.1
       }}
     >
-      <motion.div animate={levitateAnimation}>
-        <p className={`p-4 text-[1rem] ${styles.textContent}`}>
+      <motion.div
+        className={styles.secondSphere}
+        style={{
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          userSelect: 'none',
+          color: '#361072',
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(item);
+        }}
+        animate={levitateAnimation}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <p className={`p-2 text-[1rem] ${styles.textContent}`}>
           {item.text}
         </p>
       </motion.div>

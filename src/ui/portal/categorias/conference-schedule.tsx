@@ -25,9 +25,9 @@ const ConferenceSchedule: React.FC = () => {
       animate="show"
       exit="exit"
       variants={pageTransition}
-      className="flex flex-wrap justify-center items-start p-2 md:p-4"
+      className="flex flex-wrap justify-center items-start"
     >
-      <div className={`p-4 mt-2 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${roboto.className} w-full lg:w-[600px]`}>
+      <div className={`p-4 mt-2 bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg border border-white border-opacity-30 ${roboto.className} w-full md:w-[70%]`}>
         <h1 className="text-xl md:text-2xl font-bold mb-4 text-white text-center">
           Horarios Conferencias en Directo
         </h1>
@@ -37,8 +37,8 @@ const ConferenceSchedule: React.FC = () => {
               <Image
                 src="/logo_red.png"
                 alt="Logo"
-                width={20} // Tamaño uniforme para todos los íconos
-                height={24} // Tamaño uniforme para todos los íconos
+                width={18}
+                height={25}
                 className="mr-3 rounded-lg"
                 style={{ filter: 'invert(1)' }}
               />
