@@ -32,8 +32,8 @@ const SideSphere: React.FC<SideSphereProps> = ({ onClick }) => {
         className={styles.sideSphere}
         onClick={handleClick}
         style={{
-          top: isClicked ? '536px' : '648px',
-          left: isClicked ? '255px' : '271px',
+          top: isClicked ? '72%' : '87.5%',
+          left: isClicked ? '70%' : '75%',
           width: isClicked ? '50px' : '60px',
           height: isClicked ? '50px' : '60px',
           transition: 'top 0.5s ease, left 0.5s ease, width 0.5s ease, height 0.5s ease',
