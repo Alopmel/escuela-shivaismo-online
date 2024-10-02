@@ -82,8 +82,6 @@
 }
 
 .uploadButton {
-
-  background-color: #361072;
   color: white;
   cursor: pointer;
   transition: background 0.3s ease;

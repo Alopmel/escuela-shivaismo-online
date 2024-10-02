@@ -46,14 +46,14 @@ export const items: MenuItem[] = [
           },
           subItems: [
             {
-              text: 'Vijñana Bhairava Tantra: Mar',
+              text: 'Vijñana Bhairava Tantra: Lakshmanjoo',
               position: {
                 desktop: { top: 'calc(50% - 312px)', left: 'calc(50% + 268px)' },
                 mobile: { top: 'calc(50% - 145.622px)', left: 'calc(50% + 69px)' }
               },
             },
             {
-              text: 'Vijñana Bhairava Tantra: Odier',
+              text: 'Vijñana Bhairava Tantra: Wallis y Odier',
               position: {
                 desktop: { top: 'calc(50% - 222px)', left: 'calc(50% + 350px)' },
                 mobile: { top: 'calc(50% + 36.378px)', left: 'calc(50% + 70px)' }

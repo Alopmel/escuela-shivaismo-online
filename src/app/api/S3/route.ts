@@ -18,7 +18,6 @@ function setCorsHeaders(response: NextResponse) {
   return response;
 }
 
-
 export async function POST(req: NextRequest) {
   console.log('Iniciando carga de video');
   

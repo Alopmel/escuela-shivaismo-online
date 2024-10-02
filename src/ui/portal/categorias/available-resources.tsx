@@ -63,16 +63,12 @@ const AvailableResources: React.FC = () => {
             description: 'Donde podrás ver y repasar el material a tu propio ritmo.'
           },
           {
-            text: 'Material descargable',
-            description: 'Con explicaciones más detalladas y prácticas que complementan las clases.'
-          },
-          {
             text: 'Rapé',
             description: 'El Rapé es la medicina que mas acompaña la práctica diaria del tantra. Frena la mente y lleva consciencia al cuerpo muy eficazmente. Tenemos rapé Brasileño del mejor que podéis encontrar, asi como Kuripies, o autosopladores. Bego (680659701) es nuestra chamana de rapé oficial. Contactar con ella para que os inicie.',
             route: 'https://comprarrape.com/acompanamiento-en-sesiones-de-rape/'
           },
           {
-            text: 'Realización material',
+            text: 'Emprendiendo con shiva',
             description: 'Esto es una formación continuada todas las semanas descansando un jueves al mes, paralela a la Escuela de Shivaismo, que te ayuda a ser emprendedor y salir del sistema de explotación laboral que tiene entretenido al rebaño alelado.',
             route: 'https://www.grupodepracticas.com/offers/2kdjmoXh/checkout'
           },
