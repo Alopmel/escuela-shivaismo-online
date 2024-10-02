@@ -1,41 +1,45 @@
-import AWS from 'aws-sdk';
 import { NextRequest, NextResponse } from "next/server";
+import { S3Client, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+  },
 });
 
-const s3 = new AWS.S3();
 const bucketName = process.env.BUCKET_NAME;
+
+function setCorsHeaders(response: NextResponse) {
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  return response;
+}
 
 export async function GET() {
   if (!bucketName) {
-    throw new Error('BUCKET_NAME is not defined in the environment variables');
+    return setCorsHeaders(NextResponse.json({ error: 'BUCKET_NAME is not defined' }, { status: 500 }));
   }
 
-  const params = {
-    Bucket: bucketName,
-  };
-  
   try {
-    const res = await s3.listObjectsV2(params).promise();
-    console.log('S3 response:', res);
-    return NextResponse.json(res);
+    const command = new ListObjectsV2Command({ Bucket: bucketName });
+    const response = await s3Client.send(command);
+    console.log('S3 response:', response);
+    return setCorsHeaders(NextResponse.json(response));
   } catch (error) {
-    console.error('Error fetching S3 objectos:', error);
-    return NextResponse.json({ error: 'Error fetching S3 objects' }, { status: 500 });
+    console.error('Error fetching S3 objects:', error);
+    return setCorsHeaders(NextResponse.json({ error: 'Error fetching S3 objects' }, { status: 500 }));
   }
 }
-
 
 export async function POST(req: NextRequest) {
   console.log('Iniciando carga de video');
   
   if (!bucketName) {
     console.error('BUCKET_NAME no está definido en las variables de entorno');
-    return NextResponse.json({ success: false, message: "Error de configuración del servidor" }, { status: 500 });
+    return setCorsHeaders(NextResponse.json({ success: false, message: "Error de configuración del servidor" }, { status: 500 }));
   }
 
   try {
@@ -45,17 +49,17 @@ export async function POST(req: NextRequest) {
     let customName = formData.get('customName') as string;
     
     if (!file || !folder) {
-      return NextResponse.json({ success: false, message: "No se proporcionó archivo o carpeta" }, { status: 400 });
+      return setCorsHeaders(NextResponse.json({ success: false, message: "No se proporcionó archivo o carpeta" }, { status: 400 }));
     }
 
     const buffer = await file.arrayBuffer();
 
     // Obtener la lista de objetos en la carpeta
-    const listParams = {
+    const listCommand = new ListObjectsV2Command({
       Bucket: bucketName,
       Prefix: folder + '/'
-    };
-    const listResult = await s3.listObjectsV2(listParams).promise();
+    });
+    const listResult = await s3Client.send(listCommand);
 
     // Determinar el próximo número de secuencia
     let nextSequence = 1;
@@ -71,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
-    console.log('Cambiado')
+    
     // Formatear el nombre del archivo
     const fileNameParts = customName.split('.');
     const extension = fileNameParts.pop()?.toLowerCase();
@@ -79,24 +83,28 @@ export async function POST(req: NextRequest) {
     customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
     const key = `${folder}/${customName}`;
 
-    const params = {
+    const putCommand = new PutObjectCommand({
       Bucket: bucketName,
       Key: key,
       Body: Buffer.from(buffer),
       ContentType: file.type,
-    };
+    });
 
     console.log('Iniciando carga a S3');
-    const result = await s3.upload(params).promise();
+    const result = await s3Client.send(putCommand);
     console.log('Carga a S3 completada', result);
 
-    return NextResponse.json({
+    return setCorsHeaders(NextResponse.json({
       success: true,
       message: "Video subido exitosamente",
-      data: { key: result.Key, url: result.Location },
-    });
+      data: { key: key, url: `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}` },
+    }));
   } catch (error) {
     console.error('Error al subir el video:', error);
-    return NextResponse.json({ success: false, message: "Error al subir el video" }, { status: 500 });
+    return setCorsHeaders(NextResponse.json({ success: false, message: "Error al subir el video" }, { status: 500 }));
   }
+}
+
+export async function OPTIONS() {
+  return setCorsHeaders(new NextResponse(null, { status: 204 }));
 }
