@@ -5,19 +5,21 @@ import axios from 'axios';
 export type KeyItem = {
   Key: string;
   LastModified?: string;
-  // Incluir aquí otras propiedades si las hay
 };
 
 interface BucketResponse {
   Contents: KeyItem[];
-  // Incluir otras propiedades de la respuesta si las hay
 }
 
 interface BucketContextData {
   keys: KeyItem[];
+  refreshBucketContents: () => Promise<void>;
 }
 
-const BucketContext = createContext<BucketContextData>({ keys: [] });
+const BucketContext = createContext<BucketContextData>({ 
+  keys: [],
+  refreshBucketContents: async () => {}
+});
 
 interface BucketProviderProps {
   children: ReactNode;
@@ -26,24 +28,24 @@ interface BucketProviderProps {
 export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
   const [keys, setKeys] = useState<KeyItem[]>([]);
 
+  const fetchBucketData = async () => {
+    try {
+      const response = await axios.get<BucketResponse>('/api/video');
+      setKeys(response.data.Contents);
+    } catch (error) {
+      console.error('Error fetching bucket data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchBucketData = async () => {
-      try {
-        const response = await axios.get<BucketResponse>('/api/video'); // Ajustar el endpoint API según tu configuración real
-        setKeys(response.data.Contents);
-        // console.log('Keys from bucket:', response.data.Contents);
-        // console.log('Keys from bucket data:', response);
-
-      } catch (error) {
-        console.error('Error fetching bucket data:', error);
-        // Manejar errores aquí según tus necesidades
-      }
-    };
-
     fetchBucketData();
   }, []);
 
-  const value = useMemo(() => ({ keys }), [keys]);
+  const refreshBucketContents = async () => {
+    await fetchBucketData();
+  };
+
+  const value = useMemo(() => ({ keys, refreshBucketContents }), [keys]);
 
   return (
     <BucketContext.Provider value={value}>

@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import AWS from 'aws-sdk';
-import { Readable } from 'stream';
+import { NextRequest, NextResponse } from "next/server";
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -22,63 +21,81 @@ export async function GET() {
   
   try {
     const res = await s3.listObjectsV2(params).promise();
-    console.log('res ' + res)
-    return NextResponse.json(res); // Return the AWS response directly
+    console.log('S3 response:', res);
+    return NextResponse.json(res);
   } catch (error) {
     console.error('Error fetching S3 objects:', error);
-    return NextResponse.error();
+    return NextResponse.json({ error: 'Error fetching S3 objects' }, { status: 500 });
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
+  console.log('Iniciando carga de video');
+  
   if (!bucketName) {
-    return NextResponse.json({ error: 'Bucket name is not defined' }, { status: 500 });
-  }
-
-  const formData = await request.formData();
-  const file = formData.get('file') as File;
-  const category = formData.get('category') as string;
-
-  if (!file || !category) {
-    return NextResponse.json({ error: 'File and category are required' }, { status: 400 });
-  }
-
-  const fileBuffer = await file.arrayBuffer();
-  const fileStream = Readable.from(Buffer.from(fileBuffer));
-
-  const params = {
-    Bucket: bucketName,
-    Key: `${category}/${file.name}`,
-    Body: fileStream,
-    ContentType: file.type,
-  };
-
-  try {
-    await s3.upload(params).promise();
-    return NextResponse.json({ message: 'File uploaded successfully' });
-  } catch (error) {
-    console.error('Error uploading file to S3:', error);
-    return NextResponse.json({ error: 'Error uploading file' }, { status: 500 });
-  }
-}
-
-export async function getFirstLevelFolders(request: NextRequest) {
-  if (!bucketName) {
-    return NextResponse.json({ error: 'Bucket name is not defined' }, { status: 500 });
+    console.error('BUCKET_NAME no está definido en las variables de entorno');
+    return NextResponse.json({ success: false, message: "Error de configuración del servidor" }, { status: 500 });
   }
 
   try {
-    const params: AWS.S3.ListObjectsV2Request = {
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    const folder = formData.get('folder') as string;
+    let customName = formData.get('customName') as string;
+    
+    if (!file || !folder) {
+      return NextResponse.json({ success: false, message: "No se proporcionó archivo o carpeta" }, { status: 400 });
+    }
+
+    const buffer = await file.arrayBuffer();
+
+    // Obtener la lista de objetos en la carpeta
+    const listParams = {
       Bucket: bucketName,
-      Delimiter: '/'
+      Prefix: folder + '/'
+    };
+    const listResult = await s3.listObjectsV2(listParams).promise();
+
+    // Determinar el próximo número de secuencia
+    let nextSequence = 1;
+    if (listResult.Contents && listResult.Contents.length > 0) {
+      const sortedContents = listResult.Contents.sort((a, b) => {
+        const aNum = parseInt(a.Key!.split('/').pop()!.split('.')[0]);
+        const bNum = parseInt(b.Key!.split('/').pop()!.split('.')[0]);
+        return aNum - bNum;
+      });
+      const lastFile = sortedContents[sortedContents.length - 1].Key;
+      const lastSequence = parseInt(lastFile!.split('/').pop()!.split('.')[0]);
+      nextSequence = lastSequence + 1;
+    }
+
+    console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
+
+    // Formatear el nombre del archivo
+    const fileNameParts = customName.split('.');
+    const extension = fileNameParts.pop()?.toLowerCase();
+    const nameWithoutExtension = fileNameParts.join('.').toUpperCase();
+    customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
+    const key = `${folder}/${customName}`;
+
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+      Body: Buffer.from(buffer),
+      ContentType: file.type,
     };
 
-    const data = await s3.listObjectsV2(params).promise();
-    const firstLevelFolders = data.CommonPrefixes?.map(prefix => prefix.Prefix?.slice(0, -1)) || [];
+    console.log('Iniciando carga a S3');
+    const result = await s3.upload(params).promise();
+    console.log('Carga a S3 completada', result);
 
-    return NextResponse.json({ folders: firstLevelFolders });
+    return NextResponse.json({
+      success: true,
+      message: "Video subido exitosamente",
+      data: { key: result.Key, url: result.Location },
+    });
   } catch (error) {
-    console.error('Error fetching first level folders:', error);
-    return NextResponse.json({ error: 'Error fetching first level folders' }, { status: 500 });
+    console.error('Error al subir el video:', error);
+    return NextResponse.json({ success: false, message: "Error al subir el video" }, { status: 500 });
   }
 }

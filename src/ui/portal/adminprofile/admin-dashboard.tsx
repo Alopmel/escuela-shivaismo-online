@@ -1,143 +1,183 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+"use client"
+
+import { ChangeEvent, useState, useEffect } from "react";
+import { Button } from "./button";
+import { Input } from "./input";
+import { Select } from "./select";
+import axios from "axios";
 import styles from './AdminDashboard.module.css';
+import { useBucket } from '@/app/context/BucketContext';
+import { useBucketFolders } from '@/app/hooks/use-bucket-folder';
+import { FolderContents } from "./folder-contents";
+import { IoCloudUploadSharp } from "react-icons/io5";
+import ReactPlayer from "react-player";
 
-const AdminDashboard: React.FC = () => {
+export function AdminDashboard() {
   const [file, setFile] = useState<File | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [newCategory, setNewCategory] = useState<string>('');
   const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [videoKey, setVideoKey] = useState<string | null>(null);
+  const [customName, setCustomName] = useState("");
+  const [selectedFolder, setSelectedFolder] = useState("");
+  const [newFolder, setNewFolder] = useState("");
+  const [s3UploadStartTime, setS3UploadStartTime] = useState<number | null>(null);
+  const [uploadInfo, setUploadInfo] = useState<{ key: string; url: string } | null>(null);
+  const { refreshBucketContents } = useBucket();
+  const folders = useBucketFolders();
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('/api/video');
-      // Asumiendo que la respuesta contiene un campo 'CommonPrefixes' con las carpetas
-      const folders = response.data.CommonPrefixes?.map((prefix: any) => prefix.Prefix?.slice(0, -1)) || [];
-      setCategories(folders);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      setCategories([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
-    }
-  };
-
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value);
-  };
-
-  const handleNewCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewCategory(event.target.value);
-  };
-
-  const handleCreateCategory = async () => {
-    if (!newCategory) return;
-
-    try {
-      await axios.post('/api/video', { categoryName: newCategory });
-      setNewCategory('');
-      fetchCategories();
-    } catch (error) {
-      console.error('Error creating category:', error);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+      setUploadStatus("");
+      setUploadProgress(0);
+      setUploadInfo(null);
+      setVideoKey(null);
     }
   };
 
   const handleUpload = async () => {
-    if (!file || (!selectedCategory && !newCategory)) {
-      setUploadError('Por favor, selecciona un archivo y una categoría para subir.');
-      return;
-    }
+    if (!file) return;
 
     setUploading(true);
-    setUploadError(null);
+    setUploadStatus("Iniciando carga de video...");
+    setUploadProgress(0);
+    setUploadInfo(null);
+    setVideoKey(null);
 
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', selectedCategory || newCategory);
+    formData.append("file", file);
+    formData.append("folder", newFolder || selectedFolder);
+
+    let fileName = customName || file.name;
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    if (fileExtension && (fileExtension === 'mp4' || fileExtension === 'mov')) {
+      if (!fileName.endsWith(`.${fileExtension}`)) {
+        fileName += `.${fileExtension}`;
+      }
+    }
+    formData.append("customName", fileName);
 
     try {
-      const response = await axios.post('/api/video', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post("/api/video", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 1));
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
           setUploadProgress(percentCompleted);
+          setUploadStatus(`Iniciando carga de video...${percentCompleted}%`);
+          if (percentCompleted === 100) {
+            setUploadStatus("Iniciando carga a S3...");
+            setS3UploadStartTime(Date.now());
+          }
         },
       });
-
-      console.log('Archivo subido exitosamente:', response.data);
-      setUploadProgress(100);
-      setTimeout(() => {
-        setUploading(false);
-        setUploadProgress(0);
-        setFile(null);
-        setSelectedCategory('');
-      }, 1000);
+      setVideoKey(response.data.data.key);
+      setUploadInfo({
+        key: response.data.data.key,
+        url: response.data.data.url
+      });
+      console.log('Video uploaded successfully');
+      await refreshBucketContents();
+      setUploadStatus("Carga a S3 completada");
     } catch (error) {
-      console.error('Error al subir el archivo:', error);
-      setUploadError('Ocurrió un error al subir el archivo. Por favor, intenta de nuevo.');
+      console.error("Error al subir el video:", error);
+      setUploadStatus("Error al subir el video");
+    } finally {
       setUploading(false);
+      setS3UploadStartTime(null);
     }
   };
 
-  if (loading) {
-    return <div>Cargando categorías...</div>;
-  }
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (s3UploadStartTime) {
+      timer = setInterval(() => {
+        const elapsedTime = Math.floor((Date.now() - s3UploadStartTime) / 1000);
+        const minutes = Math.floor(elapsedTime / 60);
+        const seconds = elapsedTime % 60;
+        setUploadStatus(`Cargando a S3... ${minutes}m ${seconds}s`);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [s3UploadStartTime]);
 
   return (
-    <div className={styles.dashboard}>
-      <h1>Dashboard de Administrador</h1>
-      <div className={styles.uploadSection}>
-        <h2>Subir Video</h2>
-        <input type="file" onChange={handleFileChange} accept="video/*" />
-        
-        <select value={selectedCategory} onChange={handleCategoryChange}>
-          <option value="">Selecciona una categoría</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>{category}</option>
-          ))}
-        </select>
-        
-        <div>
-          <input 
-            type="text" 
-            value={newCategory} 
-            onChange={handleNewCategoryChange} 
-            placeholder="Nueva categoría" 
+    <main className={styles.dashboard}>
+      <h1 className={styles.title}>Panel de Administración</h1>
+      <div className={styles.inputWrapper}>
+        <div className={styles.inputContainer}>
+          <Input
+            type="file"
+            onChange={handleFileChange}
+            accept="video/*"
+            className={styles.fileInput}
+            id="fileInput"
           />
-          <button onClick={handleCreateCategory}>Crear Categoría</button>
+          <label htmlFor="fileInput" className={styles.fileInputLabel}>
+            {file ? file.name : "Ningún video seleccionado"}
+            <IoCloudUploadSharp className={styles.uploadIcon} />
+          </label>
         </div>
-        
-        <button onClick={handleUpload} disabled={!file || uploading || (!selectedCategory && !newCategory)}>
-          {uploading ? 'Subiendo...' : 'Subir Video'}
-        </button>
-        
-        {uploading && (
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${uploadProgress}%` }}></div>
-          </div>
-        )}
-        {uploadError && <p className={styles.error}>{uploadError}</p>}
+        <div className={styles.inputContainer}>
+          <Select
+            options={folders}
+            value={selectedFolder}
+            onChange={(e) => setSelectedFolder(e.target.value)}
+            placeholder="Selecciona una carpeta"
+            className={styles.select}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <Input
+            type="text"
+            value={newFolder}
+            onChange={(e) => setNewFolder(e.target.value)}
+            placeholder="O crea una nueva carpeta"
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <Input
+            type="text"
+            value={customName}
+            onChange={(e) => setCustomName(e.target.value)}
+            placeholder="Nombre personalizado del video"
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <Button onClick={handleUpload} disabled={uploading || !file} className={styles.button}>
+            {uploading ? uploadStatus : "Subir Video"}
+          </Button>
+        </div>
       </div>
-    </div>
+      {uploading && (
+        <div className={styles.progressBarContainer}>
+          <div 
+            className={styles.progressBar} 
+            style={{width: `${uploadProgress}%`}}
+          ></div>
+        </div>
+      )}
+      {uploadInfo && (
+        <div className={styles.uploadInfo}>
+          <h3>Información de carga:</h3>
+          <p>Clave: {uploadInfo.key}</p>
+          <p>URL: {uploadInfo.url}</p>
+        </div>
+      )}
+      {selectedFolder && <FolderContents folder={selectedFolder} />}
+      {videoKey && (
+        <div className={styles.playerWrapper}>
+          <ReactPlayer
+            url={`https://dz9uj6zxn56ls.cloudfront.net/${videoKey}`}
+            controls={true}
+            width="100%"
+            height="100%"
+            className={styles.previewVideo}
+          />
+        </div>
+      )}
+    </main>
   );
-};
-
-export default AdminDashboard;
+}
