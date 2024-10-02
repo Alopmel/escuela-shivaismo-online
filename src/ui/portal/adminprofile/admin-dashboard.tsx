@@ -62,7 +62,7 @@ export function AdminDashboard() {
     formData.append("customName", fileName);
 
     try {
-      const response = await axios.post("/api/S3", formData, {
+      const response = await axios.post("https://n5x3uutny0.execute-api.eu-west-2.amazonaws.com/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
@@ -110,7 +110,7 @@ export function AdminDashboard() {
 
   return (
     <main className={styles.dashboard}>
-      <h1 className={styles.title}>Panel de tu  Administración</h1>
+      <h1 className={styles.title}>Panel de administracion</h1>
       <div className={styles.inputWrapper}>
         <div className={styles.inputContainer}>
           <Input
