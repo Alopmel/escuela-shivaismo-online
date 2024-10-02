@@ -13,7 +13,7 @@ export default function AdminProfile() {
             fontSize: '41px', // Cambiado el fontSize a formato string
             }}
         >
-            Panel de administración
+            Subir vídeos
         </h1>
         </>
   );
