@@ -1,35 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
-import { S3Client, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
+import { NextResponse } from "next/server";
+import AWS from 'aws-sdk';
 
-const s3Client = new S3Client({
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-  },
 });
 
-const bucketName = process.env.BUCKET_NAME;
-
-function setCorsHeaders(response: NextResponse) {
-  response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  return response;
-}
+const s3 = new AWS.S3();
 
 export async function GET() {
+  const bucketName = process.env.BUCKET_NAME;
+
   if (!bucketName) {
-    return setCorsHeaders(NextResponse.json({ error: 'BUCKET_NAME is not defined' }, { status: 500 }));
+    throw new Error('BUCKET_NAME is not defined in the environment variables');
   }
 
+  const params = {
+    Bucket: bucketName,
+  };
+  
   try {
-    const command = new ListObjectsV2Command({ Bucket: bucketName });
-    const response = await s3Client.send(command);
-    console.log('S3 response:', response);
-    return setCorsHeaders(NextResponse.json(response));
+    const res = await s3.listObjectsV2(params).promise();
+    console.log('res ' + res)
+    return NextResponse.json(res); // Return the AWS response directly
   } catch (error) {
     console.error('Error fetching S3 objects:', error);
-    return setCorsHeaders(NextResponse.json({ error: 'Error fetching S3 objects' }, { status: 500 }));
+    return NextResponse.error();
   }
 }
