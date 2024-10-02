@@ -162,8 +162,6 @@ export function AdminDashboard() {
       {uploadInfo && (
         <div className={styles.uploadInfo}>
           <h3>Información de carga:</h3>
-          <p>Clave: {uploadInfo.key}</p>
-          <p>URL: {uploadInfo.url}</p>
         </div>
       )}
       {selectedFolder && <FolderContents folder={selectedFolder} />}

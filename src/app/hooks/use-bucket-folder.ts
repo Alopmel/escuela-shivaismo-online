@@ -19,9 +19,11 @@ export const useBucketFolders = () => {
           const parts = item.Key.split('/');
           return parts.length > 1 ? parts[0] : '';
         }).filter(Boolean)
+        
       ));
 
       setFolders(uniqueFolders.sort());
+      console.log('Otro nada ')
     };
 
     extractFolders();

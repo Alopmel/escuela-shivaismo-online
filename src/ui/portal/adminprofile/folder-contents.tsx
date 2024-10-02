@@ -39,7 +39,7 @@ export const FolderContents: React.FC<FolderContentsProps> = ({ folder }) => {
             ))}
           </ul>
         ) : (
-          <p>No hay archivos en esta carpeta.</p>
+          <p>No hay archivos en esta categoría.</p>
         )}
       </div>
     </div>

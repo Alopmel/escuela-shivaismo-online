@@ -36,6 +36,7 @@ export interface ButtonProps
   size?: string;
 }
 
+console.log('NAda')
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {
     return (

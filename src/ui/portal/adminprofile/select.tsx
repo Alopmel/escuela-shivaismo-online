@@ -8,6 +8,7 @@ export interface SelectProps
   options: string[];
   placeholder?: string;
 }
+console.log('NAda')
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, options, placeholder, ...props }, ref) => {

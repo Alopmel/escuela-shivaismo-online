@@ -34,6 +34,7 @@ export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
       setKeys(response.data.Contents);
     } catch (error) {
       console.error('Error fetching bucket data:', error);
+      console.log('Nada');
     }
   };
 

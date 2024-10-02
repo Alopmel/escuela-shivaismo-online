@@ -5,7 +5,7 @@ const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
-
+console.log('NAda')
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
