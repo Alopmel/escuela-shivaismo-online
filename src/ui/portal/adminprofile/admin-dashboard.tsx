@@ -61,8 +61,18 @@ export function AdminDashboard() {
     }
     formData.append("customName", fileName);
 
+    // Agregar logs para ver qué se está enviando
+    console.log("Archivo a subir:", file);
+    console.log("Nombre del archivo:", fileName);
+    console.log("Carpeta seleccionada:", newFolder || selectedFolder);
+    console.log("Tamaño del archivo:", file.size, "bytes");
+    console.log("Tipo de archivo:", file.type);
+
     try {
-      const response = await axios.post("https://n5x3uutny0.execute-api.eu-west-2.amazonaws.com/upload", formData, {
+      console.log("Iniciando solicitud POST...");
+      const response = await axios.post(
+        "https://n5x3uutny0.execute-api.eu-west-2.amazonaws.com/upload",
+        formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
@@ -71,10 +81,11 @@ export function AdminDashboard() {
           if (percentCompleted === 100) {
             setUploadStatus("Iniciando carga a S3...");
             setS3UploadStartTime(Date.now());
-            console.log('Cambiado')
           }
+          console.log(`Progreso de carga: ${percentCompleted}%`);
         },
       });
+      console.log("Respuesta recibida:", response.data);
       setVideoKey(response.data.data.key);
       setUploadInfo({
         key: response.data.data.key,
@@ -110,7 +121,7 @@ export function AdminDashboard() {
 
   return (
     <main className={styles.dashboard}>
-      <h1 className={styles.title}>Panel de administracion</h1>
+      <h1 className={styles.title}>Panel de admin</h1>
       <div className={styles.inputWrapper}>
         <div className={styles.inputContainer}>
           <Input
