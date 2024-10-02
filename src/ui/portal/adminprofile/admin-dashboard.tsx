@@ -71,6 +71,7 @@ export function AdminDashboard() {
           if (percentCompleted === 100) {
             setUploadStatus("Iniciando carga a S3...");
             setS3UploadStartTime(Date.now());
+            console.log('Cambiado')
           }
         },
       });

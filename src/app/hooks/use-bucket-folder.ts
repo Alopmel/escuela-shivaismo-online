@@ -23,7 +23,7 @@ export const useBucketFolders = () => {
       ));
 
       setFolders(uniqueFolders.sort());
-      console.log('Otro nada ')
+      console.log('Cambiado')
     };
 
     extractFolders();

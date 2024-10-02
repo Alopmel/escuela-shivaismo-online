@@ -34,7 +34,6 @@ export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
       setKeys(response.data.Contents);
     } catch (error) {
       console.error('Error fetching bucket data:', error);
-      console.log('Nada');
     }
   };
 
@@ -44,6 +43,7 @@ export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
 
   const refreshBucketContents = async () => {
     await fetchBucketData();
+    console.log('Cambiado')
   };
 
   const value = useMemo(() => ({ keys, refreshBucketContents }), [keys]);

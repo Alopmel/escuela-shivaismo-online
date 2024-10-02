@@ -29,6 +29,7 @@ export async function GET() {
   }
 }
 
+
 export async function POST(req: NextRequest) {
   console.log('Iniciando carga de video');
   
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
-
+    console.log('Cambiado')
     // Formatear el nombre del archivo
     const fileNameParts = customName.split('.');
     const extension = fileNameParts.pop()?.toLowerCase();
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('Error al subir el video:', error);
+    console.log('Cambiado')
     return NextResponse.json({ success: false, message: "Error al subir el video" }, { status: 500 });
   }
 }

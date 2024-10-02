@@ -35,7 +35,7 @@ export interface ButtonProps
   variant?: string;
   size?: string;
 }
-
+console.log('Cambiado')
 console.log('NAda')
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {

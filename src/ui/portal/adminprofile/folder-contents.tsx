@@ -20,7 +20,7 @@ export const FolderContents: React.FC<FolderContentsProps> = ({ folder }) => {
   }, [keys, folder]);
 
   const toggleOpen = () => setIsOpen(!isOpen);
-
+  console.log('Cambiado')
   return (
     <div className={styles.folderContents}>
       <div className={styles.folderHeader} onClick={toggleOpen}>
