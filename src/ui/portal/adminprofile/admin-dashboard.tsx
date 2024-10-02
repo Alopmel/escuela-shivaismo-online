@@ -110,7 +110,7 @@ export function AdminDashboard() {
 
   return (
     <main className={styles.dashboard}>
-      <h1 className={styles.title}>Panel de Administración</h1>
+      <h1 className={styles.title}>Panel de tu  Administración</h1>
       <div className={styles.inputWrapper}>
         <div className={styles.inputContainer}>
           <Input
