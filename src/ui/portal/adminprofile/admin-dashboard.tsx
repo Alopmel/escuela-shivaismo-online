@@ -62,7 +62,7 @@ export function AdminDashboard() {
     formData.append("customName", fileName);
 
     try {
-      const response = await axios.post("/api/video", formData, {
+      const response = await axios.post("/api/S3", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
