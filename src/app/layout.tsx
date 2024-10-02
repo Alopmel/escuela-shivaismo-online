@@ -14,7 +14,6 @@ import ErrorBoundary from "@/ui/ErrorBoundary"; // Ajusta la ruta según tu estr
 import Image from "next/image";
 import Link from 'next/link';
 import NeonSpinner from '@/ui/neon-spinner';
-
 export const metadata: Metadata = {
   title: "Tantra Shivaismo de Cachemira ",
   description: "Escuela online",

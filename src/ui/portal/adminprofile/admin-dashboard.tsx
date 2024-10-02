@@ -24,7 +24,7 @@ export function AdminDashboard() {
   const [newFolder, setNewFolder] = useState("");
   const [s3UploadStartTime, setS3UploadStartTime] = useState<number | null>(null);
   const [uploadInfo, setUploadInfo] = useState<{ key: string; url: string } | null>(null);
-//  const { refreshBucketContents } = useBucket();
+ // const { refreshBucketContents } = useBucket();
   const folders = useBucketFolders();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +48,10 @@ export function AdminDashboard() {
     setVideoKey(null);
     setFinalUploadMessage([]);
 
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", newFolder || selectedFolder);
+
     let fileName = customName || file.name;
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     if (fileExtension && (fileExtension === 'mp4' || fileExtension === 'mov')) {
@@ -55,41 +59,22 @@ export function AdminDashboard() {
         fileName += `.${fileExtension}`;
       }
     }
+    formData.append("customName", fileName);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('fileName', fileName);
-      formData.append('fileType', file.type);
-      formData.append('folder', newFolder || selectedFolder);
-      formData.append('customName', fileName);
-
-      console.log('Datos a enviar:', {
-        fileName,
-        fileType: file.type,
-        folder: newFolder || selectedFolder,
-        customName: fileName
+      const response = await axios.post("/api/video", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
+          setUploadProgress(percentCompleted);
+          setUploadStatus(`Iniciando carga de video...${percentCompleted}%`);
+          if (percentCompleted === 100) {
+            setUploadStatus("Iniciando carga a S3...");
+            setS3UploadStartTime(Date.now());
+            console.log('Cambiado')
+          }
+        },
       });
-
-      const response = await axios.post("https://n5x3uutny0.execute-api.eu-west-2.amazonaws.com/upload", 
-        formData,
-        {
-          headers: { 
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-            setUploadProgress(percentCompleted);
-            setUploadStatus(`Iniciando carga de video...${percentCompleted}%`);
-            if (percentCompleted === 100) {
-              setUploadStatus("Iniciando carga a S3...");
-              setS3UploadStartTime(Date.now());
-              console.log('Cambiado')
-            }
-          },
-        }
-      );
-
       setVideoKey(response.data.data.key);
       setUploadInfo({
         key: response.data.data.key,
@@ -100,7 +85,7 @@ export function AdminDashboard() {
         `Carpeta: ${newFolder || selectedFolder}`,
         `Nombre del video: ${fileName}`
       ]);
-      //await refreshBucketContents();
+    //  await refreshBucketContents();
     } catch (error) {
       console.error("Error al subir el video:", error);
       setFinalUploadMessage(["Error al subir el video"]);
@@ -125,7 +110,7 @@ export function AdminDashboard() {
 
   return (
     <main className={styles.dashboard}>
-      <h1 className={styles.title}>Panel de admin</h1>
+      <h1 className={styles.title}>Panel de tu  Administración</h1>
       <div className={styles.inputWrapper}>
         <div className={styles.inputContainer}>
           <Input
