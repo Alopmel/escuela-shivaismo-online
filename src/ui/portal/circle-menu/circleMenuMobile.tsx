@@ -62,8 +62,7 @@ const CircleMenuMobile = () => {
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       <motion.div
-        animate={menuState.isOpen || isMoving ? { left: '0%' } : { left: '27%' }}
-        transition={{ duration: 0.5 }}
+animate={menuState.isOpen ? { left: '0%' } : { left: '27%' }}        transition={{ duration: 0.5 }}
         style={{
           position: 'absolute',
           top: '50%',
@@ -136,8 +135,8 @@ const CircleMenuMobile = () => {
         <div
           style={{
             position: 'fixed',
-            bottom: '43px',
-            left: '216px',
+            bottom: '6%',
+            left: '62%',
             cursor: 'pointer',
             color: 'white',
           }}

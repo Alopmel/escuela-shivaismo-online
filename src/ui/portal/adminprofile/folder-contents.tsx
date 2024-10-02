@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
 import styles from './AdminDashboard.module.css';
-import { Button } from './button';
 
 interface FolderContentsProps {
   folder: string;
@@ -17,21 +16,22 @@ export const FolderContents: React.FC<FolderContentsProps> = ({ folder }) => {
       const aNum = parseInt(a.Key.split('/').pop()?.split('.')[0] || '0');
       const bNum = parseInt(b.Key.split('/').pop()?.split('.')[0] || '0');
       return aNum - bNum;
-    }).slice(0, 10); // Limitar a los 10 primeros elementos
+    }).slice(0, 10);
   }, [keys, folder]);
 
+  const toggleOpen = () => setIsOpen(!isOpen);
+
   return (
-    <div className={`${styles.folderContents} ${isOpen ? styles.open : ''}`}>
-      <div className={styles.folderHeader}>
+    <div className={styles.folderContents}>
+      <div className={styles.folderHeader} onClick={toggleOpen}>
         <h2>Contenido de la carpeta: {folder}</h2>
-        <Button 
-          onClick={() => setIsOpen(!isOpen)} 
-          className={styles.folderToggle}
+        <button 
+          className={`${styles.folderToggle} ${isOpen ? styles.open : ''}`}
         >
-          {isOpen ? '▲' : '▼'}
-        </Button>
+          ▼
+        </button>
       </div>
-      <div className={styles.folderContentsList}>
+      <div className={`${styles.folderContentsList} ${isOpen ? styles.open : ''}`}>
         {folderContents.length > 0 ? (
           <ul>
             {folderContents.map((item) => (

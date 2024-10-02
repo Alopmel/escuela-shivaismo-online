@@ -16,6 +16,7 @@ export function AdminDashboard() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [finalUploadMessage, setFinalUploadMessage] = useState<string[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoKey, setVideoKey] = useState<string | null>(null);
   const [customName, setCustomName] = useState("");
@@ -30,6 +31,7 @@ export function AdminDashboard() {
     if (e.target.files) {
       setFile(e.target.files[0]);
       setUploadStatus("");
+      setFinalUploadMessage([]);
       setUploadProgress(0);
       setUploadInfo(null);
       setVideoKey(null);
@@ -44,6 +46,7 @@ export function AdminDashboard() {
     setUploadProgress(0);
     setUploadInfo(null);
     setVideoKey(null);
+    setFinalUploadMessage([]);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -76,12 +79,15 @@ export function AdminDashboard() {
         key: response.data.data.key,
         url: response.data.data.url
       });
-      console.log('Video subido correctamente');
+      setFinalUploadMessage([
+        "Carga a S3 completada.",
+        `Carpeta: ${newFolder || selectedFolder}`,
+        `Nombre del video: ${fileName}`
+      ]);
       await refreshBucketContents();
-      setUploadStatus("Carga a S3 completada");
     } catch (error) {
       console.error("Error al subir el video:", error);
-      setUploadStatus("Error al subir el video");
+      setFinalUploadMessage(["Error al subir el video"]);
     } finally {
       setUploading(false);
       setS3UploadStartTime(null);
@@ -146,7 +152,7 @@ export function AdminDashboard() {
           />
         </div>
         <div className={styles.inputContainer}>
-          <Button onClick={handleUpload} disabled={uploading || !file} className={styles.button}>
+          <Button onClick={handleUpload} disabled={uploading || !file} className={styles.uploadButton}>
             {uploading ? uploadStatus : "Subir Video"}
           </Button>
         </div>
@@ -159,9 +165,16 @@ export function AdminDashboard() {
           ></div>
         </div>
       )}
-      {uploadInfo && (
+      {(uploadInfo || finalUploadMessage.length > 0) && (
         <div className={styles.uploadInfo}>
           <h3>Información de carga:</h3>
+          {finalUploadMessage.length > 0 ? (
+            finalUploadMessage.map((line, index) => (
+              <p key={index}>{line}</p>
+            ))
+          ) : (
+            <p>{uploadStatus}</p>
+          )}
         </div>
       )}
       {selectedFolder && <FolderContents folder={selectedFolder} />}
