@@ -76,7 +76,7 @@ export function AdminDashboard() {
         key: response.data.data.key,
         url: response.data.data.url
       });
-      console.log('Video uploaded successfully');
+      console.log('Video subido correctamente');
       await refreshBucketContents();
       setUploadStatus("Carga a S3 completada");
     } catch (error) {
