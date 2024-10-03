@@ -1,7 +1,17 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { Favorite, WatchLater, Progress } from '@/app/types/types';
+import AWS from 'aws-sdk';
 
+// Configuración de AWS
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const s3 = new AWS.S3();
+const bucketName = process.env.BUCKET_NAME;
 // Define KeyItem type
 type KeyItem = {
   Key: string;
@@ -304,3 +314,72 @@ export const getRecommendedVideos = async (videoId: string) => {
     throw error;
   }
 };
+
+
+export const uploadVideo = async (file: File, folder: string, customName: string, onProgress?: (progress: number) => void) => {
+  console.log('Iniciando carga de video');
+  
+  if (!bucketName) {
+    console.error('BUCKET_NAME no está definido en las variables de entorno');
+    return { success: false, message: "Error de configuración del servidor", status: 500 };
+  }
+
+  try {
+    const buffer = await file.arrayBuffer();
+
+    const listParams = {
+      Bucket: bucketName,
+      Prefix: folder + '/'
+    };
+    const listResult = await s3.listObjectsV2(listParams).promise();
+
+    let nextSequence = 1;
+    if (listResult.Contents && listResult.Contents.length > 0) {
+      const sortedContents = listResult.Contents.sort((a, b) => {
+        const aNum = parseInt(a.Key!.split('/').pop()!.split('.')[0]);
+        const bNum = parseInt(b.Key!.split('/').pop()!.split('.')[0]);
+        return aNum - bNum;
+      });
+      const lastFile = sortedContents[sortedContents.length - 1].Key;
+      const lastSequence = parseInt(lastFile!.split('/').pop()!.split('.')[0]);
+      nextSequence = lastSequence + 1;
+    }
+
+    console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
+
+    const fileNameParts = customName.split('.');
+    const extension = fileNameParts.pop()?.toLowerCase();
+    const nameWithoutExtension = fileNameParts.join('.').toUpperCase();
+    customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
+    const key = `${folder}/${customName}`;
+
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+      Body: Buffer.from(buffer),
+      ContentType: file.type,
+    };
+
+    console.log('Iniciando carga a S3');
+    const upload = s3.upload(params);
+
+    upload.on('httpUploadProgress', (progress) => {
+      const percent = Math.round((progress.loaded / progress.total) * 100);
+      if (onProgress) {
+        onProgress(percent);
+      }
+    });
+
+    const result = await upload.promise();
+    console.log('Carga a S3 completada', result);
+
+    return {
+      success: true,
+      message: "Video subido exitosamente",
+      data: { key: result.Key, url: result.Location },
+    };
+  } catch (error) {
+    console.error('Error al subir el video:', error);
+    return { success: false, message: "Error al subir el video", status: 500 };
+  }
+}

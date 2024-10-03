@@ -4,13 +4,12 @@ import { ChangeEvent, useState, useEffect } from "react";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Select } from "./select";
-import axios from "axios";
 import styles from './AdminDashboard.module.css';
-import { useBucket } from '@/app/context/BucketContext';
 import { useBucketFolders } from '@/app/hooks/use-bucket-folder';
 import { FolderContents } from "./folder-contents";
 import { IoCloudUploadSharp } from "react-icons/io5";
 import ReactPlayer from "react-player";
+import { uploadVideo } from '@/utils/videoUtils';
 
 export function AdminDashboard() {
   const [file, setFile] = useState<File | null>(null);
@@ -24,7 +23,6 @@ export function AdminDashboard() {
   const [newFolder, setNewFolder] = useState("");
   const [s3UploadStartTime, setS3UploadStartTime] = useState<number | null>(null);
   const [uploadInfo, setUploadInfo] = useState<{ key: string; url: string } | null>(null);
- // const { refreshBucketContents } = useBucket();
   const folders = useBucketFolders();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +46,6 @@ export function AdminDashboard() {
     setVideoKey(null);
     setFinalUploadMessage([]);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", newFolder || selectedFolder);
-
     let fileName = customName || file.name;
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     if (fileExtension && (fileExtension === 'mp4' || fileExtension === 'mov')) {
@@ -59,33 +53,36 @@ export function AdminDashboard() {
         fileName += `.${fileExtension}`;
       }
     }
-    formData.append("customName", fileName);
 
     try {
-      const response = await axios.post("/api/video", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-          setUploadProgress(percentCompleted);
-          setUploadStatus(`Iniciando carga de video...${percentCompleted}%`);
-          if (percentCompleted === 100) {
-            setUploadStatus("Iniciando carga a S3...");
+      const result = await uploadVideo(
+        file,
+        newFolder || selectedFolder,
+        fileName,
+        (progress) => {
+          setUploadProgress(progress);
+          setUploadStatus(`Cargando video... ${progress}%`);
+          if (progress === 100) {
+            setUploadStatus("Finalizando carga en S3...");
             setS3UploadStartTime(Date.now());
-            console.log('Cambiado')
           }
-        },
-      });
-      setVideoKey(response.data.data.key);
-      setUploadInfo({
-        key: response.data.data.key,
-        url: response.data.data.url
-      });
-      setFinalUploadMessage([
-        "Carga a S3 completada.",
-        `Carpeta: ${newFolder || selectedFolder}`,
-        `Nombre del video: ${fileName}`
-      ]);
-    //  await refreshBucketContents();
+        }
+      );
+
+      if (result.success && result.data) {
+        setVideoKey(result.data.key);
+        setUploadInfo({
+          key: result.data.key,
+          url: result.data.url
+        });
+        setFinalUploadMessage([
+          "Carga a S3 completada.",
+          `Carpeta: ${newFolder || selectedFolder}`,
+          `Nombre del video: ${fileName}`
+        ]);
+      } else {
+        throw new Error(result.message);
+      }
     } catch (error) {
       console.error("Error al subir el video:", error);
       setFinalUploadMessage(["Error al subir el video"]);
@@ -102,7 +99,7 @@ export function AdminDashboard() {
         const elapsedTime = Math.floor((Date.now() - s3UploadStartTime) / 1000);
         const minutes = Math.floor(elapsedTime / 60);
         const seconds = elapsedTime % 60;
-        setUploadStatus(`Cargando a S3... ${minutes}m ${seconds}s`);
+        setUploadStatus(`Finalizando carga en S3... ${minutes}m ${seconds}s`);
       }, 1000);
     }
     return () => clearInterval(timer);
@@ -110,7 +107,7 @@ export function AdminDashboard() {
 
   return (
     <main className={styles.dashboard}>
-      <h1 className={styles.title}>Panel de tu  Administración</h1>
+      <h1 className={styles.title}>Panel de tu Administración</h1>
       <div className={styles.inputWrapper}>
         <div className={styles.inputContainer}>
           <Input
