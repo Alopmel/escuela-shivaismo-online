@@ -19,104 +19,101 @@ export async function handler(req: NextRequest) {
     return NextResponse.json({ error: 'Error de configuración del servidor' }, { status: 500 });
   }
 
-  if (req.method === 'GET') {
-    return handleGET();
-  } else if (req.method === 'POST') {
-    return handlePOST(req);
-  } else {
-    return NextResponse.json({ error: 'Método no soportado' }, { status: 405 });
+  let body;
+  let statusCode = 200;
+
+  try {
+    switch (`${req.method} ${req.nextUrl.pathname}`) {
+      case "GET /api/video":
+        body = await handleGET();
+        break;
+      
+      case "POST /api/video":
+        body = await handlePOST(req);
+        break;
+
+      default:
+        throw new Error(`Ruta no soportada: "${req.method} ${req.nextUrl.pathname}"`);
+    }
+  } catch (err: any) {
+    statusCode = 400;
+    body = { error: err.message };
   }
+
+  return NextResponse.json(body, { status: statusCode });
 }
 
 async function handleGET() {
-  if (!bucketName) {
-    throw new Error('BUCKET_NAME no está definido');
-  }
-
   const params: AWS.S3.ListObjectsV2Request = {
-    Bucket: bucketName,
+    Bucket: bucketName!,
   };
   
-  try {
-    const res = await s3.listObjectsV2(params).promise();
-    console.log('S3 response:', res);
-    return NextResponse.json(res);
-  } catch (error) {
-    console.error('Error fetching S3 objects:', error);
-    return NextResponse.json({ error: 'Error fetching S3 objects' }, { status: 500 });
-  }
+  const res = await s3.listObjectsV2(params).promise();
+  console.log('S3 response:', res);
+  return res;
 }
 
 async function handlePOST(req: NextRequest) {
   console.log('Iniciando carga de video');
   
-  if (!bucketName) {
-    throw new Error('BUCKET_NAME no está definido');
+  const formData = await req.formData();
+  const file = formData.get('file') as File;
+  const folder = formData.get('folder') as string;
+  let customName = formData.get('customName') as string;
+  
+  if (!file || !folder) {
+    throw new Error("No se proporcionó archivo o carpeta");
   }
 
-  try {
-    const formData = await req.formData();
-    const file = formData.get('file') as File;
-    const folder = formData.get('folder') as string;
-    let customName = formData.get('customName') as string;
-    
-    if (!file || !folder) {
-      return NextResponse.json({ success: false, message: "No se proporcionó archivo o carpeta" }, { status: 400 });
-    }
+  const buffer = await file.arrayBuffer();
 
-    const buffer = await file.arrayBuffer();
+  // Obtener la lista de objetos en la carpeta
+  const listParams: AWS.S3.ListObjectsV2Request = {
+    Bucket: bucketName!,
+    Prefix: folder + '/'
+  };
+  const listResult = await s3.listObjectsV2(listParams).promise();
 
-    // Obtener la lista de objetos en la carpeta
-    const listParams: AWS.S3.ListObjectsV2Request = {
-      Bucket: bucketName,
-      Prefix: folder + '/'
-    };
-    const listResult = await s3.listObjectsV2(listParams).promise();
-
-    // Determinar el próximo número de secuencia
-    let nextSequence = 1;
-    if (listResult.Contents && listResult.Contents.length > 0) {
-      const sortedContents = listResult.Contents.sort((a, b) => {
-        const aNum = parseInt(a.Key!.split('/').pop()!.split('.')[0]);
-        const bNum = parseInt(b.Key!.split('/').pop()!.split('.')[0]);
-        return aNum - bNum;
-      });
-      const lastFile = sortedContents[sortedContents.length - 1].Key;
-      if (lastFile) {
-        const lastSequence = parseInt(lastFile.split('/').pop()!.split('.')[0]);
-        nextSequence = lastSequence + 1;
-      }
-    }
-
-    console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
-
-    // Formatear el nombre del archivo
-    const fileNameParts = customName.split('.');
-    const extension = fileNameParts.pop()?.toLowerCase() || '';
-    const nameWithoutExtension = fileNameParts.join('.').toUpperCase();
-    customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
-    const key = `${folder}/${customName}`;
-
-    const params: AWS.S3.PutObjectRequest = {
-      Bucket: bucketName,
-      Key: key,
-      Body: Buffer.from(buffer),
-      ContentType: file.type,
-    };
-
-    console.log('Iniciando carga a S3');
-    const result = await s3.upload(params).promise();
-    console.log('Carga a S3 completada', result);
-
-    return NextResponse.json({
-      success: true,
-      message: "Video subido exitosamente",
-      data: { key: result.Key, url: result.Location },
+  // Determinar el próximo número de secuencia
+  let nextSequence = 1;
+  if (listResult.Contents && listResult.Contents.length > 0) {
+    const sortedContents = listResult.Contents.sort((a, b) => {
+      const aNum = parseInt(a.Key!.split('/').pop()!.split('.')[0]);
+      const bNum = parseInt(b.Key!.split('/').pop()!.split('.')[0]);
+      return aNum - bNum;
     });
-  } catch (error) {
-    console.error('Error al subir el video:', error);
-    return NextResponse.json({ success: false, message: "Error al subir el video" }, { status: 500 });
+    const lastFile = sortedContents[sortedContents.length - 1].Key;
+    if (lastFile) {
+      const lastSequence = parseInt(lastFile.split('/').pop()!.split('.')[0]);
+      nextSequence = lastSequence + 1;
+    }
   }
+
+  console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
+
+  // Formatear el nombre del archivo
+  const fileNameParts = customName.split('.');
+  const extension = fileNameParts.pop()?.toLowerCase() || '';
+  const nameWithoutExtension = fileNameParts.join('.').toUpperCase();
+  customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
+  const key = `${folder}/${customName}`;
+
+  const params: AWS.S3.PutObjectRequest = {
+    Bucket: bucketName!,
+    Key: key,
+    Body: Buffer.from(buffer),
+    ContentType: file.type,
+  };
+
+  console.log('Iniciando carga a S3');
+  const result = await s3.upload(params).promise();
+  console.log('Carga a S3 completada', result);
+
+  return {
+    success: true,
+    message: "Video subido exitosamente",
+    data: { key: result.Key, url: result.Location },
+  };
 }
 
 export { handler as GET, handler as POST };
