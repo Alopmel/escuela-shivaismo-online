@@ -10,12 +10,30 @@ AWS.config.update({
 const s3 = new AWS.S3();
 const bucketName = process.env.BUCKET_NAME;
 
-export async function GET() {
+if (!bucketName) {
+  console.error('BUCKET_NAME no está definido en las variables de entorno');
+}
+
+export async function handler(req: NextRequest) {
   if (!bucketName) {
-    throw new Error('BUCKET_NAME is not defined in the environment variables');
+    return NextResponse.json({ error: 'Error de configuración del servidor' }, { status: 500 });
   }
 
-  const params = {
+  if (req.method === 'GET') {
+    return handleGET();
+  } else if (req.method === 'POST') {
+    return handlePOST(req);
+  } else {
+    return NextResponse.json({ error: 'Método no soportado' }, { status: 405 });
+  }
+}
+
+async function handleGET() {
+  if (!bucketName) {
+    throw new Error('BUCKET_NAME no está definido');
+  }
+
+  const params: AWS.S3.ListObjectsV2Request = {
     Bucket: bucketName,
   };
   
@@ -24,18 +42,16 @@ export async function GET() {
     console.log('S3 response:', res);
     return NextResponse.json(res);
   } catch (error) {
-    console.error('Error fetching S3 objectos:', error);
+    console.error('Error fetching S3 objects:', error);
     return NextResponse.json({ error: 'Error fetching S3 objects' }, { status: 500 });
   }
 }
 
-
-export async function POST(req: NextRequest) {
+async function handlePOST(req: NextRequest) {
   console.log('Iniciando carga de video');
   
   if (!bucketName) {
-    console.error('BUCKET_NAME no está definido en las variables de entorno');
-    return NextResponse.json({ success: false, message: "Error de configuración del servidor" }, { status: 500 });
+    throw new Error('BUCKET_NAME no está definido');
   }
 
   try {
@@ -51,7 +67,7 @@ export async function POST(req: NextRequest) {
     const buffer = await file.arrayBuffer();
 
     // Obtener la lista de objetos en la carpeta
-    const listParams = {
+    const listParams: AWS.S3.ListObjectsV2Request = {
       Bucket: bucketName,
       Prefix: folder + '/'
     };
@@ -66,20 +82,22 @@ export async function POST(req: NextRequest) {
         return aNum - bNum;
       });
       const lastFile = sortedContents[sortedContents.length - 1].Key;
-      const lastSequence = parseInt(lastFile!.split('/').pop()!.split('.')[0]);
-      nextSequence = lastSequence + 1;
+      if (lastFile) {
+        const lastSequence = parseInt(lastFile.split('/').pop()!.split('.')[0]);
+        nextSequence = lastSequence + 1;
+      }
     }
 
     console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
-    console.log('Cambiado')
+
     // Formatear el nombre del archivo
     const fileNameParts = customName.split('.');
-    const extension = fileNameParts.pop()?.toLowerCase();
+    const extension = fileNameParts.pop()?.toLowerCase() || '';
     const nameWithoutExtension = fileNameParts.join('.').toUpperCase();
     customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
     const key = `${folder}/${customName}`;
 
-    const params = {
+    const params: AWS.S3.PutObjectRequest = {
       Bucket: bucketName,
       Key: key,
       Body: Buffer.from(buffer),
@@ -97,7 +115,8 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('Error al subir el video:', error);
-    console.log('Cambiado')
     return NextResponse.json({ success: false, message: "Error al subir el video" }, { status: 500 });
   }
 }
+
+export { handler as GET, handler as POST };
