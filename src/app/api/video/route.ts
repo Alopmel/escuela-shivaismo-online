@@ -14,33 +14,24 @@ if (!bucketName) {
   console.error('BUCKET_NAME no está definido en las variables de entorno');
 }
 
-export async function handler(req: NextRequest) {
+async function handleRequest(req: NextRequest) {
   if (!bucketName) {
     return NextResponse.json({ error: 'Error de configuración del servidor' }, { status: 500 });
   }
 
-  let body;
-  let statusCode = 200;
-
   try {
-    switch (`${req.method} ${req.nextUrl.pathname}`) {
-      case "GET /api/video":
-        body = await handleGET();
-        break;
-      
-      case "POST /api/video":
-        body = await handlePOST(req);
-        break;
-
+    switch (req.method) {
+      case "GET":
+        return await handleGET();
+      case "POST":
+        return await handlePOST(req);
       default:
-        throw new Error(`Ruta no soportada: "${req.method} ${req.nextUrl.pathname}"`);
+        return NextResponse.json({ error: `Método no soportado: ${req.method}` }, { status: 405 });
     }
   } catch (err: any) {
-    statusCode = 400;
-    body = { error: err.message };
+    console.error('Error en la solicitud:', err);
+    return NextResponse.json({ error: err.message }, { status: 400 });
   }
-
-  return NextResponse.json(body, { status: statusCode });
 }
 
 async function handleGET() {
@@ -50,7 +41,7 @@ async function handleGET() {
   
   const res = await s3.listObjectsV2(params).promise();
   console.log('S3 response:', res);
-  return res;
+  return NextResponse.json(res);
 }
 
 async function handlePOST(req: NextRequest) {
@@ -62,7 +53,7 @@ async function handlePOST(req: NextRequest) {
   let customName = formData.get('customName') as string;
   
   if (!file || !folder) {
-    throw new Error("No se proporcionó archivo o carpeta");
+    return NextResponse.json({ success: false, message: "No se proporcionó archivo o carpeta" }, { status: 400 });
   }
 
   const buffer = await file.arrayBuffer();
@@ -109,10 +100,12 @@ async function handlePOST(req: NextRequest) {
   const result = await s3.upload(params).promise();
   console.log('Carga a S3 completada', result);
 
-  return {
+  return NextResponse.json({
     success: true,
     message: "Video subido exitosamente",
     data: { key: result.Key, url: result.Location },
-  };
+  });
 }
 
+export const GET = handleRequest;
+export const POST = handleRequest;
