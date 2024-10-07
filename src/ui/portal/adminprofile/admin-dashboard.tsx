@@ -17,8 +17,6 @@ import { AwsCredentialIdentity } from "@aws-sdk/types";
 const s3Client = new S3Client({ region: "eu-west-2" });
 const BUCKET_NAME = "videos-tantra-shivaita";
 
-const ALLOWED_EMAILS = ['lempola@gmail.com', 'jjquesada.87@gmail.com'];
-
 export function AdminDashboard() {
   const { user, loading } = useAuthUser();
   const [file, setFile] = useState<File | null>(null);
@@ -130,8 +128,8 @@ export function AdminDashboard() {
 
       console.log("Subiendo chunks...");
       const uploadResults = await Promise.all(uploadPromises);
-
       console.log("Chunks subidos. Finalizando carga multiparte...");
+
       await s3Client.send(new CompleteMultipartUploadCommand({
         Bucket: BUCKET_NAME,
         Key,
@@ -139,15 +137,15 @@ export function AdminDashboard() {
         MultipartUpload: { Parts: uploadResults },
       }));
 
-      console.log("Carga multiparte completada");
-      setUploadStatus("Archivo subido con éxito");
-      setFinalUploadMessage(["Archivo subido con éxito", `Nombre: ${fileName}`, `Carpeta: ${actualFolderName}`]);
-      setUploadInfo({ key: Key, url: `https://${BUCKET_NAME}.s3.amazonaws.com/${Key}` });
+      console.log("Carga completada con éxito.");
+      setUploadStatus("Carga completa.");
       setVideoKey(Key);
+      setUploadInfo({ key: Key, url: `https://your-cloudfront-url/${Key}` });
+      setFinalUploadMessage([`Archivo ${fileName} subido exitosamente.`]);
     } catch (error) {
-      console.error("Error al subir el archivo:", error);
-      setUploadStatus("Error al subir el archivo");
-      setError("Hubo un error al subir el archivo. Por favor, inténtalo de nuevo.");
+      console.error("Error detallado durante la carga:", error);
+      setUploadStatus("Error durante la carga");
+      setError(error instanceof Error ? error.message : "Error desconocido durante la carga");
     } finally {
       setUploading(false);
     }
@@ -163,11 +161,9 @@ export function AdminDashboard() {
     return <div>No se ha encontrado un usuario autenticado.</div>;
   }
 
-  const isAllowedUser = user.isAdmin || ALLOWED_EMAILS.includes(user.email);
-
-  if (!isAllowedUser) {
-    console.log("AdminDashboard - Usuario no tiene permisos:", user);
-    return <div>No tienes permisos para acceder a esta página.</div>;
+  if (!user.isAdmin) {
+    console.log("AdminDashboard - Usuario no es admin:", user);
+    return <div>No tienes permisos de administrador para acceder a esta página.</div>;
   }
 
   console.log("AdminDashboard - Renderizando panel de administración para:", user);
