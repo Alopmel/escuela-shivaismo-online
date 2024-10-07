@@ -2,13 +2,13 @@ import AWS from 'aws-sdk';
 import { NextRequest, NextResponse } from "next/server";
 
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+  accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY_ID,
+  secretAccessKey: process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY,
+  region: process.env.NEXT_PUBLIC_REGION,
 });
 
 const s3 = new AWS.S3();
-const bucketName = process.env.BUCKET_NAME;
+const bucketName = process.env.NEXT_PUBLIC_BUCKET_NAME;
 
 if (!bucketName) {
   console.error('BUCKET_NAME no está definido en las variables de entorno');

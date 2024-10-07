@@ -60,7 +60,6 @@ export function AdminDashboard() {
     const actualFolderName = newFolder || selectedFolder || 'default';
     const Key = `${actualFolderName}/${fileName}`;
 
-    // Configura AWS S3
     const s3 = new AWS.S3({
       accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY_ID,
       secretAccessKey: process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY,
@@ -70,11 +69,11 @@ export function AdminDashboard() {
 
     try {
       setUploadStatus("Subiendo al BucketS3...0%");
+      let totalProgress = 0;
 
-      // Crear multipart upload
       const createMultipartUploadResponse = await s3
         .createMultipartUpload({
-          Bucket: BUCKET_NAME,
+          Bucket: process.env.NEXT_PUBLIC_BUCKET_NAME || '',
           Key,
           ContentType: fileType,
         })
@@ -82,8 +81,7 @@ export function AdminDashboard() {
 
       const uploadId = createMultipartUploadResponse.UploadId;
 
-      // Configuración para dividir el archivo en partes (5MB mínimo por parte)
-      const chunkSize = 5 * 1024 * 1024; // 5MB
+      const chunkSize = 5 * 1024 * 1024;
       const numParts = Math.ceil(file.size / chunkSize);
 
       const uploadPromises = [];
@@ -104,18 +102,16 @@ export function AdminDashboard() {
         const uploadPromise = s3.uploadPart(partParams as AWS.S3.UploadPartRequest).promise();
         uploadPromises.push(uploadPromise);
 
-        // Actualiza el progreso de subida
         uploadPromise.then(() => {
-          const progress = ((partNumber / numParts) * 100).toFixed(2);
+          totalProgress += (1 / numParts) * 100;
+          const progress = Math.min(totalProgress, 100).toFixed(2);
           setUploadProgress(Number(progress));
           setUploadStatus(`Subiendo al BucketS3...${progress}%`);
         });
       }
 
-      // Espera a que todas las partes se suban
       const uploadedParts = await Promise.all(uploadPromises);
 
-      // Completar la subida multipart
       const completeParams = {
         Bucket: BUCKET_NAME,
         Key,
@@ -127,13 +123,8 @@ export function AdminDashboard() {
           })),
         },
       };
-
-      // Asegurarse de que uploadId no sea undefined antes de llamar a completeMultipartUpload
       if (uploadId) {
-        await s3.completeMultipartUpload({
-          ...completeParams,
-          UploadId: uploadId
-        }).promise();
+        await s3.completeMultipartUpload(completeParams as AWS.S3.CompleteMultipartUploadRequest).promise();
 
         setUploadStatus("Carga completa");
         setVideoKey(Key);
@@ -143,14 +134,13 @@ export function AdminDashboard() {
           size: file.size,
           type: file.type
         });
-        setRefreshFolderContents(prev => prev + 1); // Trigger refresh of FolderContents
+        setRefreshFolderContents(prev => prev + 1);
       } else {
         throw new Error('UploadId es undefined');
       }
     } catch (error) {
-      console.error('Error al subir el archivo:', error);
-      setUploadStatus("Error durante la carga");
-      setError(error instanceof Error ? error.message : "Error desconocido durante la carga");
+      console.error('Error durante la carga:', error);
+      setError('Ocurrió un error durante la carga. Por favor, inténtalo de nuevo.');
     } finally {
       setUploading(false);
     }
@@ -158,9 +148,8 @@ export function AdminDashboard() {
 
   const renderPreview = () => {
     if (!uploadInfo) return null;
-
-    const fileType = uploadInfo.type.split('/')[0];
     const fileUrl = uploadInfo.url;
+    const fileType = uploadInfo.type.split('/')[0];
 
     switch (fileType) {
       case 'video':
@@ -188,6 +177,20 @@ export function AdminDashboard() {
             />
           </div>
         );
+      case 'application':
+        if (uploadInfo.type === 'application/pdf') {
+          return (
+            <div className={styles.pdfWrapper}>
+              <iframe 
+                src={`${fileUrl}#view=fit`} 
+                width="100%" 
+                height="600px" 
+                style={{border: 'none'}}
+              />
+            </div>
+          );
+        }
+        // Para otros tipos de aplicación, caer en el caso por defecto
       default:
         return (
           <div className={styles.documentWrapper}>
@@ -198,7 +201,7 @@ export function AdminDashboard() {
                 width={100}
                 height={100}
               />
-              <p>Click to open document</p>
+              <p>Click para abrir el documento</p>
             </a>
           </div>
         );
@@ -213,7 +216,7 @@ export function AdminDashboard() {
           <Input
             type="file"
             onChange={handleFileChange}
-            accept="video/*,image/*,text/*"
+            accept="video/*,image/*,text/*,application/pdf"
             className={styles.fileInput}
             id="fileInput"
           />
