@@ -165,10 +165,12 @@ export function AdminDashboard() {
           </div>
         );
       case 'image':
+        console.log('Image fileUrl:', fileUrl); // Añadido console.log aquí
+
         return (
           <div className={styles.imageWrapper}>
             <Image 
-              src={fileUrl} 
+              src={uploadInfo.url} 
               alt="Uploaded image" 
               layout="responsive"
               width={800}
@@ -196,7 +198,7 @@ export function AdminDashboard() {
           <div className={styles.documentWrapper}>
             <a href={fileUrl} target="_blank" rel="noopener noreferrer">
               <Image 
-                src="/document-icon.png" 
+                src={fileUrl} 
                 alt="Document" 
                 width={100}
                 height={100}

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import styles from './home.module.css'
 
 const levitateAnimation = {
     animate: {
@@ -17,7 +18,7 @@ const Sphere = () => {
         animate="show"
         exit="exit"
         variants={levitateAnimation}>
-        <figure className="ball bubble"></figure>
+        <figure className={`${styles.ball} bubble`}></figure>
     </motion.div>
   )
 }
