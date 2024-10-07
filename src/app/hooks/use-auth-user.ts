@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 
+const ALLOWED_EMAILS = ['albawebdeveloper@gmail.com', 'jjquesada.87@gmail.com'];
+
 interface UserAttributes {
   userId: string;
   username: string;
   name?: string;
   email: string;
   isAdmin: boolean;
+  isAllowedUser: boolean;
   [key: string]: any;
 }
 
@@ -36,15 +39,17 @@ export default function useAuthUser() {
 
         console.log('Atributos del usuario:', userAttributes);
         console.log('Usuario actual:', currentUser);
-
         const isAdmin = (session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined)?.includes("Admins") ?? false;
+        const isAllowedEmail = ALLOWED_EMAILS.includes(userAttributes.email ?? "");
         console.log('¿Es admin?:', isAdmin);
+        console.log('¿Es email permitido?:', isAllowedEmail);
 
         const userData: UserAttributes = {
           ...currentUser,
           ...userAttributes,
           email: userAttributes.email ?? "",
           isAdmin: isAdmin,
+          isAllowedUser: isAdmin || isAllowedEmail,
         };
 
         console.log('Datos de usuario completos:', userData);
@@ -60,7 +65,17 @@ export default function useAuthUser() {
     getUser();
   }, []);
 
-  console.log('Retornando desde useAuthUser:', { user, loading });
+//  console.log('Retornando desde useAuthUser:', {
+//    user: user ? {
+//      userId: user.userId,
+//      username: user.username,
+//     name: user.name,
+//     email: user.email,
+//     isAdmin: user.isAdmin,
+//     isAllowedUser: user.isAllowedUser
+//   } : null, 
+//   loading
+//  });
 
   return { 
     user: user ? {
@@ -68,7 +83,8 @@ export default function useAuthUser() {
       username: user.username,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin
+      isAdmin: user.isAdmin,
+      isAllowedUser: user.isAllowedUser
     } : null, 
     userId: user?.username ?? null,
     name: user?.name ?? null,

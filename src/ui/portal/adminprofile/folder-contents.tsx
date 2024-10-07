@@ -16,7 +16,7 @@ export const FolderContents: React.FC<FolderContentsProps> = ({ folder }) => {
       const aNum = parseInt(a.Key.split('/').pop()?.split('.')[0] || '0');
       const bNum = parseInt(b.Key.split('/').pop()?.split('.')[0] || '0');
       return aNum - bNum;
-    }).slice(0, 10);
+    });
   }, [keys, folder]);
 
   const toggleOpen = () => setIsOpen(!isOpen);

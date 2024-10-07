@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo , useCallback} from 'react';
 import axios from 'axios';
 
 export type KeyItem = {
@@ -15,9 +15,13 @@ interface BucketResponse {
 
 interface BucketContextData {
   keys: KeyItem[];
+  refreshKeys: () => Promise<void>;
 }
 
-const BucketContext = createContext<BucketContextData>({ keys: [] });
+const BucketContext = createContext<BucketContextData>({ 
+  keys: [], 
+  refreshKeys: async () => {} 
+});
 
 interface BucketProviderProps {
   children: ReactNode;
@@ -26,25 +30,26 @@ interface BucketProviderProps {
 export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
   const [keys, setKeys] = useState<KeyItem[]>([]);
 
+
+  const fetchBucketData = async () => {
+    try {
+      const response = await axios.get<BucketResponse>('/api/video'); // Ajustar el endpoint API según tu configuración real
+      setKeys(response.data.Contents);
+    } catch (error) {
+      console.error('Error fetching bucket data:', error);
+      // Manejar errores aquí según tus necesidades
+    }
+  };
+
   useEffect(() => {
-    const fetchBucketData = async () => {
-      try {
-        const response = await axios.get<BucketResponse>('/api/video'); // Ajustar el endpoint API según tu configuración real
-        setKeys(response.data.Contents);
-        // console.log('Keys from bucket:', response.data.Contents);
-        // console.log('Keys from bucket data:', response);
-
-      } catch (error) {
-        console.error('Error fetching bucket data:', error);
-        // Manejar errores aquí según tus necesidades
-      }
-    };
-
     fetchBucketData();
   }, []);
 
-  const value = useMemo(() => ({ keys }), [keys]);
+  const refreshKeys = useCallback(async () => {
+    await fetchBucketData();
+  }, []);
 
+  const value = useMemo(() => ({ keys, refreshKeys }), [keys, refreshKeys]);
   return (
     <BucketContext.Provider value={value}>
       {children}
