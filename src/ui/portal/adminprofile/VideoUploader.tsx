@@ -40,9 +40,9 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({ bucketName }) => {
 
     // Configura AWS S3
     const s3 = new AWS.S3({
-      accessKeyId: process.env.ACCESS_KEY_ID,
-      secretAccessKey: process.env.SECRET_ACCESS_KEY,
-      region: process.env.AWS_REGION,
+      accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY_ID,
+      secretAccessKey: process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY,
+      region: process.env.NEXT_PUBLIC_REGION,
       signatureVersion: 'v4',
     });
 
