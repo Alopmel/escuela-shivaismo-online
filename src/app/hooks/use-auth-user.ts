@@ -1,4 +1,3 @@
-// /src/app/hook/use-auth-user.ts
 'use client'
 import { useEffect, useState } from "react";
 import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
@@ -19,31 +18,41 @@ export default function useAuthUser() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        // console.log('Fetching user data...');
+        console.log('Iniciando fetchAuthSession...');
         const session = await fetchAuthSession();
+        console.log('Session obtenida:', session);
+
         if (!session.tokens) {
+          console.log('No se encontraron tokens en la sesión');
           setLoading(false);
           return;
         }
 
+        console.log('Obteniendo atributos del usuario y usuario actual...');
         const [userAttributes, currentUser] = await Promise.all([
           fetchUserAttributes(),
           getCurrentUser(),
         ]);
 
+        console.log('Atributos del usuario:', userAttributes);
+        console.log('Usuario actual:', currentUser);
+
+        const isAdmin = (session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined)?.includes("Admins") ?? false;
+        console.log('¿Es admin?:', isAdmin);
+
         const userData: UserAttributes = {
           ...currentUser,
           ...userAttributes,
           email: userAttributes.email ?? "",
-          isAdmin: (session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined)?.includes("Admins") ?? false,
+          isAdmin: isAdmin,
         };
 
-        // console.log('User data fetched:', userData);
+        console.log('Datos de usuario completos:', userData);
         setUser(userData);
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error('Error al obtener datos del usuario:', error);
       } finally {
-        // console.log('Loading complete.');
+        console.log('Carga completa');
         setLoading(false);
       }
     };
@@ -51,7 +60,7 @@ export default function useAuthUser() {
     getUser();
   }, []);
 
-  // console.log('Returning from useAuthUser:', { user, loading });
+  console.log('Retornando desde useAuthUser:', { user, loading });
 
   return { 
     user: user ? {

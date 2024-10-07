@@ -1,4 +1,4 @@
-// src/middelware.ts 
+// src/middleware.ts 
 import { type NextRequest, NextResponse } from "next/server";
 import { authenticatedUser } from "./utils/amplify-server-utils";
 
@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   if (isOnProfile) {
     if (!user)
       return NextResponse.redirect(new URL("/home", request.nextUrl));
-    if (isOnAdminArea && !user.isAdmin)
+    if (isOnAdminArea && !user.isAllowedUser)
       return NextResponse.redirect(new URL("/portal/dashboard/profile", request.nextUrl));
     return response;
   } else if (user) {
@@ -23,4 +23,3 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };
-

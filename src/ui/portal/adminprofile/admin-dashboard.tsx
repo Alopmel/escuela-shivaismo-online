@@ -1,18 +1,26 @@
-"use client"
+"use client";
 
 import { ChangeEvent, useState, useEffect } from "react";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Select } from "./select";
-import axios from "axios";
 import styles from './AdminDashboard.module.css';
-import { useBucket } from '@/app/context/BucketContext';
 import { useBucketFolders } from '@/app/hooks/use-bucket-folder';
 import { FolderContents } from "./folder-contents";
 import { IoCloudUploadSharp } from "react-icons/io5";
 import ReactPlayer from "react-player";
+import { S3Client, CreateMultipartUploadCommand, UploadPartCommand, CompleteMultipartUploadCommand } from "@aws-sdk/client-s3";
+import { fetchAuthSession } from "aws-amplify/auth";
+import useAuthUser from '@/app/hooks/use-auth-user';
+import { AwsCredentialIdentity } from "@aws-sdk/types";
+
+const s3Client = new S3Client({ region: "eu-west-2" });
+const BUCKET_NAME = "videos-tantra-shivaita";
+
+const ALLOWED_EMAILS = ['lempola@gmail.com', 'jjquesada.87@gmail.com'];
 
 export function AdminDashboard() {
+  const { user, loading } = useAuthUser();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -22,10 +30,14 @@ export function AdminDashboard() {
   const [customName, setCustomName] = useState("");
   const [selectedFolder, setSelectedFolder] = useState("");
   const [newFolder, setNewFolder] = useState("");
-  const [s3UploadStartTime, setS3UploadStartTime] = useState<number | null>(null);
   const [uploadInfo, setUploadInfo] = useState<{ key: string; url: string } | null>(null);
- // const { refreshBucketContents } = useBucket();
   const folders = useBucketFolders();
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("AdminDashboard - Estado de carga:", loading);
+    console.log("AdminDashboard - Usuario:", user);
+  }, [user, loading]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -35,93 +47,145 @@ export function AdminDashboard() {
       setUploadProgress(0);
       setUploadInfo(null);
       setVideoKey(null);
+      console.log("Archivo seleccionado:", e.target.files[0].name);
     }
   };
 
-  const handleUpload = async () => {
-    if (!file) return;
+  const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB per chunk
 
+  const handleUpload = async () => {
+    if (!file || !user) {
+      console.log("No se puede iniciar la carga. Archivo:", file, "Usuario:", user);
+      return;
+    }
+  
     setUploading(true);
-    setUploadStatus("Iniciando carga de video...");
+    setUploadStatus("Preparando archivo para subir...");
     setUploadProgress(0);
     setUploadInfo(null);
     setVideoKey(null);
     setFinalUploadMessage([]);
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", newFolder || selectedFolder);
-
+  
     let fileName = customName || file.name;
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    if (fileExtension && (fileExtension === 'mp4' || fileExtension === 'mov')) {
-      if (!fileName.endsWith(`.${fileExtension}`)) {
-        fileName += `.${fileExtension}`;
-      }
+    if (fileExtension && !fileName.endsWith(`.${fileExtension}`)) {
+      fileName += `.${fileExtension}`;
     }
-    formData.append("customName", fileName);
+    const fileType = file.type;
+    const actualFolderName = newFolder || selectedFolder || 'default';
+    const Key = `${actualFolderName}/${fileName}`;
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+  
+    console.log("Iniciando carga. Archivo:", fileName, "Carpeta:", actualFolderName);
 
     try {
-      const response = await axios.post("/api/video", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
-          setUploadProgress(percentCompleted);
-          setUploadStatus(`Iniciando carga de video...${percentCompleted}%`);
-          if (percentCompleted === 100) {
-            setUploadStatus("Iniciando carga a S3...");
-            setS3UploadStartTime(Date.now());
-            console.log('Cambiado')
-          }
-        },
-      });
-      setVideoKey(response.data.data.key);
-      setUploadInfo({
-        key: response.data.data.key,
-        url: response.data.data.url
-      });
-      setFinalUploadMessage([
-        "Carga a S3 completada.",
-        `Carpeta: ${newFolder || selectedFolder}`,
-        `Nombre del video: ${fileName}`
-      ]);
-    //  await refreshBucketContents();
+      console.log("Obteniendo credenciales...");
+      const session = await fetchAuthSession();
+      const credentials = session.credentials;
+
+      if (!credentials) {
+        throw new Error("No se pudieron obtener las credenciales");
+      }
+
+      console.log("Credenciales obtenidas:", credentials);
+
+      const credentialsProvider = async () => {
+        return credentials as AwsCredentialIdentity;
+      };
+
+      s3Client.config.credentials = credentialsProvider;
+
+      console.log("Iniciando carga multiparte...");
+      const { UploadId } = await s3Client.send(new CreateMultipartUploadCommand({
+        Bucket: BUCKET_NAME,
+        Key,
+        ContentType: fileType,
+      }));
+
+      console.log("UploadId obtenido:", UploadId);
+
+      const uploadPromises = [];
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * CHUNK_SIZE;
+        const end = Math.min(start + CHUNK_SIZE, file.size);
+        const chunk = file.slice(start, end);
+
+        const uploadPartCommand = new UploadPartCommand({
+          Bucket: BUCKET_NAME,
+          Key,
+          UploadId,
+          PartNumber: i + 1,
+          Body: chunk,
+        });
+
+        uploadPromises.push(
+          s3Client.send(uploadPartCommand).then(response => ({
+            PartNumber: i + 1,
+            ETag: response.ETag,
+          }))
+        );
+
+        setUploadProgress(((i + 1) / totalChunks) * 100);
+      }
+
+      console.log("Subiendo chunks...");
+      const uploadResults = await Promise.all(uploadPromises);
+
+      console.log("Chunks subidos. Finalizando carga multiparte...");
+      await s3Client.send(new CompleteMultipartUploadCommand({
+        Bucket: BUCKET_NAME,
+        Key,
+        UploadId,
+        MultipartUpload: { Parts: uploadResults },
+      }));
+
+      console.log("Carga multiparte completada");
+      setUploadStatus("Archivo subido con éxito");
+      setFinalUploadMessage(["Archivo subido con éxito", `Nombre: ${fileName}`, `Carpeta: ${actualFolderName}`]);
+      setUploadInfo({ key: Key, url: `https://${BUCKET_NAME}.s3.amazonaws.com/${Key}` });
+      setVideoKey(Key);
     } catch (error) {
-      console.error("Error al subir el video:", error);
-      setFinalUploadMessage(["Error al subir el video"]);
+      console.error("Error al subir el archivo:", error);
+      setUploadStatus("Error al subir el archivo");
+      setError("Hubo un error al subir el archivo. Por favor, inténtalo de nuevo.");
     } finally {
       setUploading(false);
-      setS3UploadStartTime(null);
     }
   };
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (s3UploadStartTime) {
-      timer = setInterval(() => {
-        const elapsedTime = Math.floor((Date.now() - s3UploadStartTime) / 1000);
-        const minutes = Math.floor(elapsedTime / 60);
-        const seconds = elapsedTime % 60;
-        setUploadStatus(`Cargando a S3... ${minutes}m ${seconds}s`);
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [s3UploadStartTime]);
+  if (loading) {
+    console.log("AdminDashboard - Renderizando estado de carga...");
+    return <div>Cargando...</div>;
+  }
+
+  if (!user) {
+    console.log("AdminDashboard - Usuario no encontrado");
+    return <div>No se ha encontrado un usuario autenticado.</div>;
+  }
+
+  const isAllowedUser = user.isAdmin || ALLOWED_EMAILS.includes(user.email);
+
+  if (!isAllowedUser) {
+    console.log("AdminDashboard - Usuario no tiene permisos:", user);
+    return <div>No tienes permisos para acceder a esta página.</div>;
+  }
+
+  console.log("AdminDashboard - Renderizando panel de administración para:", user);
 
   return (
     <main className={styles.dashboard}>
-      <h1 className={styles.title}>Panel de tu  Administración</h1>
+      <h1 className={styles.title}>Panel de Administración</h1>
       <div className={styles.inputWrapper}>
         <div className={styles.inputContainer}>
           <Input
             type="file"
             onChange={handleFileChange}
-            accept="video/*"
+            accept="video/*,image/*,text/*"
             className={styles.fileInput}
             id="fileInput"
           />
           <label htmlFor="fileInput" className={styles.fileInputLabel}>
-            {file ? file.name : "Ningún video seleccionado"}
+            {file ? file.name : "Ningún archivo seleccionado"}
             <IoCloudUploadSharp className={styles.uploadIcon} />
           </label>
         </div>
@@ -130,7 +194,7 @@ export function AdminDashboard() {
             options={folders}
             value={selectedFolder}
             onChange={(e) => setSelectedFolder(e.target.value)}
-            placeholder="Selecciona una carpeta"
+            placeholder="Selecciona una carpeta existente"
             className={styles.select}
           />
         </div>
@@ -148,13 +212,13 @@ export function AdminDashboard() {
             type="text"
             value={customName}
             onChange={(e) => setCustomName(e.target.value)}
-            placeholder="Nombre personalizado del video"
+            placeholder="Nombre personalizado del archivo"
             className={styles.input}
           />
         </div>
         <div className={styles.inputContainer}>
           <Button onClick={handleUpload} disabled={uploading || !file} className={styles.uploadButton}>
-            {uploading ? uploadStatus : "Subir Video"}
+            {uploading ? uploadStatus : "Subir Archivo"}
           </Button>
         </div>
       </div>
@@ -162,7 +226,7 @@ export function AdminDashboard() {
         <div className={styles.progressBarContainer}>
           <div 
             className={styles.progressBar} 
-            style={{width: `${uploadProgress}%`}}
+            style={{ width: `${uploadProgress}%` }}
           ></div>
         </div>
       )}
@@ -176,18 +240,21 @@ export function AdminDashboard() {
           ) : (
             <p>{uploadStatus}</p>
           )}
+          {uploadInfo && (
+            <p>
+              Archivo cargado: <a href={uploadInfo.url} target="_blank" rel="noopener noreferrer">{uploadInfo.key}</a>
+            </p>
+          )}
         </div>
       )}
-      {selectedFolder && <FolderContents folder={selectedFolder} />}
       {videoKey && (
-        <div className={styles.playerWrapper}>
-          <ReactPlayer
-            url={`https://dz9uj6zxn56ls.cloudfront.net/${videoKey}`}
-            controls={true}
-            width="100%"
-            height="100%"
-            className={styles.previewVideo}
-          />
+        <div className={styles.playerContainer}>
+          <ReactPlayer url={`https://your-cloudfront-url/${videoKey}`} controls />
+        </div>
+      )}
+      {error && (
+        <div className={styles.errorMessage}>
+          <p>Error: {error}</p>
         </div>
       )}
     </main>
