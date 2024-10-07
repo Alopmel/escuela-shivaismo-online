@@ -46,6 +46,7 @@
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   cursor: pointer;
+  color: white;
 }
 
 .uploadIcon {
@@ -55,15 +56,15 @@
 .select,
 .input,
 .button {
-  width: 100%;
-  height: 56px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
-  color: #ffffff;
-  font-size: 1rem;
-  box-sizing: border-box;
+  width: 100% !important;
+  height: 56px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 0.5rem 1rem !important;
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  box-sizing: border-box !important;
 }
 
 .select {
@@ -78,7 +79,7 @@
 }
 
 .input::placeholder {
-  color: white;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .uploadButton {
@@ -276,4 +277,9 @@
   padding: 1rem;
   margin-top: 1rem;
   color: #ffffff;
+}
+
+.dashboard .darkInput {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: white !important;
 }

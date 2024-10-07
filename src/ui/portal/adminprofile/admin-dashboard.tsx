@@ -10,7 +10,6 @@ import { FolderContents } from "./folder-contents";
 import { IoCloudUploadSharp } from "react-icons/io5";
 import ReactPlayer from "react-player";
 import AWS from 'aws-sdk';
-import Image from 'next/image';
 
 const BUCKET_NAME = "videos-tantra-shivaita";
 
@@ -165,17 +164,13 @@ export function AdminDashboard() {
           </div>
         );
       case 'image':
-        console.log('Image fileUrl:', fileUrl); // Añadido console.log aquí
-
+        console.log('Image fileUrl:', fileUrl);
         return (
           <div className={styles.imageWrapper}>
-            <Image 
-              src={uploadInfo.url} 
+            <img 
+              src={fileUrl} 
               alt="Uploaded image" 
-              layout="responsive"
-              width={800}
-              height={600}
-              objectFit="contain"
+              style={{ maxWidth: '100%', height: 'auto' }}
             />
           </div>
         );
@@ -197,11 +192,10 @@ export function AdminDashboard() {
         return (
           <div className={styles.documentWrapper}>
             <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-              <Image 
+              <img 
                 src={fileUrl} 
                 alt="Document" 
-                width={100}
-                height={100}
+                style={{ width: '100px', height: '100px', objectFit: 'contain' }}
               />
               <p>Click para abrir el documento</p>
             </a>
@@ -242,7 +236,7 @@ export function AdminDashboard() {
             value={newFolder}
             onChange={(e) => setNewFolder(e.target.value)}
             placeholder="O crea una nueva carpeta"
-            className={styles.input}
+            className={`${styles.input} ${styles.darkInput}`}
           />
         </div>
         <div className={styles.inputContainer}>
