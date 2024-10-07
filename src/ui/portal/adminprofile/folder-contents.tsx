@@ -1,14 +1,22 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useBucket } from '@/app/context/BucketContext';
 import styles from './AdminDashboard.module.css';
 
 interface FolderContentsProps {
   folder: string;
+  refreshTrigger: number;
 }
 
-export const FolderContents: React.FC<FolderContentsProps> = ({ folder }) => {
-  const { keys } = useBucket();
+export const FolderContents: React.FC<FolderContentsProps> = ({ folder, refreshTrigger }) => {
+  const { keys, refreshKeys } = useBucket();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await refreshKeys();
+    };
+    fetchData();
+  }, [refreshTrigger, refreshKeys]);
 
   const folderContents = useMemo(() => {
     const contents = keys.filter(item => item.Key.startsWith(folder));

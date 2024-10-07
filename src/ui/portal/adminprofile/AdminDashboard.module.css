@@ -82,6 +82,8 @@
 }
 
 .uploadButton {
+  width: 100%;
+  height: 56px;
   color: white;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -108,6 +110,7 @@
 .progressBar {
   height: 100%;
   background-color: #4a2e76;
+  box-shadow: 0 0 10px #4a2e76, 0 0 20px #4a2e76, 0 0 30px #4a2e76;
   transition: width 0.3s ease;
 }
 
