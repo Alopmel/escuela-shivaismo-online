@@ -131,13 +131,13 @@ const CircleMenuMobile = () => {
     const item = params.get('breadcrumbItem');
     if (item) {
       setItemFromParams(item); // Establecer el valor de itemFromParams
-      console.log('item', item); // Asegúrate de que este valor es el correcto
+      //console.log('item', item); // Asegúrate de que este valor es el correcto
     }
   }, [searchParams]);
   
   useEffect(() => {
     if (itemFromParams) {
-      console.log('itemFromParams actualizado:', itemFromParams);
+      //console.log('itemFromParams actualizado:', itemFromParams);
       // Aquí puedes implementar la lógica adicional que necesites
     }
   }, [itemFromParams]);  
@@ -154,8 +154,8 @@ const CircleMenuMobile = () => {
       setIsNew(true)
       setCentralTitle(item.text);
       setBreadcrumb(prev => [...prev, item.text]);
-      console.log('breadcrumb', breadcrumb)
-      console.log('active items', activeItems)
+      //console.log('breadcrumb', breadcrumb)
+      //console.log('active items', activeItems)
     } else {
       const params = new URLSearchParams({
         item: item.text,

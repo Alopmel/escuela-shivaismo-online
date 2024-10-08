@@ -9,6 +9,7 @@
   width: 100%;
   max-width: 800px;
   margin: 2rem auto;
+  overflow: hidden; /* Añadido para evitar desbordamiento */
 }
 
 .title {
@@ -25,6 +26,7 @@
 
 .inputContainer {
   position: relative;
+  width: 100%;
 }
 
 .fileInput {
@@ -46,7 +48,6 @@
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   cursor: pointer;
-  color: white;
 }
 
 .uploadIcon {
@@ -56,21 +57,20 @@
 .select,
 .input,
 .button {
-  width: 100% !important;
-  height: 56px !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: none !important;
-  border-radius: 10px !important;
-  padding: 0.5rem 1rem !important;
-  color: #ffffff !important;
-  font-size: 1rem !important;
-  box-sizing: border-box !important;
+  width: 100%;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: #ffffff;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .select {
   appearance: none;
-  background-image: none;
-  padding-right: 2.5rem;
+  padding-right: 2.5rem; /* Espacio para el icono */
 }
 
 .select option {
@@ -79,7 +79,7 @@
 }
 
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: white;
 }
 
 .uploadButton {
@@ -90,55 +90,52 @@
   transition: background 0.3s ease;
 }
 
-.uploadButton:hover {
+.uploadButtonCard{
+  width: 86%;
+  height: 2rem;
+  border-radius: 6px;
+  color:white;
+  background: #282828;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.uploadButton:hover, .uploadButtonCard:hover {
   background-color: #4a2e76;
 }
 
-.uploadButton:disabled {
+.uploadButton:disabled, .uploadButtonCard:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 .progressBarContainer {
   width: 100%;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #f0f0f0;
   border-radius: 5px;
-  margin-top: 1rem;
-  overflow: hidden;
-  position: relative;
+  margin-top: 5px;
 }
 
 .progressBar {
-  height: 100%;
-  background-color: #00d1d1;
+  height: 10px;
+  background-color: #4CAF50;
   border-radius: 5px;
-  transition: width 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  transition: width 0.3s ease-in-out;
 }
 
-.progressBar::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #00d1d1;
-  filter: blur(10px);
-  opacity: 0.7;
+.progressText {
+  margin-left: 10px;
+  font-size: 0.8em;
 }
 
-.progressBar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #00d1d1;
-  filter: blur(15px);
-  opacity: 0.3;
+.fileItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
 }
 
 .playerWrapper {
@@ -278,8 +275,363 @@
   margin-top: 1rem;
   color: #ffffff;
 }
+.selectContainer {
+  position: relative;
+}
 
-.dashboard .darkInput {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  color: white !important;
+.selectArrow {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.selectArrowIcon {
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.inputIcon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  color: #ffffff;
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+.fileList {
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -0.5rem;
+}
+
+.fileItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+}
+
+.fileItemActions {
+  display: flex;
+  align-items: center;
+}
+
+.progressBarContainer {
+  width: 100px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease-in-out;
+}
+
+.progressText {
+  margin-left: 5px;
+  font-size: 0.8em;
+}
+
+.removeFileButton {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  margin-left: 10px;
+}
+
+.removeFileButton:hover {
+  color: #ff4d4d;
+}
+
+.removeFileButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.uploadCard, .uploadRender {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  margin: 0.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Añadido para evitar desbordamiento */
+  min-height: 200px; /* Ajusta este valor según tus necesidades */
+}
+
+.uploadCard{
+  width: calc(33.333% - 1rem);
+}
+.cardTitle {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
+  max-height: 2.4em; /* 2 líneas */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.cardSubtitle {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
+  max-height: 1.2em; /* 1 línea */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.uploadButtonCard {
+  width: 80%; /* Reducido para mejor apariencia */
+  height: 2rem;
+  border-radius: 6px;
+  color: white;
+  background: #282828;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin: 0 auto; /* Centrar el botón */
+  display: block; /* Asegurar que margin: 0 auto funcione */
+}
+
+.uploadCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 36px 0 rgba(31, 38, 135, 0.45);
+}
+
+.cancelButton {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  border: none;
+  margin-top: 0.5rem;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 59, 48, 0.2);
+}
+
+@media (max-width: 768px) {
+  .uploadCard {
+    width: calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .uploadCard {
+    width: 100%;
+  }
+}
+
+.uploadCard :global(.nextui-circular-progress) {
+  --nextui-colors-primary: #00d1d1;
+}
+
+.uploadCard :global(.nextui-circular-progress-indicator) {
+  filter: drop-shadow(0 0 5px #00d1d1);
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkIcon {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1; /* Permite que el cuerpo de la tarjeta crezca para llenar el espacio */
+}
+
+.uploadRender {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  margin: 0.5rem 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  width: 100%;
+}
+
+.uploadRenderBody {
+  padding: 1rem;
+}
+
+.customCardBody {
+  width: auto !important; /* Sobrescribe el ancho al 100% */
+  max-width: 100%; /* Asegura que no exceda el ancho del contenedor padre */
+  margin: 0 auto; /* Centra el contenido horizontalmente */
+}
+
+.uploadRenderContent {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  max-width: 1200px; /* Ajusta este valor según tus necesidades */
+  margin: 0 auto; /* Centra el contenido si es más pequeño que el contenedor */
+}
+
+.playerContainer {
+  flex: 1;
+  min-height: 200px;
+  max-height: 300px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  padding-right: 1rem;
+}
+
+.infoItem {
+  margin-bottom: 0.25rem; /* Reducido el espacio entre elementos de información */
+  font-size: 1rem;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.infoLabel {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.infoValue {
+  display: inline;
+}
+
+.urlLink {
+  color: #00d1d1;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  word-break: break-all;
+}
+
+.urlLink:hover {
+  color: #00ffff;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .uploadRenderContent {
+    flex-direction: column;
+  }
+
+  .playerContainer, .infoContainer {
+    width: 100%;
+  }
+}
+
+.uploadCompleteMessage {
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.resetButton {
+  background-color: #00d1d1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.resetButton:hover {
+  background-color: #00a0a0;
+}
+
+/* Añade estas nuevas clases al final del archivo */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.fadeInUp {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.fadeOutDown {
+  animation: fadeOutDown 0.5s ease-out forwards;
+}
+
+.uploadCard, .uploadRender {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.uploadedFiles {
+  overflow: hidden;
+}
+
+.uploadedFiles > div {
+  animation: fadeInUp 0.5s ease-out;
 }

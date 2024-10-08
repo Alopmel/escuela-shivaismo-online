@@ -147,8 +147,8 @@ const CircleMenuMobile = () => {
       setActiveItems(item.subItems);
       setCentralTitle(item.text);
       setBreadcrumb(prev => [...prev, item.text]);
-      console.log('breadcrumb', breadcrumb)
-      console.log('active items', activeItems)
+      //console.log('breadcrumb', breadcrumb)
+      //console.log('active items', activeItems)
     } else {
       const params = new URLSearchParams({
         item: item.text,

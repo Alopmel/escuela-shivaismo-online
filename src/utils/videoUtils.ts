@@ -317,7 +317,7 @@ export const getRecommendedVideos = async (videoId: string) => {
 
 
 export const uploadVideo = async (file: File, folder: string, customName: string, onProgress?: (progress: number) => void) => {
-  console.log('Iniciando carga de video');
+  //console.log('Iniciando carga de video');
   
   if (!bucketName) {
     console.error('BUCKET_NAME no está definido en las variables de entorno');
@@ -345,7 +345,7 @@ export const uploadVideo = async (file: File, folder: string, customName: string
       nextSequence = lastSequence + 1;
     }
 
-    console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
+    //console.log(`Carpeta seleccionada: ${folder}, Próximo número de secuencia: ${nextSequence}`);
 
     const fileNameParts = customName.split('.');
     const extension = fileNameParts.pop()?.toLowerCase();
@@ -360,7 +360,7 @@ export const uploadVideo = async (file: File, folder: string, customName: string
       ContentType: file.type,
     };
 
-    console.log('Iniciando carga a S3');
+    //console.log('Iniciando carga a S3');
     const upload = s3.upload(params);
 
     upload.on('httpUploadProgress', (progress) => {
@@ -371,7 +371,7 @@ export const uploadVideo = async (file: File, folder: string, customName: string
     });
 
     const result = await upload.promise();
-    console.log('Carga a S3 completada', result);
+    //console.log('Carga a S3 completada', result);
 
     return {
       success: true,

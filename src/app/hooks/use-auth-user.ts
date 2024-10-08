@@ -21,28 +21,27 @@ export default function useAuthUser() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        console.log('Iniciando fetchAuthSession...');
+        //console.log('Iniciando fetchAuthSession...');
         const session = await fetchAuthSession();
-        console.log('Session obtenida:', session);
+        //.log('Session obtenida:', session);
 
         if (!session.tokens) {
-          console.log('No se encontraron tokens en la sesión');
+         //console.log('No se encontraron tokens en la sesión');
           setLoading(false);
           return;
         }
 
-        console.log('Obteniendo atributos del usuario y usuario actual...');
+        //console.log('Obteniendo atributos del usuario y usuario actual...');
         const [userAttributes, currentUser] = await Promise.all([
           fetchUserAttributes(),
           getCurrentUser(),
         ]);
 
-        console.log('Atributos del usuario:', userAttributes);
-        console.log('Usuario actual:', currentUser);
+        //console.log('Atributos del usuario:', userAttributes);
+        //console.log('Usuario actual:', currentUser);
         const isAdmin = (session.tokens.accessToken.payload["cognito:groups"] as string[] | undefined)?.includes("Admins") ?? false;
         const isAllowedEmail = ALLOWED_EMAILS.includes(userAttributes.email ?? "");
-        console.log('¿Es admin?:', isAdmin);
-        console.log('¿Es email permitido?:', isAllowedEmail);
+        //console.log('¿Es admin?:', isAdmin);
 
         const userData: UserAttributes = {
           ...currentUser,
@@ -52,12 +51,12 @@ export default function useAuthUser() {
           isAllowedUser: isAdmin || isAllowedEmail,
         };
 
-        console.log('Datos de usuario completos:', userData);
+       // console.log('Datos de usuario completos:', userData);
         setUser(userData);
       } catch (error) {
-        console.error('Error al obtener datos del usuario:', error);
+       // console.error('Error al obtener datos del usuario:', error);
       } finally {
-        console.log('Carga completa');
+       // console.log('Carga completa');
         setLoading(false);
       }
     };

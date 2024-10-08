@@ -40,7 +40,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
   }, [loading, userId]);
 
   useEffect(() => {
-    console.log('Favorites updated in context:', favorites);
+   // console.log('Favorites updated in context:', favorites);
   }, [favorites]);
 
   return (

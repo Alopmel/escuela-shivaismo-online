@@ -46,9 +46,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
 
     const fetchVideoData = () => {
       try {
-        console.log('Item:', item); // Verificar que el item es correcto
+        //console.log('Item:', item); // Verificar que el item es correcto
         const upperCaseItem = item.toUpperCase();
-        console.log('UpperCase Item:', upperCaseItem); // Verificar la conversión a mayúsculas
+        //console.log('UpperCase Item:', upperCaseItem); // Verificar la conversión a mayúsculas
 
         const filteredKeys = keys.filter((keyItem: KeyItem) => {
           const parts = keyItem.Key.split('/'); // Separa la categoría del resto
@@ -56,11 +56,11 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
           const matches = category === upperCaseItem &&
             (keyItem.Key.endsWith('.mp4') || keyItem.Key.endsWith('.mov'));
           
-          console.log(`Category: ${category}, Key: ${keyItem.Key}, Matches: ${matches}`); // Verificar si la clave coincide con el filtro
+         // console.log(`Category: ${category}, Key: ${keyItem.Key}, Matches: ${matches}`); // Verificar si la clave coincide con el filtro
           return matches;
         });
 
-        console.log('Filtered Keys:', filteredKeys); // Verificar las claves filtradas
+        //console.log('Filtered Keys:', filteredKeys); // Verificar las claves filtradas
 
         const videoData = filteredKeys.map((keyItem: KeyItem) => {
           const url = `https://dz9uj6zxn56ls.cloudfront.net/${keyItem.Key}`;

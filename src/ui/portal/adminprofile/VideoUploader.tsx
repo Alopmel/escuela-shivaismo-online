@@ -114,7 +114,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({ bucketName }) => {
         }).promise();
 
         setUploadResult(`Video subido exitosamente a la carpeta: ${fileName}`);
-        console.log('Subida completada:', fileName);
+        //console.log('Subida completada:', fileName);
       } else {
         throw new Error('UploadId es undefined');
       }

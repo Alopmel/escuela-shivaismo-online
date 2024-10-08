@@ -37,7 +37,7 @@ export async function authenticatedUser(context: NextServer.Context) {
 
         return user;
       } catch (error) {
-        console.log("Error en authenticatedUser:", error);
+        //console.log("Error en authenticatedUser:", error);
       }
     },
   });
