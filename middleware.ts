@@ -1,14 +1,25 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// src/middelware.ts 
+import { type NextRequest, NextResponse } from "next/server";
+import { authenticatedUser } from "@/utils/amplify-server-utils";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
-  response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  return response;
+  const user = await authenticatedUser({ request, response });
+
+  const isOnProfile = request.nextUrl.pathname.startsWith("/portal");
+  const isOnAdminArea = request.nextUrl.pathname.startsWith("/portal/dashboard/profile");
+
+  if (isOnProfile) {
+    if (!user)
+      return NextResponse.redirect(new URL("/home", request.nextUrl));
+    if (isOnAdminArea && !user.isAdmin)
+      return NextResponse.redirect(new URL("/portal/dashboard/profile", request.nextUrl));
+    return response;
+  } else if (user) {
+    return NextResponse.redirect(new URL("/portal", request.nextUrl));
+  }
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

@@ -1,4 +1,4 @@
-// src/middleware.ts 
+// src/middelware.ts 
 import { type NextRequest, NextResponse } from "next/server";
 import { authenticatedUser } from "./utils/amplify-server-utils";
 
@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   if (isOnProfile) {
     if (!user)
       return NextResponse.redirect(new URL("/home", request.nextUrl));
-    if (isOnAdminArea && !user.isAllowedUser)
+    if (isOnAdminArea && !user.isAdmin)
       return NextResponse.redirect(new URL("/portal/dashboard/profile", request.nextUrl));
     return response;
   } else if (user) {
