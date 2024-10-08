@@ -168,12 +168,12 @@ export const handleWatchLaterToggle = async (
   }
 };
 
-
+// Funcion para añadir las visualizaciones
 export const handlePlay = async (key: { Key: string }) => {
-  // console.log('handlePlay called with key:', key);
+   console.log('handlePlay called with key:', key);
 
   const videoTitle = key.Key;
-  // console.log('Playing video with title:', videoTitle);
+   console.log('Playing video with title:', videoTitle);
 
   try {
     // Paso 1: Obtener todas las clases
@@ -192,7 +192,7 @@ export const handlePlay = async (key: { Key: string }) => {
     // Paso 3: Hacer la actualización del video
     const updateResponse = await axios.put(`https://n8rv8ni618.execute-api.eu-west-2.amazonaws.com/clases/${videoId}`);
 
-    // console.log(`Updated video views for: ${videoId}`, updateResponse.data);
+    console.log(`Updated video views for: ${videoId}`, updateResponse.data);
   } catch (error) {
     console.error('Error updating video views:', error);
     throw error;
@@ -317,7 +317,7 @@ export const getRecommendedVideos = async (videoId: string) => {
 
 
 export const uploadVideo = async (file: File, folder: string, customName: string, onProgress?: (progress: number) => void) => {
-  //console.log('Iniciando carga de video');
+  console.log('Iniciando carga de video');
   
   if (!bucketName) {
     console.error('BUCKET_NAME no está definido en las variables de entorno');
