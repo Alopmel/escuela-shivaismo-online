@@ -131,12 +131,9 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                 height="100%"
                                 className={styles.cardPlayer}
                                 playing={isPlaying && !isMobile}
-                                onPlay={() => {
-                                    if (!isMobile) {
-                                        handlePlay(key);
-                                        setPlayingVideoIndex(index);
-                                    }
-                                }}
+                                onPlay={() => { handlePlay(key);
+                                                setPlayingVideoIndex(index);                                    
+                                              }}
                                 onPause={() => setPlayingVideoIndex(null)}
                                 onProgress={({ played }) => {
                                     throttledHandleVideoProgress(played, index);

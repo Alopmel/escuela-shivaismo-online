@@ -1,4 +1,4 @@
-import { IoVideocam, IoStar, IoCloudUpload, IoSettingsSharp } from "react-icons/io5";
+import { IoVideocam, IoStar, IoCloudUpload, IoSettingsSharp, IoSettings  } from "react-icons/io5";
 import { SideNavItem } from './types';
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
@@ -14,12 +14,6 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     position: { top: 'calc(50% + 378px)', left: 'calc(50% - 9px)' },
     icon: <IoStar size={20} />,
   },
-  // {
-  //   title: 'Últimas subidas',
-  //   path: '/portal/userprofile/last-updated',
-  //   position: { top: 'calc(50% + 100px)', left: 'calc(50% - 180px)' },
-  //   icon: <IoCloudUpload size={20} />,
-  // },
   {
     title: 'Perfil',
     path: '/portal/userprofile/setting',

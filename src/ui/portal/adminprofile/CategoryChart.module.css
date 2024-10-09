@@ -1,0 +1,21 @@
+.text {
+    color: #a5a9b5;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0em;
+    line-height: 12px;
+    text-align: right;
+    cursor: default;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-bottom: 12px; /* Añade margen en la parte inferior */
+  }
+  
+  .text:hover {
+    overflow: visible; /* Muestra el texto completo en hover */
+    white-space: normal; /* Permite que el texto se ajuste a múltiples líneas */
+    height: auto; /* Ajusta la altura */
+    z-index: 1; /* Asegura que el texto se muestre sobre otros elementos si es necesario */
+  }
+  

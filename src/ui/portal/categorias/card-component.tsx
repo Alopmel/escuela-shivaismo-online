@@ -71,8 +71,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ item, userId }) => {
           return { url, title, key: keyItem }; // Aquí pasamos todo el key
         });
 
+        // Ordenar los videos de mayor a menor según el número extraído
         const sortedVideoData = videoData.sort((a, b) =>
-          extractNumberFromTitle(a.title) - extractNumberFromTitle(b.title)
+          extractNumberFromTitle(b.title) - extractNumberFromTitle(a.title)
         );
 
         // console.log('Sorted Video Data:', sortedVideoData); // Verificar los datos ordenados

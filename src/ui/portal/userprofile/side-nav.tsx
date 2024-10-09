@@ -5,14 +5,18 @@ import { usePathname } from 'next/navigation';
 import { SIDENAV_ITEMS } from './constants';
 import { SideNavItem } from './types';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
+import { IoCloudUpload } from 'react-icons/io5';
 import { handleSignOut } from "@/lib/cognitoActions";
 import { IoLogOut } from "react-icons/io5";
 import { roboto } from '@/app/fonts';
+import { useUser } from '@/app/context/UserContext'; // Importar el contexto del usuario
+
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 200 });
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
+  const { email } = useUser(); // Obtener el email del contexto del usuario
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -75,6 +79,20 @@ const SideNav = () => {
             {SIDENAV_ITEMS.map((item, idx) => (
               <MenuItem key={idx} item={item} isOpen={isOpen} />
             ))}
+            {/* Mostrar "Subir videos" solo si el email coincide */}
+            {(email === "lempola@gmail.com" || email === "albawebdeveloper@gmail.com" || email === "jjquesada.87@gmail.com") && (
+              <Link
+                href="/portal/adminprofile/dashboard/upload"
+                className={`flex flex-row items-center p-2 rounded-lg hover:bg-white/20 ${roboto.className} text-white font-semibold no-underline`}
+              >
+                <div className={`flex items-center ${isOpen ? 'space-x-4' : 'justify-center'} w-full`}>
+                  <span style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IoCloudUpload size={20} />
+                  </span>
+                  {isOpen && <span className="text-xl ml-2">Subir videos</span>}
+                </div>
+              </Link>
+            )}
             <form action={handleSignOut}>
               <button 
                 type='submit'

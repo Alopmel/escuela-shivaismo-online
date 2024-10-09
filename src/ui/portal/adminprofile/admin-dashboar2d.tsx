@@ -11,7 +11,8 @@ import { FaFolderPlus } from "react-icons/fa6";
 import UploadCard from "./upload-card";
 import AWS from 'aws-sdk';
 import UploadRender from "./upload-render";
-import { useBucket } from '@/app/context/BucketContext';
+
+const BUCKET_NAME = "videos-tantra-shivaita";
 
 export function AdminDashboard() {
   const [files, setFiles] = useState<File[]>([]);
@@ -22,6 +23,7 @@ export function AdminDashboard() {
   const [selectedFolder, setSelectedFolder] = useState("");
   const [newFolder, setNewFolder] = useState("");
   const [controllers, setControllers] = useState<AbortController[]>([]);
+  const folders = useBucketFolders();
   const [error, setError] = useState<string | null>(null);
   const [refreshFolderContents, setRefreshFolderContents] = useState(0);
   const [customNames, setCustomNames] = useState<string[]>([]);
@@ -29,34 +31,6 @@ export function AdminDashboard() {
   const [isUploadComplete, setIsUploadComplete] = useState(false);
   const [showUploadedFiles, setShowUploadedFiles] = useState(false);
 
-  const folders = useBucketFolders();
-  const { keys } = useBucket();
-
-  const getNextFileNumber = (folder: string) => {
-    const filteredKeys = keys.filter(key => key.Key.startsWith(folder));
-    //console.log("Carpeta seleccionada:", folder);
-    //console.log("Archivos encontrados en la carpeta:", filteredKeys);
-
-    const numbers = filteredKeys
-      .map(key => {
-        const keyParts = key.Key.split('/');
-        if (keyParts.length > 1) {
-          const numberPart = keyParts[1].match(/^(\d+)/);
-          return numberPart ? parseInt(numberPart[1], 10) : null;
-        }
-        return null;
-      })
-      .filter((num): num is number => num !== null);
-    
-    if (numbers.length === 0) {
-      return 1; // Si no hay números, empezar con 1
-    }
-    
-    const nextNumber = Math.max(...numbers) + 1; // Obtener el número más alto y sumarle 1
-    //console.log("Número que se añadirá al título:", nextNumber);
-    return nextNumber;
-  };
-  
   useEffect(() => {
     if (uploadedFiles.length > 0 && !isUploadComplete) {
       setShowUploadedFiles(true);
@@ -129,8 +103,6 @@ export function AdminDashboard() {
       return;
     }
 
-    const actualFolderName = newFolder || selectedFolder || 'default';
-    const nextFileNumber = getNextFileNumber(actualFolderName);
     setUploading(true);
     setUploadStatus("Subiendo archivos...");
     const s3 = new AWS.S3({
@@ -147,8 +119,8 @@ export function AdminDashboard() {
       if (fileExtension && !fileName.endsWith(`.${fileExtension}`)) {
         fileName += `.${fileExtension}`;
       }
-      const newFileName = `${nextFileNumber}.${fileName}`;
-      const Key = `${actualFolderName}/${newFileName}`;
+      const actualFolderName = newFolder || selectedFolder || 'default';
+      const Key = `${actualFolderName}/${fileName}`;
       
       const params = {
         Bucket: process.env.NEXT_PUBLIC_BUCKET_NAME || '',        

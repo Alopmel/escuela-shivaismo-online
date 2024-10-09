@@ -32,7 +32,7 @@ export const BucketProvider: React.FC<BucketProviderProps> = ({ children }) => {
     try {
       const response = await axios.get<BucketResponse>('/api/video');
       setKeys(response.data.Contents);
-      console.log(keys)
+      //console.log(keys)
     } catch (error) {
       console.error('Error fetching bucket data:', error);
     }

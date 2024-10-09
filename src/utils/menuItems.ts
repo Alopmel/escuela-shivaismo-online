@@ -110,7 +110,23 @@ export const items: MenuItem[] = [
               position: {
                 desktop: { top: 'calc(50% - 6px)', left: 'calc(50% + 460px)' },
                 mobile: { top: 'calc(50% - 136px)', left: 'calc(50% + 80px)' }
-              }
+              }, 
+              subItems: [
+                {
+                  text: 'Spandakarika: Odier',
+                  position: {
+                    desktop: { top: 'calc(50% + 14px)', left: 'calc(50% + 586px)' },
+                    mobile: { top: 'calc(50% - 145.622px)', left: 'calc(50% + 69px)' }
+                  }
+                },
+                {
+                  text: 'Spandakarika: Lakshmanjoo',
+                  position: {
+                    desktop: { top: 'calc(50% + 112px)', left: 'calc(50% + 517px)' },
+                    mobile: { top: 'calc(50% + 36.378px)', left: 'calc(50% + 70px)' }
+                  }
+                }
+              ]
             },
             {
               text: 'Pratiabhidjaridayam',
