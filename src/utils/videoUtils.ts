@@ -352,7 +352,7 @@ export const uploadVideo = async (file: File, folder: string, customName: string
     const nameWithoutExtension = fileNameParts.join('.').toUpperCase();
     customName = `${nextSequence}.${nameWithoutExtension}.${extension}`;
     const key = `${folder}/${customName}`;
-    //console.log('Uploading video with key:', key);
+    console.log('Uploading video with key:', key);
 
     const params = {
       Bucket: bucketName,
