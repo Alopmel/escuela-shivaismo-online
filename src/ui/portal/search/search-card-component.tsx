@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { handleFavoriteToggle, handleWatchLaterToggle, getTitleWithoutExtension } from '@/utils/videoUtils';
 import styles from '../userprofile/cardComponent.module.css';
 import { Roboto } from 'next/font/google';
+import { useUser } from '@/app/context/UserContext'; // Importar el contexto del usuario
 
 // Importar la fuente Roboto
 const roboto = Roboto({
@@ -44,6 +45,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
   const { favorites, setFavorites } = useFavorites();
   const { watchLater, setWatchLater } = useWatchLater();
   const router = useRouter();
+  const { email } = useUser();
 
   const handleDoubleClick = (videoUrl: string) => {
     const videoFileName = videoUrl.split('/').pop();
@@ -53,8 +55,11 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
   };
 
   const cleanTitle = (title: string) => {
-    return title.replace(/^\d+\.\s*/, ''); // Elimina números seguidos de un punto
+    return title.replace(/^\d+\.\s*/, '');
   };
+
+  // Usar un Set para rastrear títulos únicos
+  const uniqueTitles = new Set<string>();
 
   return (
     <motion.div
@@ -65,6 +70,11 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
       style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}
     >
       {videoData.map(({ url, title, key }, index) => {
+        if (uniqueTitles.has(title)) {
+          return null; // Si ya existe, no mostrar este video
+        }
+        uniqueTitles.add(title); // Agregar el título al conjunto
+
         const isFavorite = favorites.some((fav) => fav.url === url);
         const isWatchLater = watchLater.some((wl) => wl.url === url);
 
@@ -88,6 +98,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ videoData, userId }) => {
                   file: {
                     attributes: {
                       onDoubleClick: () => handleDoubleClick(url),
+                      controlsList: email === "eszzenacontacto@gmail.com" || email === "jjquesada.87@gmail.com" || email === "albawebdeveloper@gmail.com" ? 'download' : 'nodownload',
                     },
                   },
                 }}

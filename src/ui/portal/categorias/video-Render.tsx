@@ -25,6 +25,7 @@ import { motion } from 'framer-motion';
 import styles from './VideoRender.module.css';
 import { roboto } from '@/app/fonts';
 import { extractNumberFromTitle } from '@/utils/videoUtils';
+import { useUser } from '@/app/context/UserContext'; // Importar el contexto del usuario
 
 interface VideoRenderProps {
     videoData: { url: string; title: string; key: { Key: string } }[];
@@ -54,6 +55,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
     const { progress, setProgress } = useProgress();
     const [isProgress, setIsProgress] = useState(false);
     const router = useRouter();
+    const { email } = useUser(); // Obtener el email del contexto del usuario
 
     useEffect(() => {
         const handleResize = () => {
@@ -142,7 +144,7 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                     file: {
                                         attributes: {
                                             onDoubleClick: () => handleDoubleClick(url),
-                                            controlsList: 'nodownload',
+                                            controlsList: email === "eszzenacontacto@gmail.com" || email === "jjquesada.87@gmail.com" || email === "albawebdeveloper@gmail.com" ? 'download' : 'nodownload',
                                         },
                                     },
                                 }}
@@ -154,8 +156,6 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                         style={{ 
                                             color: 'white',
                                             fontSize: isMobile ? '1.2rem' : '1.4rem',
-                                            // filter: 'drop-shadow(0 0 1px #00d1d1) drop-shadow(0 0 1px #00d1d1)',
-                                            // textShadow: '0 0 2px #00d1d1, 0 0 1px #00d1d1'
                                         }}
                                     >
                                         {formattedTitle}
@@ -181,16 +181,12 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                     {isFavorite ? <FaHeart 
                                                     style={{ 
                                                         color: 'white',
-                                                        // filter: 'drop-shadow(0 0 4px #00d1d1) drop-shadow(0 0 4px #00d1d1)',
-                                                        // textShadow: '0 0 4px #00d1d1, 0 0 2px #00d1d1'
                                                     }}
                                                     size={28} /> 
                                                     : 
                                                 <FaRegHeart 
                                                     style={{ 
                                                         color: 'white',
-                                                        // filter: 'drop-shadow(0 0 4px #00d1d1) drop-shadow(0 0 4px #00d1d1)',
-                                                        // textShadow: '0 0 4px #00d1d1, 0 0 2px #00d1d1'
                                                     }}
                                                     size={28} /> }
                                 </div>
@@ -207,16 +203,12 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                     {isWatchLater ? <FaClock 
                                                         style={{ 
                                                             color: 'white',
-                                                            // filter: 'drop-shadow(0 0 4px #00d1d1) drop-shadow(0 0 4px #00d1d1)',
-                                                            // textShadow: '0 0 4px #00d1d1, 0 0 2px #00d1d1'
                                                         }}
                                                         size={28} />
                                                          :
                                                     <FaRegClock 
                                                         style={{ 
                                                             color: 'white',
-                                                            // filter: 'drop-shadow(0 0 4px #00d1d1) drop-shadow(0 0 4px #00d1d1)',
-                                                            // textShadow: '0 0 4px #00d1d1, 0 0 2px #00d1d1'
                                                         }}
                                                         size={28} />
                                                         }
@@ -229,16 +221,12 @@ const VideoRender: React.FC<VideoRenderProps> = ({ videoData, userId }) => {
                                     {isViewed ? <FaCheckCircle 
                                                     style={{ 
                                                         color: 'white',
-                                                        // filter: 'drop-shadow(0 0 4px #00d1d1) drop-shadow(0 0 4px #00d1d1)',
-                                                        // textShadow: '0 0 4px #00d1d1, 0 0 2px #00d1d1'
                                                     }}
                                                     size={28} /> 
                                                     : 
                                                 <FaRegCheckCircle 
                                                     style={{ 
                                                         color: 'white',
-                                                        // filter: 'drop-shadow(0 0 4px #00d1d1) drop-shadow(0 0 4px #00d1d1)',
-                                                        // textShadow: '0 0 4px #00d1d1, 0 0 2px #00d1d1'
                                                     }}
                                                     size={28} />}
                                 </div>

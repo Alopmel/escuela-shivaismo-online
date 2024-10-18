@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
 import AWS from 'aws-sdk';
+import { useBucket } from '@/app/context/BucketContext'; // Importar el contexto
 
 interface VideoUploaderProps {
   bucketName: string; // El nombre del bucket S3
@@ -13,6 +14,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({ bucketName }) => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0); // Progreso de subida
   const [uploadResult, setUploadResult] = useState<string | null>(null);
+  const { refreshKeys } = useBucket(); // Obtener la función refreshKeys
 
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -114,7 +116,7 @@ const VideoUploader: React.FC<VideoUploaderProps> = ({ bucketName }) => {
         }).promise();
 
         setUploadResult(`Video subido exitosamente a la carpeta: ${fileName}`);
-        //console.log('Subida completada:', fileName);
+        await refreshKeys(); // Llama a refreshKeys para actualizar la lista de videos
       } else {
         throw new Error('UploadId es undefined');
       }
