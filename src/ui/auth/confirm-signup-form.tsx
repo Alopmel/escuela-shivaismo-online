@@ -129,7 +129,7 @@ export default function ConfirmSignUpForm() {
           <Image src="/logo.svg" alt="Logo" className='logo-white'  width={isDesktop ? 100 : 50} height={isDesktop ? 100 : 50} priority style={imageStyle} />
           <div className="w-full flex flex-col items-center">
             <div className="relative w-full flex justify-center no-select">
-              <h2 className="mb-4 text-white no-select" style={{ fontSize: '1.5rem' }}> Recupera tu contraseña</h2>
+              <h2 className="mb-4 text-white no-select" style={{ fontSize: '1.5rem' }}> Confirma tu email</h2>
             </div> 
             <div className="relative w-full flex justify-center">
               <input
